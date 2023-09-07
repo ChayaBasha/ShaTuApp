@@ -30,7 +30,7 @@ public class ImgFactory {
     /**
      * Directory in the Resource path where the images are located.
      */
-    private static final String DIRECTORY = "/edu/regis/shatu/img/";
+    private static final String DIRECTORY = "/";
     
     /**
      * File extension for the associated image.

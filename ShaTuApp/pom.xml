@@ -11,4 +11,13 @@
         <maven.compiler.target>11</maven.compiler.target>
         <exec.mainClass>edu.regis.shatu.ShaTuApp</exec.mainClass>
     </properties>
+    <build>
+        <resources>
+        <resource>
+            <directory>
+                src/main/java/resources
+            </directory>
+        </resource>
+    </resources>
+    </build>
 </project>
