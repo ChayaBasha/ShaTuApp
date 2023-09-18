@@ -6,7 +6,7 @@ ${licensePrefix}
 ${licensePrefix} (C) Johanna & Richard Blumenthal, All rights reserved
 ${licensePrefix}
 ${licensePrefix} Unauthorized use, duplication or distribution without the authors'
-${licensePrefix} permission is strictly prohibted.
+${licensePrefix} permission is strictly prohibited.
 ${licensePrefix}
 ${licensePrefix} Unless required by applicable law or agreed to in writing, this
 ${licensePrefix} software is distributed on an "AS IS" basis without warranties
