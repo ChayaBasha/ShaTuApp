@@ -35,7 +35,7 @@ public class StepSelectorView extends GPanel {
     public StepSelectorView() {
         GuiController.instance().setStepSelectorView(this);
  
-        setBackground(Color.LIGHT_GRAY);
+        setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         initializeComponents();
         layoutComponents();

@@ -22,7 +22,7 @@ public enum StepSelection {
     /**
      * Encode the input message as ASCII bytes step.
      */
-    ENCODE(new HighlightLabel("Encode as ASCII")), 
+    ENCODE(new HighlightLabel("1.Encode as ASCII")), 
     
     ADD1(new HighlightLabel("Add '1' bit")), 
     
