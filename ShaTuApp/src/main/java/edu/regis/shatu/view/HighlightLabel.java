@@ -60,7 +60,7 @@ public class HighlightLabel extends JLabel implements MouseListener {
     /**
      * The background of this label is a light yellow when highlighted.
      */
-    private static final Color HIGHLIGHT_BACKGROUND = Color.WHITE;
+    private static final Color HIGHLIGHT_BACKGROUND = Color.BLACK;
     
     /**
      * The background of this label when selected.
