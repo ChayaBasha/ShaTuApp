@@ -30,6 +30,8 @@ public enum StepSelection {
     
     LENGTH(new HighlightLabel("Add Msg Length")), 
     
+    TEST(new HighlightLabel("Test")), 
+    
     PREPARE(new HighlightLabel("Prepare Schedule")),
    
     INIT_VARS(new HighlightLabel("Initialize Variables")), 

@@ -41,6 +41,8 @@ public class StepView extends JPanel {
     
     private PadView padView;
     
+    private TestView testView;
+    
     private InitVarView initVarView;
     
     /**
@@ -82,6 +84,7 @@ public class StepView extends JPanel {
         compressionView = new CompressionCanvasView();
         add1View = new Add1View();
         padView = new PadView();
+        testView = new TestView();
         initVarView = new InitVarView();
     }
     
@@ -94,6 +97,7 @@ public class StepView extends JPanel {
         add(compressionView, StepSelection.COMPRESS.toString());
         add(add1View, StepSelection.ADD1.toString());
         add(padView, StepSelection.PAD.toString());
+        add(testView, StepSelection.TEST.toString());
         add(initVarView, StepSelection.INIT_VARS.toString());
     }
 }

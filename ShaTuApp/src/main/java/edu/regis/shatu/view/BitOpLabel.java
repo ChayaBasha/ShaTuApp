@@ -55,7 +55,7 @@ public class BitOpLabel extends JLabel implements MouseListener {
     /**
      * The background of this label is pinkish when not highlighted.
      */
-    private static final Color NORMAL_BACKGROUND = new Color(239, 229, 247);
+    private static final Color NORMAL_BACKGROUND = new Color(150, 229, 247);
     
     /**
      * The background of this label is a light yellow when highlighted.
