@@ -97,7 +97,7 @@ public class StepSelectorView extends GPanel {
         panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         
         JLabel label = new JLabel("Message Preprocessing");
-        label.setForeground(new Color(241,196,0));
+        label.setForeground(Color.WHITE);
         panel.addc(label, 0, 0, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
@@ -137,7 +137,7 @@ public class StepSelectorView extends GPanel {
         panel. setBorder(BorderFactory.createLineBorder(Color.BLACK));
         
         JLabel label = new JLabel("Hash Computation");
-        label.setForeground(new Color(241,196,0));
+        label.setForeground(Color.WHITE);
         panel.addc(label, 0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
