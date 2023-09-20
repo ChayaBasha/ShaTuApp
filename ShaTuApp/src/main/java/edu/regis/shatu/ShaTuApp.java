@@ -35,5 +35,6 @@ public class ShaTuApp {
         MainFrame.instance();
         
         System.out.println("Finished initializing");
+        //Damian
     }
 }
