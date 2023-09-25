@@ -30,6 +30,8 @@ public enum StepSelection {
     
     LENGTH(new HighlightLabel("Add Msg Length")), 
     
+    ROTATE(new HighlightLabel("Rotate n bits")),
+    
     PREPARE(new HighlightLabel("Prepare Schedule")),
    
     INIT_VARS(new HighlightLabel("Initialize Variables")), 
@@ -47,3 +49,4 @@ public enum StepSelection {
         return label;
     }
 }
+

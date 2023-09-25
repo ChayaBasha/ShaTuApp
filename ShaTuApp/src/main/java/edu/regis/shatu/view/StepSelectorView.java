@@ -116,6 +116,9 @@ public class StepSelectorView extends GPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
+        panel.addc(StepSelection.ROTATE.getLabel(), 0, 5, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
         return panel;
     }
     
@@ -143,7 +146,7 @@ public class StepSelectorView extends GPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        panel.addc(StepSelection.COMPRESS.getLabel(), 0, 3, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.ROTATE.getLabel(), 0, 3, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
