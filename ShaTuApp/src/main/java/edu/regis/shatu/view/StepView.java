@@ -41,7 +41,15 @@ public class StepView extends JPanel {
     
     private PadView padView;
     
+    private TestView testView;
+    
     private InitVarView initVarView;
+
+    private RotateView rotateView;
+
+    private ShiftRightView shiftRightView;
+
+    private AddTwoBitView addTwoBitView;
     
     /**
      * Initialize and layout the child components (cards) displayed in this view.
@@ -80,8 +88,12 @@ public class StepView extends JPanel {
         encodeView = new EncodeView();
         prepareScheduleView = new PrepareScheduleView();
         compressionView = new CompressionCanvasView();
+        rotateView = new RotateView();
+        shiftRightView = new ShiftRightView();
+        addTwoBitView = new AddTwoBitView();
         add1View = new Add1View();
         padView = new PadView();
+        testView = new TestView();
         initVarView = new InitVarView();
     }
     
@@ -92,8 +104,13 @@ public class StepView extends JPanel {
         add(encodeView, StepSelection.ENCODE.toString());
         add(prepareScheduleView, StepSelection.PREPARE.toString());
         add(compressionView, StepSelection.COMPRESS.toString());
+        add(rotateView, StepSelection.ROTATE_BITS.toString());
+        add(shiftRightView, StepSelection.SHIFT_RIGHT.toString());
+        add(addTwoBitView, StepSelection.ADD_TWO_BIT.toString());
+
         add(add1View, StepSelection.ADD1.toString());
         add(padView, StepSelection.PAD.toString());
+        add(testView, StepSelection.TEST.toString());
         add(initVarView, StepSelection.INIT_VARS.toString());
     }
 }

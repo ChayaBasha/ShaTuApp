@@ -78,7 +78,7 @@ public class EncodeView extends GPanel implements ActionListener, SHA_256Listene
         
         charInput = new JTextField(1);
         
-        verifyBut = new JButton("Verify");
+        verifyBut = new JButton("Check");
         verifyBut.setToolTipText("Click to verify input");
         verifyBut.addActionListener(this);
     }
@@ -87,7 +87,7 @@ public class EncodeView extends GPanel implements ActionListener, SHA_256Listene
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-        JLabel label = new JLabel("Example Character: ");
+        JLabel label = new JLabel("Enter Character: ");
         label.setLabelFor(exampleCharacter);
         addc(label, 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
@@ -98,7 +98,7 @@ public class EncodeView extends GPanel implements ActionListener, SHA_256Listene
                 5, 5, 5, 5);
         
         
-        label = new JLabel("Output:");
+        label = new JLabel("Type Here:");
         label.setLabelFor(charInput);
         addc(label, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
@@ -113,7 +113,7 @@ public class EncodeView extends GPanel implements ActionListener, SHA_256Listene
                 5, 5, 5, 5);
         
         // Fills the remaining space
-        addc(new JLabel(""), 0, 3, 2, 1, 1.0, 1.0,
+        addc(new JLabel("Test"), 0, 3, 2, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
     }

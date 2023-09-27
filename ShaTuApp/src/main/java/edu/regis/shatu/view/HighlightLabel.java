@@ -38,7 +38,7 @@ public class HighlightLabel extends JLabel implements MouseListener {
      * A simple black line surrounds this label when not highlighted.
      */
     private static final Border NORMAL_BORDER
-            = new CompoundBorder(BorderFactory.createLineBorder(Color.BLACK), EMPTY_BORDER);
+            = new CompoundBorder(BorderFactory.createLineBorder(new Color(241,196,0),2), EMPTY_BORDER);
 
     /**
      * A red line with thickness two surrounds this label when highlighted.
@@ -50,22 +50,22 @@ public class HighlightLabel extends JLabel implements MouseListener {
      * A blue line with thickness two surrounds this label when selected.
      */
     private static final Border SELECTED_BORDER
-            = new CompoundBorder(BorderFactory.createLineBorder(Color.BLUE, 2), EMPTY_BORDER);
+            = new CompoundBorder(BorderFactory.createLineBorder(Color.WHITE, 2), EMPTY_BORDER);
     
     /**
      * The background of this label is pinkish when not highlighted.
      */
-    private static final Color NORMAL_BACKGROUND = new Color(243, 225, 215); // pinkish
+    private static final Color NORMAL_BACKGROUND = new Color(241,196,0); // regis gold
     
     /**
      * The background of this label is a light yellow when highlighted.
      */
-    private static final Color HIGHLIGHT_BACKGROUND = new Color(255, 255, 205);
+    private static final Color HIGHLIGHT_BACKGROUND = Color.BLACK;
     
     /**
      * The background of this label when selected.
      */
-    private static final Color SELECTED_BACKGROUND = new Color(204, 255, 255);
+    private static final Color SELECTED_BACKGROUND = Color.WHITE;
     
     /**
      * The view that is displayed when this label is selected.
