@@ -44,6 +44,18 @@ public class StepView extends JPanel {
     private TestView testView;
     
     private InitVarView initVarView;
+
+    private RotateView rotateView;
+
+    private ShiftRightView shiftRightView;
+    
+    private ExclusiveOrView exclusiveOrView;
+
+    private AddTwoBitView addTwoBitView;
+    
+    private MajFunction majFunction;
+    
+    private ShaOne shaOne;
     
     /**
      * Initialize and layout the child components (cards) displayed in this view.
@@ -82,6 +94,12 @@ public class StepView extends JPanel {
         encodeView = new EncodeView();
         prepareScheduleView = new PrepareScheduleView();
         compressionView = new CompressionCanvasView();
+        rotateView = new RotateView();
+        shiftRightView = new ShiftRightView();
+        exclusiveOrView = new ExclusiveOrView();
+        addTwoBitView = new AddTwoBitView();
+        majFunction = new MajFunction();
+        shaOne = new ShaOne();
         add1View = new Add1View();
         padView = new PadView();
         testView = new TestView();
@@ -95,6 +113,13 @@ public class StepView extends JPanel {
         add(encodeView, StepSelection.ENCODE.toString());
         add(prepareScheduleView, StepSelection.PREPARE.toString());
         add(compressionView, StepSelection.COMPRESS.toString());
+        add(rotateView, StepSelection.ROTATE_BITS.toString());
+        add(shiftRightView, StepSelection.SHIFT_RIGHT.toString());
+        add(exclusiveOrView, StepSelection.XOR.toString());
+        add(addTwoBitView, StepSelection.ADD_TWO_BIT.toString());
+        add(majFunction, StepSelection.MAJ_FUNCTION.toString());
+        add(shaOne, StepSelection.SHA_ONE.toString());
+
         add(add1View, StepSelection.ADD1.toString());
         add(padView, StepSelection.PAD.toString());
         add(testView, StepSelection.TEST.toString());
