@@ -41,8 +41,18 @@ public enum StepSelection {
     ROTATE_BITS(new HighlightLabel("Rotate n bits")),
 
     SHIFT_RIGHT(new HighlightLabel("Shift right")),
+    
+    XOR (new HighlightLabel("Exclusive OR (XOR)")),
 
-    ADD_TWO_BIT(new HighlightLabel("Add two 𝑛 bit"));
+    ADD_TWO_BIT(new HighlightLabel("Add two 𝑛 bit")),
+    
+    CHOICE_FUNCTION(new HighlightLabel("Ch function value")),
+    
+    MAJ_FUNCTION(new HighlightLabel("Maj function value")),
+    
+    SHA_ZERO(new HighlightLabel("SHA Sum 0 value")),
+    
+    SHA_ONE(new HighlightLabel("SHA Sum 1 value"));
 
 
 
