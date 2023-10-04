@@ -44,7 +44,7 @@ public class Add1View extends GPanel implements ActionListener {
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        test = new JLabel("Add1 Test");
+        test = new JLabel("Add 1 Test");
         
 
     }
