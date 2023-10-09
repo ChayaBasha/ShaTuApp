@@ -29,7 +29,6 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
    private final String BINARY_NUMBER_ONE = "0001";
    private final String BINARY_NUMBER_TWO = "1111";
    
-   
    private JLabel binaryNumberOneLabel;
    private JLabel binaryNumberTwoLabel;
    private JLabel instructionLabel;
@@ -102,7 +101,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
 
     }
     
-    public static String performXOR(String binary1, String binary2) {
+    private static String performXOR(String binary1, String binary2) {
         // Ensure that both input strings have the same length
         int maxLength = Math.max(binary1.length(), binary2.length());
         binary1 = padWithZeroes(binary1, maxLength);
