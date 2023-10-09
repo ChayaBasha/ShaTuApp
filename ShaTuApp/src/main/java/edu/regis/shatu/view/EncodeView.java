@@ -17,6 +17,8 @@ import edu.regis.shatu.svc.SHA_256Listener;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -26,7 +28,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener, SHA_256Listener {
+public class EncodeView extends GPanel implements ActionListener, KeyListener, SHA_256Listener {
     /**
      * The ASCII character the student is being asked to convert
      */
@@ -54,6 +56,7 @@ public class EncodeView extends GPanel implements ActionListener, SHA_256Listene
         for (int i = 0; i < bytes.length; i++)
             System.out.println("Byte " + i + ": " + bytes[i]);
     }
+   
     
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -64,11 +67,41 @@ public class EncodeView extends GPanel implements ActionListener, SHA_256Listene
            SHA_256 alg = GuiController.instance().getSha256Alg();
            System.out.println("Alg: " + alg);
            alg.addListener(this);
+         
            
            String digest = alg.sha256("Regis Computer Science Rocks!");
-           System.out.println("Digest: " + digest);
+           System.out.println("Mouse Digest: " + digest);
        }
     }
+    @Override
+    public void keyTyped(KeyEvent event){
+       if (event.getSource()== charInput){
+          String userInput = charInput.getText();
+       }
+    }
+    
+    @Override 
+    public void keyPressed(KeyEvent event){
+       if(event.getSource()== charInput && event.getKeyCode()== KeyEvent.VK_ENTER) {
+         String userInput = charInput.getText(); 
+          
+          
+           // ToDo: this is simply a test of the SHA-256 algorithm
+           SHA_256 alg = GuiController.instance().getSha256Alg();
+           System.out.println("Alg: " + alg);
+           alg.addListener(this);
+         
+           
+           String digest = alg.sha256("Regis Computer Science Rocks!");
+           System.out.println("Enter Digest: " + digest);
+       }
+    }
+    
+    @Override
+    public void keyReleased(KeyEvent event) {
+       
+    }
+    
  
     /**
      * Create the child GUI components appearing in this frame.
@@ -76,11 +109,13 @@ public class EncodeView extends GPanel implements ActionListener, SHA_256Listene
     private void initializeComponents() {
         exampleCharacter = new JLabel("");
         
-        charInput = new JTextField(1);
+        charInput = new JTextField(20);
+        charInput.addKeyListener(this);
         
         verifyBut = new JButton("Check");
         verifyBut.setToolTipText("Click to verify input");
         verifyBut.addActionListener(this);
+        
     }
     
     /**
