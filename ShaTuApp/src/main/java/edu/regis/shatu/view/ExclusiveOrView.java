@@ -28,14 +28,13 @@ import javax.swing.JTextField;
 public class ExclusiveOrView extends GPanel implements ActionListener {
    private final String BINARY_NUMBER_ONE = "0001";
    private final String BINARY_NUMBER_TWO = "1111";
-   
    private JLabel binaryNumberOneLabel;
    private JLabel binaryNumberTwoLabel;
    private JLabel instructionLabel;
    private JTextField answerField;
    private JLabel answerLabel;
    private JButton checkButton;
-    
+   
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -44,7 +43,6 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
         initializeLayout();
     }
 
-   
 
     /**
      * Create the child GUI components appearing in this frame.
@@ -52,7 +50,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
     private void initializeComponents() {
         instructionLabel = new JLabel("Perform Exlusive OR (XOR) on given"
                 + " binary numbers");
-        
+
         binaryNumberOneLabel = new JLabel(BINARY_NUMBER_ONE);
         binaryNumberTwoLabel = new JLabel(BINARY_NUMBER_TWO);
 
@@ -61,9 +59,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
-        
     }
-    
     /**
      * Layout the child components in this view.
      */
@@ -96,12 +92,14 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
         addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
+
         
         checkButton.addActionListener(this); // Add an action listener for the check button
 
     }
     
-    private static String performXOR(String binary1, String binary2) {
+
+    public static String performXOR(String binary1, String binary2) {
         // Ensure that both input strings have the same length
         int maxLength = Math.max(binary1.length(), binary2.length());
         binary1 = padWithZeroes(binary1, maxLength);
@@ -130,11 +128,12 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
         }
         return paddedBinary.toString();
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent event) {
        String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
-       
+      
+
        if(correctAnswer.equals(answerField.getText())) {
            JOptionPane.showMessageDialog(this, "Correct!");
        } else {

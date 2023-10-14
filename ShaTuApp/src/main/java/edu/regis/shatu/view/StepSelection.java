@@ -22,7 +22,7 @@ public enum StepSelection {
     /**
      * Encode the input message as ASCII bytes step.
      */
-    ENCODE(new HighlightLabel("Encode as ASCII")), 
+    ENCODE(new HighlightLabel("1.Encode as ASCII")), 
     
     ADD1(new HighlightLabel("Add '1' bit")), 
     
@@ -35,13 +35,28 @@ public enum StepSelection {
     XOR (new HighlightLabel("Exclusive OR (XOR)")),
     
     CHOICE_FUNCTION(new HighlightLabel("Value of the Choice (Ch) function")),
+
     
     PREPARE(new HighlightLabel("Prepare Schedule")),
    
     INIT_VARS(new HighlightLabel("Initialize Variables")), 
     
-    COMPRESS(new HighlightLabel("Compress Round"));
+    COMPRESS(new HighlightLabel("Compress Round")),
+
+    ROTATE_BITS(new HighlightLabel("Rotate n bits")),
+
+    SHIFT_RIGHT(new HighlightLabel("Shift right")),
+
+    ADD_TWO_BIT(new HighlightLabel("Add two 𝑛 bit")),
     
+    MAJ_FUNCTION(new HighlightLabel("Maj function value")),
+    
+    SHA_ZERO(new HighlightLabel("SHA Sum 0 value")),
+    
+    SHA_ONE(new HighlightLabel("SHA Sum 1 value"));
+
+
+
     private HighlightLabel label;
     
     StepSelection(HighlightLabel label) {
