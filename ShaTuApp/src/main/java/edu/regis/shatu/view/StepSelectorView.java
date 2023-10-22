@@ -118,9 +118,7 @@ public class StepSelectorView extends GPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
-        panel.addc(StepSelection.ROTATE.getLabel(), 0, 5, 1, 1, 1.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
+        
         return panel;
     }
     
@@ -149,47 +147,39 @@ public class StepSelectorView extends GPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        panel.addc(StepSelection.ROTATE.getLabel(), 0, 3, 1, 1, 1.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        
-        panel.addc(StepSelection.XOR.getLabel(), 0, 4, 1, 1, 1.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        
-        panel.addc(StepSelection.CHOICE_FUNCTION.getLabel(), 0, 5, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.COMPRESS.getLabel(), 0, 3, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        panel.addc(StepSelection.ROTATE_BITS.getLabel(), 0, 6, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.ROTATE_BITS.getLabel(), 0, 4, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        panel.addc(StepSelection.SHIFT_RIGHT.getLabel(), 0, 7, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.SHIFT_RIGHT.getLabel(), 0, 5, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
-        panel.addc(StepSelection.XOR.getLabel(), 0, 8, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.XOR.getLabel(), 0, 6, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        panel.addc(StepSelection.ADD_TWO_BIT.getLabel(), 0, 9, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.ADD_TWO_BIT.getLabel(), 0, 7, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
                 
-        panel.addc(StepSelection.CHOICE_FUNCTION.getLabel(), 0, 10, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.CHOICE_FUNCTION.getLabel(), 0, 8, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
-        panel.addc(StepSelection.MAJ_FUNCTION.getLabel(), 0, 11, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.MAJ_FUNCTION.getLabel(), 0, 9, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
-        panel.addc(StepSelection.SHA_ZERO.getLabel(), 0, 12, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.SHA_ZERO.getLabel(), 0, 10, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
-        panel.addc(StepSelection.SHA_ONE.getLabel(), 0, 13, 1, 1, 1.0, 0.0,
+        panel.addc(StepSelection.SHA_ONE.getLabel(), 0, 11, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
