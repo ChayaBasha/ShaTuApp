@@ -2,14 +2,15 @@
 ## Overview
 Sha256 Tutoring Application Developed By Students for Students at Regis University. First version began Capstone Fall 2023.
 
-## To Do (last updated Oct 11, 2023)
+## To Do (last updated Oct 25, 2023)
 - Encode As ASCII
     - Check action should possibly show the ASCII of the input on the spot where Test is instead of in the console where the user can't see it.
     - Maybe save as a variable the result to populate the next step
+    - Version 1.0 updated 10/25
 - Add '1' Bit
-    - Needs to be implemented
+    - Version 1.0 updated 10/25
 - Pad with '0's 
-    - needs to be implemented
+    - Version 1.0 updated 10/25
 - Add Msg Length
     - Needs to be implemented 
 - Pepare Schedule
@@ -24,28 +25,28 @@ Sha256 Tutoring Application Developed By Students for Students at Regis Universi
     - If its wrong let's say its wrong without giving the answer and prompt user to ask for a hint if they want it. In this allow a hint click option for a pop up hint (just have pop up say hint for now)
 - Shift Right
     - add error for if nothing entered in the box
-    - serparate correct from incorrect and offer a hint
+    - serparate correct from incorrect and offer a hint (Added 10/25)
     - implement keyListener for pressing enter
 - Exclusive Or
     - add error for if nothing entered in the box
-    - serparate correct from incorrect and offer a hint
+    - serparate correct from incorrect and offer a hint (Added 10/25)
     - implement keyListener for pressing enter
 - Add two n bit
     - add error for if nothing entered in the box
-    - serparate correct from incorrect and offer a hint
+    - serparate correct from incorrect and offer a hint (Added 10/25)
     - implement keyListener for pressing enter
 - Ch function
     - needs to be implemented
     - add exra details as specified for the other operations
 - Maj Function
     - add error for if nothing entered in the box
-    - serparate correct from incorrect and offer a hint
+    - serparate correct from incorrect and offer a hint (Added 10/25)
     - implement keyListener for pressing enter
 - SHA Sum 0 Value 
     - needs t be implemented
 - SHA SUM 1 Value
      - add error for if nothing entered in the box
-    - serparate correct from incorrect and offer a hint
+    - serparate correct from incorrect and offer a hint (Added 10/25)
     - implement keyListener for pressing enter
 
 - Whole Flow
