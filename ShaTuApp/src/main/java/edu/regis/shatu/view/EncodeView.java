@@ -109,7 +109,7 @@ public class EncodeView extends GPanel implements ActionListener, KeyListener, S
          
            
            String digest = alg.sha256("Regis Computer Science Rocks!");
-           System.out.println("Enter Digest: " + digest);
+           System.out.println("Enter gitDigest: " + digest);
        }
     }
     
