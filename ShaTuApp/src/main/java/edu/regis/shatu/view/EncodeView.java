@@ -21,6 +21,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -29,6 +30,7 @@ import javax.swing.JTextField;
  * @author rickb
  */
 public class EncodeView extends GPanel implements ActionListener, KeyListener, SHA_256Listener {
+        
     /**
      * The ASCII character the student is being asked to convert
      */
@@ -56,27 +58,41 @@ public class EncodeView extends GPanel implements ActionListener, KeyListener, S
         for (int i = 0; i < bytes.length; i++)
             System.out.println("Byte " + i + ": " + bytes[i]);
     }
+    
+    public static String convertStringToBinary(String input) {
+
+        StringBuilder result = new StringBuilder();
+        char[] chars = input.toCharArray();
+        for (char aChar : chars) {
+            result.append(
+                    String.format("%8s", Integer.toBinaryString(aChar))   
+                            .replaceAll(" ", "0")
+            );
+            result.append(' ');
+        }
+        return result.toString();
+
+    }
    
     
     @Override
     public void actionPerformed(ActionEvent event) {
        if (event.getSource() == verifyBut) {
-           String userInput = verifyBut.getText();
+           String userInput = charInput.getText();
            
-           // ToDo: this is simply a test of the SHA-256 algorithm
-           SHA_256 alg = GuiController.instance().getSha256Alg();
-           System.out.println("Alg: " + alg);
-           alg.addListener(this);
-         
+           String result = convertStringToBinary(userInput);
            
-           String digest = alg.sha256("Regis Computer Science Rocks!");
-           System.out.println("Mouse Digest: " + digest);
+           JOptionPane.showMessageDialog(this, result);
+           
        }
     }
+    
+    
     @Override
     public void keyTyped(KeyEvent event){
        if (event.getSource()== charInput){
           String userInput = charInput.getText();
+
        }
     }
     
@@ -151,5 +167,6 @@ public class EncodeView extends GPanel implements ActionListener, KeyListener, S
         addc(new JLabel("Test"), 0, 3, 2, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
+        
     }
 }
