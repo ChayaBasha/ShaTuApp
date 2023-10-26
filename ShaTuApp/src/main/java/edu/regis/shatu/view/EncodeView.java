@@ -17,11 +17,8 @@ import edu.regis.shatu.svc.SHA_256Listener;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
@@ -29,8 +26,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener, KeyListener, SHA_256Listener {
-        
+public class EncodeView extends GPanel implements ActionListener, SHA_256Listener {
     /**
      * The ASCII character the student is being asked to convert
      */
@@ -59,65 +55,20 @@ public class EncodeView extends GPanel implements ActionListener, KeyListener, S
             System.out.println("Byte " + i + ": " + bytes[i]);
     }
     
-    public static String convertStringToBinary(String input) {
-
-        StringBuilder result = new StringBuilder();
-        char[] chars = input.toCharArray();
-        for (char aChar : chars) {
-            result.append(
-                    String.format("%8s", Integer.toBinaryString(aChar))   
-                            .replaceAll(" ", "0")
-            );
-            result.append(' ');
-        }
-        return result.toString();
-
-    }
-   
-    
     @Override
     public void actionPerformed(ActionEvent event) {
        if (event.getSource() == verifyBut) {
-           String userInput = charInput.getText();
+           String userInput = verifyBut.getText();
            
-           String result = convertStringToBinary(userInput);
-           
-           JOptionPane.showMessageDialog(this, result);
-           
-       }
-    }
-    
-    
-    @Override
-    public void keyTyped(KeyEvent event){
-       if (event.getSource()== charInput){
-          String userInput = charInput.getText();
-
-       }
-    }
-    
-    @Override 
-    public void keyPressed(KeyEvent event){
-       if(event.getSource()== charInput && event.getKeyCode()== KeyEvent.VK_ENTER) {
-         String userInput = charInput.getText(); 
-          
-          
            // ToDo: this is simply a test of the SHA-256 algorithm
            SHA_256 alg = GuiController.instance().getSha256Alg();
            System.out.println("Alg: " + alg);
            alg.addListener(this);
-         
            
            String digest = alg.sha256("Regis Computer Science Rocks!");
-           System.out.println("Enter gitDigest: " + digest);
+           System.out.println("Digest: " + digest);
        }
     }
-    
-    @Override
-    public void keyReleased(KeyEvent event) {
-       
-    }
-    
  
     /**
      * Create the child GUI components appearing in this frame.
@@ -125,13 +76,11 @@ public class EncodeView extends GPanel implements ActionListener, KeyListener, S
     private void initializeComponents() {
         exampleCharacter = new JLabel("");
         
-        charInput = new JTextField(20);
-        charInput.addKeyListener(this);
+        charInput = new JTextField(1);
         
         verifyBut = new JButton("Check");
         verifyBut.setToolTipText("Click to verify input");
         verifyBut.addActionListener(this);
-        
     }
     
     /**
@@ -167,6 +116,5 @@ public class EncodeView extends GPanel implements ActionListener, KeyListener, S
         addc(new JLabel("Test"), 0, 3, 2, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
-        
     }
 }

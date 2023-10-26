@@ -41,9 +41,9 @@ public class StepView extends JPanel {
     
     private PadView padView;
     
-    private InitVarView initVarView;
-
     private RotateView rotateView;
+    
+    private InitVarView initVarView;
 
     private ShiftRightView shiftRightView;
     
@@ -54,6 +54,8 @@ public class StepView extends JPanel {
     private MajFunction majFunction;
     
     private ShaOne shaOne;
+    
+    private ChoiceFunctionView choiceFunctionView;
     
     /**
      * Initialize and layout the child components (cards) displayed in this view.
@@ -100,7 +102,10 @@ public class StepView extends JPanel {
         shaOne = new ShaOne();
         add1View = new Add1View();
         padView = new PadView();
+        rotateView = new RotateView();
         initVarView = new InitVarView();
+        exclusiveOrView = new ExclusiveOrView();
+        choiceFunctionView = new ChoiceFunctionView();
     }
     
     /**
@@ -116,9 +121,11 @@ public class StepView extends JPanel {
         add(addTwoBitView, StepSelection.ADD_TWO_BIT.toString());
         add(majFunction, StepSelection.MAJ_FUNCTION.toString());
         add(shaOne, StepSelection.SHA_ONE.toString());
-
         add(add1View, StepSelection.ADD1.toString());
         add(padView, StepSelection.PAD.toString());
+        add(rotateView, StepSelection.ROTATE.toString());
         add(initVarView, StepSelection.INIT_VARS.toString());
+        add(exclusiveOrView, StepSelection.XOR.toString());
+        add(choiceFunctionView, StepSelection.CHOICE_FUNCTION.toString());
     }
 }

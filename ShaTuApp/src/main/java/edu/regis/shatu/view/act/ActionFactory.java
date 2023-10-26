@@ -14,10 +14,18 @@ package edu.regis.shatu.view.act;
 
 /**
  * Factory for creating the GUI actions used in the ShaTu user interface.
+ * 
  * @author rickb
  */
 public class ActionFactory {
-    public static void createActions() { // frame, controller
-        new SaveSessionAction(); // fame controller
+    /**
+     * Create each of the Java GUI actions by referencing their singleton.
+     */
+    public static void createActions() {
+        CreateAcctAction.instance();
+        NewUserAction.instance();
+        SaveSessionAction.instance();
+        SignInAction.instance();
+        
     }
 }

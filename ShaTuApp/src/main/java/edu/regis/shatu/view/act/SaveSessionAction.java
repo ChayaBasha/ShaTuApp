@@ -13,6 +13,7 @@
 package edu.regis.shatu.view.act;
 
 import edu.regis.shatu.util.ImgFactory;
+import edu.regis.shatu.view.GuiController;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
@@ -23,6 +24,15 @@ import javax.swing.KeyStroke;
  * @author rickb
  */
 public class SaveSessionAction extends ShaTuGuiAction {
+    
+    /**
+     * Create the singleton for this action, which occurs when this class
+     * is loaded by the Java class loaded, as a result of the class being 
+     * referenced by executing SaveSession.instance()
+     */
+    static {
+        SINGLETON = new SaveSessionAction();
+    }
     /**
      * The singleton for this action.
      */
@@ -40,15 +50,13 @@ public class SaveSessionAction extends ShaTuGuiAction {
     /**
      * Initialize this action.
      */
-    public SaveSessionAction() {
+    private SaveSessionAction() {
         super("Save");
         
         putValue(SMALL_ICON, ImgFactory.createIcon("Save16.gif", "Save Tutoring Session"));
         putValue(SHORT_DESCRIPTION, "Save the current tutoring session");
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke('S', KeyEvent.CTRL_DOWN_MASK));
-        
-        SINGLETON = this;
     }
     
     /**
@@ -59,5 +67,6 @@ public class SaveSessionAction extends ShaTuGuiAction {
     public void actionPerformed(ActionEvent evt) {
         // ToDo: what happens on a save
         System.out.println("Save not implemented");
+       // GuiController.instance().getStepView().selectPanel("RotateView");
     }
 }

@@ -36,7 +36,6 @@ public class MajFunction extends GPanel implements ActionListener {
     private JTextField answerField;
     private JLabel answerLabel;
     private JButton checkButton; // Add the check button
-    private JButton hintButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -57,11 +56,8 @@ public class MajFunction extends GPanel implements ActionListener {
             if (userAnswer.equals(correctAnswer)) {
                 JOptionPane.showMessageDialog(this, "Correct");
             } else {
-                JOptionPane.showMessageDialog(this, "Incorrect.");
+                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
             }
-        }
-        else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
         }
     }
 
@@ -76,9 +72,6 @@ public class MajFunction extends GPanel implements ActionListener {
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
-        
-        hintButton = new JButton("Hint");
-        hintButton.addActionListener(this);
     }
 
     /**
@@ -131,10 +124,6 @@ public class MajFunction extends GPanel implements ActionListener {
                 5, 5, 5, 5);
 
         addc(checkButton, 0, 5, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-        
-        addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
     }

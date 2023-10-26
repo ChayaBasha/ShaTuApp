@@ -27,6 +27,44 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class SHA_256 {
+     /**
+     * The singleton instance of this frame.
+     */
+    private final static SHA_256 SINGLETON;
+    
+    // Invoked when this class is loaded
+    static {     
+        SINGLETON = new SHA_256();
+    }
+    
+    /**
+     * Return the singleton instance of this algorithm.
+     * 
+     * @return the SHA_256 singleton
+     */
+    public static SHA_256 instance() {
+        return SINGLETON;
+    }
+    
+    /**
+     * If this is true, our listeners are notified when using this SHA-256
+     * algorithm, otherwise they are not notified.
+     * 
+     * A false setting allows one to encrypt a string using SHA-256 outside of
+     * using the ShaTu tutor, so to speak. For example, if we want to simply
+     * encrypt a student user's password, which doesn't require any interactions
+     * with the actual ShatTu tutor since no tutoring is taking place.
+     */
+    private boolean isSendCallbacks = true;
+    
+    /**
+     * The observers listening for messages from the SHA-256 algorithm.
+     */
+    private ArrayList<SHA_256Listener> listeners;
+    
+    // The above fields are part of the ShaTu tutor, 
+    // the following fields are part of the SHA-256 algorithm.
+    
     /**
      * The constants (in hex) defined in the SHA-256 specification.
      */
@@ -57,16 +95,32 @@ public class SHA_256 {
     private final int[] h = new int[8];
     private final int[] temp = new int[8];
  
-    /**
-     * The observers listening for messages from the SHA-256 algorithm.
-     */
-    private ArrayList<SHA_256Listener> listeners;
+
     
     /**
      * Initialize this algorithm with an empty set of SHA-256 listeners.
      */
-    public SHA_256() {
+    private SHA_256() {
         listeners = new ArrayList<>();
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public boolean isSendCallbacks() {
+        return isSendCallbacks;
+    }
+
+    /**
+     * Assign the value of the isIgnoreCallbacks field (see the documentation
+     * for this field).
+     * 
+     * @param isSendCallbacks true, sending updates to our listeners, false
+     *                        stop notifying our listeners
+     */
+    public void setIsIgnoreCallbacks(boolean isSendCallbacks) {
+        this.isSendCallbacks = isSendCallbacks;
     }
     
     /**
@@ -99,8 +153,10 @@ public class SHA_256 {
 
         byte[] asciiEncodeMsg = msg.getBytes(charset);
         
-        for (SHA_256Listener listener : listeners)
-            listener.notifyAsciiEncoding(asciiEncodeMsg);   
+        if (isSendCallbacks) {
+            for (SHA_256Listener listener : listeners)
+                listener.notifyAsciiEncoding(asciiEncodeMsg);
+        }
 
         byte[] digest = hash(asciiEncodeMsg);
 

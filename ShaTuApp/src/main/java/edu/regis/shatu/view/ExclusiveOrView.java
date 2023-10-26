@@ -28,15 +28,13 @@ import javax.swing.JTextField;
 public class ExclusiveOrView extends GPanel implements ActionListener {
    private final String BINARY_NUMBER_ONE = "0001";
    private final String BINARY_NUMBER_TWO = "1111";
-
-
    private JLabel binaryNumberOneLabel;
    private JLabel binaryNumberTwoLabel;
    private JLabel instructionLabel;
    private JTextField answerField;
    private JLabel answerLabel;
    private JButton checkButton;
-
+   
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -44,7 +42,6 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
         initializeComponents();
         initializeLayout();
     }
-
 
 
     /**
@@ -62,9 +59,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
-
     }
-
     /**
      * Layout the child components in this view.
      */
@@ -98,9 +93,11 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
+        
         checkButton.addActionListener(this); // Add an action listener for the check button
 
     }
+    
 
     public static String performXOR(String binary1, String binary2) {
         // Ensure that both input strings have the same length
@@ -135,6 +132,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
        String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
+      
 
        if(correctAnswer.equals(answerField.getText())) {
            JOptionPane.showMessageDialog(this, "Correct!");
@@ -143,5 +141,5 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
                    + "correct answer: " + correctAnswer);
        }
     }
-
+    
 }

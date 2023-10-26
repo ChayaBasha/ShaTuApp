@@ -22,13 +22,20 @@ public enum StepSelection {
     /**
      * Encode the input message as ASCII bytes step.
      */
-    ENCODE(new HighlightLabel("Encode as ASCII")), 
+    ENCODE(new HighlightLabel("1.Encode as ASCII")), 
     
     ADD1(new HighlightLabel("Add '1' bit")), 
     
     PAD(new HighlightLabel("Pad with '0's")), 
     
     LENGTH(new HighlightLabel("Add Msg Length")), 
+    
+    ROTATE(new HighlightLabel("Rotate n bits")),
+    
+    XOR (new HighlightLabel("Exclusive OR (XOR)")),
+    
+    CHOICE_FUNCTION(new HighlightLabel("Value of the Choice (Ch) function")),
+
     
     PREPARE(new HighlightLabel("Prepare Schedule")),
    
@@ -39,12 +46,8 @@ public enum StepSelection {
     ROTATE_BITS(new HighlightLabel("Rotate n bits")),
 
     SHIFT_RIGHT(new HighlightLabel("Shift right")),
-    
-    XOR (new HighlightLabel("Exclusive OR (XOR)")),
 
     ADD_TWO_BIT(new HighlightLabel("Add two 𝑛 bit")),
-    
-    CHOICE_FUNCTION(new HighlightLabel("Ch function value")),
     
     MAJ_FUNCTION(new HighlightLabel("Maj function value")),
     
@@ -65,3 +68,4 @@ public enum StepSelection {
         return label;
     }
 }
+

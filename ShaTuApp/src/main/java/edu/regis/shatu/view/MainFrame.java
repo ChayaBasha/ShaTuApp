@@ -84,7 +84,7 @@ public class MainFrame extends JFrame implements WindowListener {
  
         addWindowListener(this);
         
-        setVisible(true);
+        setVisible(false);
         
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // see windowClosing()
     }
@@ -111,6 +111,14 @@ public class MainFrame extends JFrame implements WindowListener {
         
         this.model = model;
     }
+    
+   // public int getSessionId() {
+     //   return model.getId();
+   // }
+
+   // public void setSessionId(int sessionId) {
+     //   model.setId(sessionId);
+    //}
 
     @Override
     public void windowOpened(WindowEvent e) {
