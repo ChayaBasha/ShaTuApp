@@ -79,9 +79,9 @@ public class GuiController {
     }
     
     /**
-     * Initializes the SHA-256 algorithm.
+     * If not already initialed, initialize the SHA-256 algorithm.
      */
     private GuiController() {
-        sha256Alg = new SHA_256();
+        sha256Alg = SHA_256.instance();
     }
 }

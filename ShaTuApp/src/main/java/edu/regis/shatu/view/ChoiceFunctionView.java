@@ -25,34 +25,42 @@ import javax.swing.JTextField;
  *
  * @author rickb
  */
-public class ExclusiveOrView extends GPanel implements ActionListener {
-   private final String BINARY_NUMBER_ONE = "0001";
-   private final String BINARY_NUMBER_TWO = "1111";
-   private JLabel binaryNumberOneLabel;
-   private JLabel binaryNumberTwoLabel;
-   private JLabel instructionLabel;
-   private JTextField answerField;
-   private JLabel answerLabel;
-   private JButton checkButton;
-   
+public class ChoiceFunctionView extends GPanel implements ActionListener {
+    private final String stringX = "10100";
+    private final String stringY = "11100";
+    private final String stringZ = "10111";
+    
+    private JLabel instructionLabel;
+    private JLabel stringXLabel;
+    private JLabel stringYLabel;
+    private JLabel stringZLabel;
+    private JTextField answerField;
+    private JLabel answerLabel;
+    private JButton checkButton;
+    
+   /**
+     * The ASCII character the student is being asked to convert
+     */
+    
     /**
      * Initialize this view including creating and laying out its child components.
      */
-    public ExclusiveOrView() {
+    public ChoiceFunctionView() {
         initializeComponents();
         initializeLayout();
     }
 
+   
 
     /**
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        instructionLabel = new JLabel("Perform Exlusive OR (XOR) on given"
-                + " binary numbers");
-
-        binaryNumberOneLabel = new JLabel(BINARY_NUMBER_ONE);
-        binaryNumberTwoLabel = new JLabel(BINARY_NUMBER_TWO);
+        instructionLabel = new JLabel("Ch(𝑥,𝑦,𝑧)=(𝑥∧𝑦)⊕(¬𝑥∧𝑧)");
+        
+        stringXLabel = new JLabel("x: " + stringX);
+        stringYLabel = new JLabel("x: " + stringY);
+        stringZLabel = new JLabel("x: " + stringZ);
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
@@ -60,11 +68,12 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
     }
+    
     /**
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-        GridBagConstraints centerConstraints = new GridBagConstraints();
+                GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
 
@@ -74,66 +83,54 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
                 5, 5, 5, 5);
 
         // Add binaryNumberOneLabel centered below instructionLabel
-        addc(binaryNumberOneLabel, 0, 1, 1, 1, 0.0, 0.0,
+        addc(stringXLabel, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
         // Add binaryNumberTwoLabel centered below binaryNumberOneLabel
-        addc(binaryNumberTwoLabel, 0, 2, 1, 1, 0.0, 0.0,
+        addc(stringYLabel, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(stringZLabel, 0, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
         // Add answerField centered below binaryNumberTwoLabel
-        addc(answerField, 0, 3, 1, 1, 1.0, 0.0,
+        addc(answerField, 0, 4, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
         // Add checkButton centered below answerField
-        addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
+        addc(checkButton, 0, 5, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         
         checkButton.addActionListener(this); // Add an action listener for the check button
-
     }
     
+    public static String choiceFunction(String x, String y, String z) {
+        // Convert the binary strings to integer values
+        int intX = Integer.parseInt(x, 2);
+        int intY = Integer.parseInt(y, 2);
+        int intZ = Integer.parseInt(z, 2);
 
-    public static String performXOR(String binary1, String binary2) {
-        // Ensure that both input strings have the same length
-        int maxLength = Math.max(binary1.length(), binary2.length());
-        binary1 = padWithZeroes(binary1, maxLength);
-        binary2 = padWithZeroes(binary2, maxLength);
+       
+        int xy = intX & intY;
 
-        StringBuilder result = new StringBuilder();
+        int notX = ~intX & intZ;
 
-        for (int i = 0; i < maxLength; i++) {
-            char char1 = binary1.charAt(i);
-            char char2 = binary2.charAt(i);
+        int result = xy ^ notX;
 
-            if (char1 != char2) {
-                result.append('1');
-            } else {
-                result.append('0');
-            }
-        }
+        String binaryResult = Integer.toBinaryString(result);
 
-        return result.toString();
-    }
-
-    private static String padWithZeroes(String binary, int length) {
-        StringBuilder paddedBinary = new StringBuilder(binary);
-        while (paddedBinary.length() < length) {
-            paddedBinary.insert(0, '0');
-        }
-        return paddedBinary.toString();
-    }
+        return binaryResult;
+    } 
 
     @Override
-    public void actionPerformed(ActionEvent event) {
-       String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
-      
-
+    public void actionPerformed(ActionEvent e) {
+        String correctAnswer = choiceFunction(stringX, stringY, stringZ);
+       
        if(correctAnswer.equals(answerField.getText())) {
            JOptionPane.showMessageDialog(this, "Correct!");
        } else {
@@ -141,5 +138,4 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
                    + "correct answer: " + correctAnswer);
        }
     }
-    
 }
