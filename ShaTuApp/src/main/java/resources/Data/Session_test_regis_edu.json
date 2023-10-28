@@ -1,15 +1,15 @@
 {
-  "securityToken": "67306fbf56a1886f6f4e005e304c642b4356311d12f3622d3ae2891217036023",
+  "securityToken": "d2f800f38a85fcabb33838f239d1f790258582f157a864ccf5f2971129f4b130",
   "account": {
-    "userId": "rblument@regis.edu",
-    "password": "819f37c7c90cccd1f7c8252dc877bcbe5eb7bc8099c7fa23f68efbe5f31dcfbc",
-    "firstName": "Rick",
-    "lastName": "Blumenthal"
+    "userId": "test@regis.edu",
+    "password": "36f9ddba5d5523949b946df7e94dc15652857b57612d6e39ee1aec1b3b091314",
+    "firstName": "Testy",
+    "lastName": "McTest"
   },
   "isActive": true,
   "task": {
     "taskType": "PROBLEM",
-    "sequenceId": 1,
+    "sequenceId": 0,
     "currentStepIndex": 0,
     "steps": [
       {
