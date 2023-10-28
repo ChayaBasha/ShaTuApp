@@ -18,7 +18,7 @@ package edu.regis.shatu.model.aol;
  * 
  * @author rickb
  */
-public class RotateStep extends Step {
+public class RotateStep {
     /**
      * The direction to rotate
      */
@@ -36,13 +36,8 @@ public class RotateStep extends Step {
      */
     private int data;
     
-    public RotateStep(int id, int sequenceId) {
-        super(id, sequenceId);
-    }
-
-    @Override
-    public String getType() {
-        return "Rotate";
+    public RotateStep() {
+    
     }
 
     public Direction getDirection() {

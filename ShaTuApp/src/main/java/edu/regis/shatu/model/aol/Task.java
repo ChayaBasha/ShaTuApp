@@ -12,6 +12,7 @@
  */
 package edu.regis.shatu.model.aol;
 
+import edu.regis.shatu.model.Model;
 import edu.regis.shatu.model.TitledModel;
 import java.util.ArrayList;
 
@@ -41,7 +42,7 @@ public class Task extends TitledModel {
     /**
      * The sequence in which this task is performed in its problem.
      */
-    private final int sequenceId;
+    private int sequenceId;
     
     /**
      * The current step (in index into steps).
@@ -51,7 +52,7 @@ public class Task extends TitledModel {
     /**
      * The steps that must be completed in this task.
      */
-    private final ArrayList<Step> steps;
+    private ArrayList<Step> steps;
     
     /**
      * Convenience reference to the Problem to which this task belongs
@@ -62,19 +63,20 @@ public class Task extends TitledModel {
      * ToDo: the tasks already completed in this task???
      */
     private TaskState state;
- 
+  public Task() {
+        this(Model.DEFAULT_ID);
+  }
+  
     /**
      * Instantiate this task with the given id.
      * 
      * @param sequenceId
      * @param steps
      */
-    public Task(int sequenceId, ArrayList<Step> steps) {
-        super(sequenceId);
+    public Task(int Id) {
+        super(Id);
         
-        this.sequenceId = sequenceId;
-        
-        this.steps = steps;
+        this.steps = new ArrayList<>();
         
         state = new TaskState();
     }
@@ -98,7 +100,9 @@ public class Task extends TitledModel {
     public ArrayList<Step> getSteps() {
         return steps;
     }
-    
+    public void setSteps(ArrayList<Step> steps) {
+       this.steps = steps;
+    }
     public Step getStep(int index) {
         return steps.get(index);
     }

@@ -48,11 +48,11 @@ public class ShaTuApp {
      * step type in order to create the correct subclass instance, this type
      * adapter factory provides this information (see its use in SignInAction).
      */
-    private static final RuntimeTypeAdapterFactory<Step> STEP_ADAPTER_FACTORY =
-            RuntimeTypeAdapterFactory.of(Step.class, "type")
-                .registerSubtype(EncodeAsciiStep.class, "EncodeAsciiStep")
-                .registerSubtype(CompleteTaskStep.class, "CompleteTaskStep")
-                .registerSubtype(CompleteStepStep.class, "CompleteStepStep");
+//    private static final RuntimeTypeAdapterFactory<Step> STEP_ADAPTER_FACTORY =
+//            RuntimeTypeAdapterFactory.of(Step.class, "type")
+//                .registerSubtype(EncodeAsciiStep.class, "EncodeAsciiStep")
+//                .registerSubtype(CompleteTaskStep.class, "CompleteTaskStep")
+//                .registerSubtype(CompleteStepStep.class, "CompleteStepStep");
     
     /**
      * Convenience providing access to the Step Type Adapter Factory (see
@@ -60,9 +60,9 @@ public class ShaTuApp {
      * 
      * @return 
      */
-    public static RuntimeTypeAdapterFactory<Step> typeAdapterFactory() {
-        return STEP_ADAPTER_FACTORY;
-    }
+//    public static RuntimeTypeAdapterFactory<Step> typeAdapterFactory() {
+//        return STEP_ADAPTER_FACTORY;
+//    }
     
     /**
      * Main entry point for the ShaTut application, which will display the UI.

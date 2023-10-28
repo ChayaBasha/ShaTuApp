@@ -13,6 +13,7 @@
 package edu.regis.shatu.svc;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
@@ -20,7 +21,9 @@ import edu.regis.shatu.model.Account;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.model.aol.CompleteStepStep;
+import edu.regis.shatu.model.aol.Hint;
 import edu.regis.shatu.model.aol.Step;
+import edu.regis.shatu.model.aol.StepSubType;
 import edu.regis.shatu.model.aol.Task;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -61,7 +64,9 @@ public class ShaTuTutor implements TutorSvc {
      */
     private int courseId = 1;
 
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder()
+              .setPrettyPrinting()
+              .create();
 
     /**
      * Initialize the tutor singleton (a NoOp).
@@ -89,7 +94,7 @@ public class ShaTuTutor implements TutorSvc {
             m[i - 1] = c[i];
         
         String methodName = new String(m);
-        
+       
         try {
             Method method = getClass().getMethod(methodName, String.class);
             
@@ -236,15 +241,24 @@ public class ShaTuTutor implements TutorSvc {
         
         //ToDo: hardcoded instead read from DB
         ArrayList<Step> steps = new ArrayList<>();
-        CompleteStepStep step = new CompleteStepStep(1,1);
+        Step step = new Step(0,0,StepSubType.COMPLETE_STEP);
         step.setDescription("Encode the string in Ascii");
         
+        Hint hint= new Hint();
+        hint.setSequenceId(1);
+        hint.setText("Encode the first character of the String");
+        step.addHint(hint);
+        
+        hint = new Hint();
+        hint.setSequenceId(2);
+        hint.setText("Use the ASCII lookup table to get the ASCII for example'A'-> 65");
+        step.addHint(hint);
         
         steps.add(step);
         
-        Task task = new Task(1, steps);
+        Task task = new Task(1);
         task.setDescription("Encode the String as Ascii");
-        
+        task.setSteps(steps);
         
         session.setTask(task);
 

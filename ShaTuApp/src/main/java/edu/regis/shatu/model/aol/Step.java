@@ -19,138 +19,143 @@ import java.util.ArrayList;
  * A user interface gesture/event performed by a student, as part of a Task.
  *
  * Steps in tasks are based on tutoring behaviors in (VanLehn, 2006).
- * 
- * As a Step appears within actions/expectations created by an agent,
- * all fields are final so that other malicious agents cannot change them.
- * 
+ *
+ * As a Step appears within actions/expectations created by an agent, all fields
+ * are final so that other malicious agents cannot change them.
+ *
  * @author rickb
  */
-public abstract class Step extends TitledModel { 
-    /**
-     * Which step this is in the parent task.
-     */
-    protected int sequenceId = 1;
-    
-    /**
-     * The hint currently available to the student (index into hints).
-     */
-    protected int currentHintIndex = 0;
-    
-    /**
-     * The hints, if any, associated with this step (in order to be given).
-     */
-    protected final ArrayList<Hint> hints;
-    
-    /**
-     * The amount of time the student can take on this step before the GUI
-     * prompts the student concerning their inaction.
-     */
-    protected final Timeout timeout;
-    
-    /**
-     * If true, the GUI immediately notifies the tutor when the student performs
-     * this step.
-     */
-    protected boolean notifyTutor;
-    
-    /**
-     * True, if the student has completed this step, otherwise false.
-     * 
-     * Note, if this is true and notifyTutor is true, the tutor has been
-     * notified that the student completed this step. Otherwise, the tutor
-     * will be notified when the student completes the parent task associated
-     * with this step.
-     */
-    protected boolean isCompleted;
-    
-    /**
-     * The subclass type of this step instance, which is used both in the GUI to
-     * avoid switching on instance of and by GSon for deserializing subclasses
-     * of step.
-     * 
-     * See the note associated with EthicalDilemmaCourt.STEP_ADAPTER_FACTORY.
-     */
-    protected String type = "";
-    
-    /**
-     * Return the type of this step.
-     * 
-     * The GSon STEP_ADAPTER_FACTORY requires a type to provide subclassing
-     * of steps, but I don't want to pass the type in the constructor. However,
-     * we still need a type, so we force the subclasses to implement it.
-     * 
-     * @return a string that is the GSon type of the subclass instance
-     */
-    public abstract String getType();
+public class Step extends TitledModel {
 
-    /**
-     * Instantiate this step with the given information.
-     * 
-     * @param id
-     * @param sequenceId
-     */
-    public Step(int id,int sequenceId) {
-        super(id);
-        
-        this.sequenceId = sequenceId;
+   private StepSubType subType;
+   /**
+    * Which step this is in the parent task.
+    */
+   protected int sequenceId = 1;
 
-        timeout = null;
+   /**
+    * The hint currently available to the student (index into hints).
+    */
+   protected int currentHintIndex = 0;
 
-        hints = new ArrayList<>();
-           
-        isCompleted = false;
-    }
+   /**
+    * The hints, if any, associated with this step (in order to be given).
+    */
+   protected final ArrayList<Hint> hints;
 
-    public void setType(String type) {
-        System.out.println("*************** WTF: " + type);
-        this.type = type;
-    }
+   /**
+    * The amount of time the student can take on this step before the GUI
+    * prompts the student concerning their inaction.
+    */
+   protected final Timeout timeout;
 
-    public ArrayList<Hint> getHints() {
-        return hints;
-    }
-    
-    public Hint findHintById(int id) {
-	for (int i = 0; i < hints.size(); i++)
-	    if (hints.get(i).getId() == id)
-		return hints.get(i);
+   /**
+    * If true, the GUI immediately notifies the tutor when the student performs
+    * this step.
+    */
+   protected boolean notifyTutor;
 
-	return null;
-    }
+   /**
+    * True, if the student has completed this step, otherwise false.
+    *
+    * Note, if this is true and notifyTutor is true, the tutor has been notified
+    * that the student completed this step. Otherwise, the tutor will be
+    * notified when the student completes the parent task associated with this
+    * step.
+    */
+   protected boolean isCompleted;
 
-    public int getSequenceId() {
-        return sequenceId;
-    }
+   private String data;
 
-    public Timeout getTimeout() {
-        return timeout;
-    }
-    
-    public Hint getCurrentHint() {
-        return hints.get(currentHintIndex);
-    }
+   /**
+    * Instantiate this step with the given information.
+    *
+    * @param id
+    * @param sequenceId
+    * @param subType
+    */
+   public Step(int id, int sequenceId, StepSubType subType) {
+      super(id);
 
-    public int getCurrentHintIndex() {
-        return currentHintIndex;
-    }
+      this.sequenceId = sequenceId;
 
-    public void setCurrentHintIndex(int currentHint) {
-        this.currentHintIndex = currentHint;
-    }
+      timeout = null;
 
-    public boolean isNotifyTutor() {
-        return notifyTutor;
-    }
+      hints = new ArrayList<>();
 
-    public void setNotifyTutor(boolean notifyTutor) {
-        this.notifyTutor = notifyTutor;
-    }
+      isCompleted = false;
 
-    public boolean isCompleted() {
-        return isCompleted;
-    }
+      this.subType = subType;
+   }
 
-    public void setIsCompleted(boolean isCompleted) {
-        this.isCompleted = isCompleted;
-    }    
+   public StepSubType getSubType() {
+      return subType;
+   }
+
+   public void setSubType(StepSubType subType) {
+      this.subType = subType;
+   }
+
+   public void addHint(Hint hint) {
+      hints.add(hint);
+   }
+
+   public ArrayList<Hint> getHints() {
+      return hints;
+   }
+
+   public Hint findHintById(int id) {
+      for (int i = 0; i < hints.size(); i++) {
+         if (hints.get(i).getId() == id) {
+            return hints.get(i);
+         }
+      }
+
+      return null;
+   }
+
+   public int getSequenceId() {
+      return sequenceId;
+   }
+
+   public Timeout getTimeout() {
+      return timeout;
+   }
+
+   public Hint getCurrentHint() {
+      return hints.get(currentHintIndex);
+   }
+
+   public int getCurrentHintIndex() {
+      return currentHintIndex;
+   }
+
+   public void setCurrentHintIndex(int currentHint) {
+      this.currentHintIndex = currentHint;
+   }
+
+   public boolean isNotifyTutor() {
+      return notifyTutor;
+   }
+
+   public void setNotifyTutor(boolean notifyTutor) {
+      this.notifyTutor = notifyTutor;
+   }
+
+   public boolean isCompleted() {
+      return isCompleted;
+   }
+
+   public void setIsCompleted(boolean isCompleted) {
+      this.isCompleted = isCompleted;
+   }
+
+   public String getData() {
+      return data;
+   }
+
+   public void setData(String data) {
+      this.data = data;
+   }
+
 }

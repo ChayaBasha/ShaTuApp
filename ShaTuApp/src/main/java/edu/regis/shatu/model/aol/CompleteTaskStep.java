@@ -16,15 +16,7 @@ package edu.regis.shatu.model.aol;
  *
  * @author rickb
  */
-public class CompleteTaskStep extends Step {
-
-    public CompleteTaskStep(int id, int sequenceId) {
-        super(id, sequenceId);
-    }
-
-    @Override
-    public String getType() {
-        return "CompleteTaskStep";
-    }
+public class CompleteTaskStep {
+   
 }
 

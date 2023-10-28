@@ -13,6 +13,7 @@
 package edu.regis.shatu.view.act;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.svc.ClientRequest;
@@ -93,7 +94,9 @@ public class SignInAction extends ShaTuGuiAction {
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+              .setPrettyPrinting()
+              .create();
         
         User user = SplashFrame.instance().getUser();
 

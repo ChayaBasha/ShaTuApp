@@ -16,15 +16,6 @@ package edu.regis.shatu.model.aol;
  *
  * @author rickb
  */
-public class EncodeAsciiStep extends Step {
-
-    public EncodeAsciiStep(int id, int sequenceId) {
-        super(id, sequenceId);
-    }
-
-    @Override
-    public String getType() {
-        return "EncodeAsciiStep";
-    }
+public class EncodeAsciiStep {
     
 }
