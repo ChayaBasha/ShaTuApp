@@ -33,6 +33,7 @@ public class ShiftRightView extends GPanel implements ActionListener {
     private JTextField answerField;
     private JLabel answerLabel;
     private JButton checkButton; // Add the check button
+    private JButton hintButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -53,8 +54,11 @@ public class ShiftRightView extends GPanel implements ActionListener {
             if (userAnswer.equals(correctAnswer)) {
                 JOptionPane.showMessageDialog(this, "Correct");
             } else {
-                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+                JOptionPane.showMessageDialog(this, "Incorrect.");
             }
+        }
+        else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
         }
     }
 
@@ -71,6 +75,9 @@ public class ShiftRightView extends GPanel implements ActionListener {
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this); // Add an action listener for the check button
     }
 
     /**
@@ -98,6 +105,10 @@ public class ShiftRightView extends GPanel implements ActionListener {
                 5, 5, 5, 5);
 
         addc(checkButton, 0, 2, 2, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }

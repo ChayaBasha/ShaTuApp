@@ -118,7 +118,6 @@ public class StepSelectorView extends GPanel {
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
-        
         return panel;
     }
     
