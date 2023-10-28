@@ -1,0 +1,48 @@
+{
+  "securityToken": "91399812c335ca47209079399ca861481d09928eedee7169b7ad8151ff45eb10",
+  "account": {
+    "userId": "jblumenthal@regis.edu",
+    "password": "e50d09587624b4282afbb6ef48707c264d0d4f8df5b468640853f6227534f671",
+    "firstName": "Johanna",
+    "lastName": "Blumenthal"
+  },
+  "isActive": true,
+  "task": {
+    "taskType": "PROBLEM",
+    "sequenceId": 0,
+    "currentStepIndex": 0,
+    "steps": [
+      {
+        "subType": "COMPLETE_STEP",
+        "sequenceId": 0,
+        "currentHintIndex": 0,
+        "hints": [
+          {
+            "text": "Encode the first Character of the String",
+            "sequenceId": 1,
+            "id": -1
+          },
+          {
+            "text": "Use the ASCII lookup table For example \u0027A\u0027 -\u003e 65",
+            "sequenceId": 2,
+            "id": -1
+          }
+        ],
+        "notifyTutor": false,
+        "isCompleted": false,
+        "title": "",
+        "description": "Encode the string in Ascii",
+        "id": 0
+      }
+    ],
+    "state": {
+      "currentTask": 0,
+      "currentStep": 0,
+      "currentHint": 0,
+      "completedSteps": []
+    },
+    "title": "",
+    "description": "Encode the String as Ascii",
+    "id": 1
+  }
+}
