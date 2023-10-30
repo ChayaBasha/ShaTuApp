@@ -115,7 +115,6 @@ public class StepView extends JPanel {
         add(encodeView, StepSelection.ENCODE.toString());
         add(prepareScheduleView, StepSelection.PREPARE.toString());
         add(compressionView, StepSelection.COMPRESS.toString());
-        add(rotateView, StepSelection.ROTATE_BITS.toString());
         add(shiftRightView, StepSelection.SHIFT_RIGHT.toString());
         add(exclusiveOrView, StepSelection.XOR.toString());
         add(addTwoBitView, StepSelection.ADD_TWO_BIT.toString());
@@ -123,7 +122,7 @@ public class StepView extends JPanel {
         add(shaOne, StepSelection.SHA_ONE.toString());
         add(add1View, StepSelection.ADD1.toString());
         add(padView, StepSelection.PAD.toString());
-        add(rotateView, StepSelection.ROTATE.toString());
+        add(rotateView, StepSelection.ROTATE_BITS.toString());
         add(initVarView, StepSelection.INIT_VARS.toString());
         add(exclusiveOrView, StepSelection.XOR.toString());
         add(choiceFunctionView, StepSelection.CHOICE_FUNCTION.toString());
