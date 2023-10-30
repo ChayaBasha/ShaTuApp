@@ -30,8 +30,6 @@ public enum StepSelection {
     
     LENGTH(new HighlightLabel("Add Msg Length")), 
     
-    ROTATE(new HighlightLabel("Rotate n bits")),
-    
     XOR (new HighlightLabel("Exclusive OR (XOR)")),
     
     CHOICE_FUNCTION(new HighlightLabel("Value of the Choice (Ch) function")),
