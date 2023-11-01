@@ -2,17 +2,20 @@
 ## Overview
 Sha256 Tutoring Application Developed By Students for Students at Regis University. First version began Capstone Fall 2023.
 
-## To Do (last updated Oct 25, 2023)
+## To Do (last updated November 1, 2023)
 - Encode As ASCII
     - Check action should possibly show the ASCII of the input on the spot where Test is instead of in the console where the user can't see it.
     - Maybe save as a variable the result to populate the next step
-    - Version 1.0 updated 10/25
+    - Popup currently only happens on click action not keystroke enter. 
 - Add '1' Bit
-    - Version 1.0 updated 10/25
+    - Change so that there is entry from previous step
+    -Same key action listener issue
 - Pad with '0's 
-    - Version 1.0 updated 10/25
+    - - Change so that there is entry from previous step
+    -Same key action listener issue
 - Add Msg Length
-    - Needs to be implemented 
+    - Change so that there is entry from previous step
+    - Same key action listener issue
 - Pepare Schedule
     - Just has a verify button, needs to be implemented and clearer what this is supposed to do
 - Initialize Variables
@@ -49,6 +52,11 @@ Sha256 Tutoring Application Developed By Students for Students at Regis Universi
     - serparate correct from incorrect and offer a hint (Added 10/25)
     - implement keyListener for pressing enter
 
+- Sign In 
+    - want to probably .gitignore new users
+    - want a cleaner closing of the port so that the port doens't get blocked (likley implimented with the token expiring and triggering a sign out)
+- ADD SIGN OUT flow 
+
 - Whole Flow
     - WE have an option as to wheter to have the initial inpput on Encode as ASCII flow through the entire steps one by one as an option OR
     - Practice each step independently
@@ -57,3 +65,6 @@ Sha256 Tutoring Application Developed By Students for Students at Regis Universi
 - Whole app
     - should we have an option to make the text bigger? Typical zoom is not working on my 2013 mac. 
     - we should probably have a screen reader/read to me option so it can read aloud
+    - screen should size to device
+
+
