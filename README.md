@@ -27,9 +27,9 @@ Sha256 Tutoring Application Developed By Students for Students at Regis Universi
     - lets implement an error handling that tells the user to enter something before the check can be done (Added 11/2 on local branch Damian2)
     - If its wrong let's say its wrong without giving the answer and prompt user to ask for a hint if they want it. In this allow a hint click option for a pop up hint (just have pop up say hint for now)
 - Shift Right
-    - add error for if nothing entered in the box
+    - add error for if nothing entered in the box (Added 11/2 on local branch Damian2)
     - serparate correct from incorrect and offer a hint (Added 10/25)
-    - implement keyListener for pressing enter
+    - implement keyListener for pressing enter (Added 11/2 on local branch Damian2)
 - Exclusive Or
     - add error for if nothing entered in the box
     - serparate correct from incorrect and offer a hint (Added 10/25)
