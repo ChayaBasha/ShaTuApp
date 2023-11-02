@@ -2,7 +2,7 @@
 ## Overview
 Sha256 Tutoring Application Developed By Students for Students at Regis University. First version began Capstone Fall 2023.
 
-## To Do (last updated November 1, 2023)
+## To Do (last updated November 2, 2023)
 - Encode As ASCII
     - Check action should possibly show the ASCII of the input on the spot where Test is instead of in the console where the user can't see it.
     - Maybe save as a variable the result to populate the next step
