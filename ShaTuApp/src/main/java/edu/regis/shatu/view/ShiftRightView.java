@@ -16,12 +16,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  *
  * @author rickb
  */
-public class ShiftRightView extends GPanel implements ActionListener {
+public class ShiftRightView extends GPanel implements ActionListener, KeyListener {
     /**
      * The ASCII character the student is being asked to convert
      */
@@ -44,17 +46,11 @@ public class ShiftRightView extends GPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        String correctAnswer;
-        if (event.getSource() == checkButton) {
-            correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
-            // Get the text from the answerField when the checkButton is clicked
-            String userAnswer = answerField.getText();
-
-            if (userAnswer.equals(correctAnswer)) {
-                JOptionPane.showMessageDialog(this, "Correct");
-            } else {
-                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
-            }
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an asnwer");
+        }
+        else if (event.getSource() == checkButton) {
+            verifyAnswer();
         }
     }
 
@@ -67,6 +63,7 @@ public class ShiftRightView extends GPanel implements ActionListener {
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
+        answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
@@ -113,5 +110,36 @@ public class ShiftRightView extends GPanel implements ActionListener {
 
         return Integer.toBinaryString(result);
 
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer(); // Call a separate method to handle the answer check
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void verifyAnswer() {
+        String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
+        // Get the text from the answerField when the checkButton is clicked
+        String userAnswer = answerField.getText();
+
+        if (userAnswer.equals(correctAnswer)) {
+            JOptionPane.showMessageDialog(this, "Correct");
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+        }
     }
 }
