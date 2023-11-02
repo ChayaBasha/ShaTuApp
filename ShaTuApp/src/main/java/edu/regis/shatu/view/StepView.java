@@ -53,6 +53,8 @@ public class StepView extends JPanel {
     
     private MajFunction majFunction;
     
+    private ShaZero shaZero;
+    
     private ShaOne shaOne;
     
     private ChoiceFunctionView choiceFunctionView;
@@ -99,6 +101,7 @@ public class StepView extends JPanel {
         exclusiveOrView = new ExclusiveOrView();
         addTwoBitView = new AddTwoBitView();
         majFunction = new MajFunction();
+        shaZero = new ShaZero();
         shaOne = new ShaOne();
         add1View = new Add1View();
         padView = new PadView();
@@ -119,6 +122,7 @@ public class StepView extends JPanel {
         add(exclusiveOrView, StepSelection.XOR.toString());
         add(addTwoBitView, StepSelection.ADD_TWO_BIT.toString());
         add(majFunction, StepSelection.MAJ_FUNCTION.toString());
+        add(shaZero, StepSelection.SHA_ZERO.toString());
         add(shaOne, StepSelection.SHA_ONE.toString());
         add(add1View, StepSelection.ADD1.toString());
         add(padView, StepSelection.PAD.toString());
