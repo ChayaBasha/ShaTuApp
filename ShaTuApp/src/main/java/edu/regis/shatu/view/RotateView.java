@@ -16,16 +16,19 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  *
  * @author rickb
  */
-public class RotateView extends GPanel implements ActionListener {
+public class RotateView extends GPanel implements ActionListener, KeyListener {
    /**
      * The ASCII character the student is being asked to convert
      */
@@ -48,17 +51,20 @@ public class RotateView extends GPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        String correctAnswer;
         if (event.getSource() == checkButton) {
-            correctAnswer = rotateString(EXAMPLE_INPUT,NO_ROTATIONS);
-            // Get the text from the answerField when the checkButton is clicked
-            String userAnswer = answerField.getText();
-            
-            if (userAnswer.equals(correctAnswer)) {
-                JOptionPane.showMessageDialog(this, "Correct");
-            } else {
-                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
-            }
+            verifyAnswer();
+        }
+    }
+    
+    
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer(); // Call a separate method to handle the answer check
         }
     }
 
@@ -70,6 +76,7 @@ public class RotateView extends GPanel implements ActionListener {
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
+        answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
@@ -122,4 +129,21 @@ public class RotateView extends GPanel implements ActionListener {
 
         return answer;
       }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        
+    }
+
+    private void verifyAnswer() {
+            String correctAnswer = rotateString(EXAMPLE_INPUT,NO_ROTATIONS);
+            // Get the text from the answerField when the checkButton is clicked
+            String userAnswer = answerField.getText();
+            
+            if (userAnswer.equals(correctAnswer)) {
+                JOptionPane.showMessageDialog(this, "Correct");
+            } else {
+                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+            }
+    }
 }
