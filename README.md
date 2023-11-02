@@ -23,7 +23,7 @@ Sha256 Tutoring Application Developed By Students for Students at Regis Universi
 - Compress Round
     - currently shows an image, we need to make this more insructional, maybe we need the images to be able to be clicked?
 - Rotate n bits
-    - impelement keypressListener (look at Johanna2 branch for code)
+    - impelement keypressListener (look at Johanna2 branch for code) (Added 11/2 on local branch Damian2)
     - lets implement an error handling that tells the user to enter something before the check can be done
     - If its wrong let's say its wrong without giving the answer and prompt user to ask for a hint if they want it. In this allow a hint click option for a pop up hint (just have pop up say hint for now)
 - Shift Right
