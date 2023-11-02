@@ -31,9 +31,9 @@ Sha256 Tutoring Application Developed By Students for Students at Regis Universi
     - serparate correct from incorrect and offer a hint (Added 10/25)
     - implement keyListener for pressing enter (Added 11/2 on local branch Damian2)
 - Exclusive Or
-    - add error for if nothing entered in the box
+    - add error for if nothing entered in the box (Added 11/2 on local branch Damian2)
     - serparate correct from incorrect and offer a hint (Added 10/25)
-    - implement keyListener for pressing enter
+    - implement keyListener for pressing enter (Added 11/2 on local branch Damian2)
 - Add two n bit
     - add error for if nothing entered in the box
     - serparate correct from incorrect and offer a hint (Added 10/25)
