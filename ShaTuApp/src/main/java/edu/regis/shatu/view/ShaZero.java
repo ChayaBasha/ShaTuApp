@@ -16,13 +16,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Random;
 
 /**
  *
  * @author rickb
  */
-public class ShaZero extends GPanel implements ActionListener {
+public class ShaZero extends GPanel implements ActionListener, KeyListener {
     /**
      * The ASCII character the student is being asked to convert
      */
@@ -45,17 +47,10 @@ public class ShaZero extends GPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        String correctAnswer;
-        if (event.getSource() == checkButton) {
-            correctAnswer = calculateSigma(EXAMPLE_INPUT);
-            // Get the text from the answerField when the checkButton is clicked
-            String userAnswer = answerField.getText();
-
-            if (userAnswer.equals(correctAnswer)) {
-                JOptionPane.showMessageDialog(this, "Correct");
-            } else {
-                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
-            }
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (event.getSource() == checkButton) {
+            verifyAnswer();
         }
     }
 
@@ -68,6 +63,7 @@ public class ShaZero extends GPanel implements ActionListener {
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
+        answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
@@ -112,5 +108,35 @@ public class ShaZero extends GPanel implements ActionListener {
         answer = shiftRight.shiftRightString(Integer.parseInt(answer),X_PLACES); // on each step it will be updated accordingly 
         
         return answer;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    private void verifyAnswer() {
+        String correctAnswer = calculateSigma(EXAMPLE_INPUT);
+        // Get the text from the answerField when the checkButton is clicked
+        String userAnswer = answerField.getText();
+
+        if (userAnswer.equals(correctAnswer)) {
+            JOptionPane.showMessageDialog(this, "Correct");
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+        }
     }
 }

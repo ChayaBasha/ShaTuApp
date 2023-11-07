@@ -52,7 +52,7 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent event) {
          if(answerField.getText().equals("")){
-             JOptionPane.showMessageDialog(this, "Please proivde an asnwer");
+             JOptionPane.showMessageDialog(this, "Please proivde an answer");
         }
          else if (event.getSource() == checkButton) {
             verifyAnswer();
@@ -66,11 +66,10 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(answerField.getText().equals("")){
-             JOptionPane.showMessageDialog(this, "Please proivde an asnwer");
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            verifyAnswer(); // Call a separate method to handle the answer check
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
         }
     }
 

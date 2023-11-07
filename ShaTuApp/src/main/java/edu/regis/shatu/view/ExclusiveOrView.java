@@ -148,7 +148,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (answerField.getText().equals("")) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please proivde an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();

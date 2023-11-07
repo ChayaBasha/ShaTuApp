@@ -16,6 +16,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,7 +27,7 @@ import javax.swing.JTextField;
  *
  * @author rickb
  */
-public class ChoiceFunctionView extends GPanel implements ActionListener {
+public class ChoiceFunctionView extends GPanel implements ActionListener, KeyListener {
     private final String stringX = "10100";
     private final String stringY = "11100";
     private final String stringZ = "10111";
@@ -64,6 +66,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener {
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
+        answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
@@ -129,13 +132,38 @@ public class ChoiceFunctionView extends GPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else {
+            verifyAnswer();
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    private void verifyAnswer() {
         String correctAnswer = choiceFunction(stringX, stringY, stringZ);
-       
-       if(correctAnswer.equals(answerField.getText())) {
-           JOptionPane.showMessageDialog(this, "Correct!");
-       } else {
-           JOptionPane.showMessageDialog(this, "Incorrect, "
-                   + "correct answer: " + correctAnswer);
-       }
+
+        if (correctAnswer.equals(answerField.getText())) {
+            JOptionPane.showMessageDialog(this, "Correct!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect, "
+                    + "correct answer: " + correctAnswer);
+        }
     }
 }
