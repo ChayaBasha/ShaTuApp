@@ -35,7 +35,7 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     private JTextField answerField;
     private JLabel answerLabel;
     private JButton checkButton; // Add the check button
-
+    private JButton hintButton;
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -46,11 +46,14 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an asnwer");
-        }
-        else if (event.getSource() == checkButton) {
-            verifyAnswer();
+        if (event.getSource() == checkButton) {
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            } else {
+                verifyAnswer();
+            }
+        } else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
         }
     }
 
@@ -58,7 +61,6 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-
         exampleInputLabel = new JLabel("Perform Shift right an 32 bit   " + Integer.toBinaryString(EXAMPLE_INPUT) + "  number " + X_PLACES + " places");
 
         answerLabel = new JLabel("Your answer: ");
@@ -68,6 +70,9 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
+        
+        hintButton = new JButton("Check");
+        hintButton.addActionListener(this);
     }
 
     /**
@@ -95,6 +100,10 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
                 5, 5, 5, 5);
 
         addc(checkButton, 0, 2, 2, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }

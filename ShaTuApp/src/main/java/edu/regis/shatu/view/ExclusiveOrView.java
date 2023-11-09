@@ -36,7 +36,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
    private JTextField answerField;
    private JLabel answerLabel;
    private JButton checkButton;
-   
+    private JButton hintButton;
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -62,6 +62,11 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
+        checkButton.addActionListener(this); 
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
+        
     }
     /**
      * Layout the child components in this view.
@@ -95,9 +100,11 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
         addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         
-        checkButton.addActionListener(this); // Add an action listener for the check button
+        addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+
 
     }
     
@@ -134,10 +141,14 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
-        } else {
-        verifyAnswer();
+        if (event.getSource() == checkButton) {
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            } else {
+                verifyAnswer();
+            }
+        } else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
         }
     }
 

@@ -39,6 +39,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
     private JTextField answerField;
     private JLabel answerLabel;
     private JButton checkButton;
+    private JButton hintButton;
     
    /**
      * The ASCII character the student is being asked to convert
@@ -70,6 +71,10 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
+        checkButton.addActionListener(this);
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
     }
     
     /**
@@ -109,7 +114,10 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
         
-        checkButton.addActionListener(this); // Add an action listener for the check button
+        addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+       
     }
     
     public static String choiceFunction(String x, String y, String z) {
@@ -131,11 +139,15 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
     } 
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
-        } else {
-            verifyAnswer();
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == checkButton) {
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            } else {
+                verifyAnswer();
+            }
+        } else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
         }
     }
 

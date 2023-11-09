@@ -37,6 +37,7 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     private JTextField answerField;
     private JLabel answerLabel;
     private JButton checkButton; // Add the check button
+    private JButton hintButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -48,10 +49,14 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
-        } else {
-            verifyAnswer();
+        if (event.getSource() == checkButton) {
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            } else {
+                verifyAnswer();
+            }
+        } else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
         }
     }
 
@@ -67,6 +72,9 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
     }
 
     /**
@@ -111,6 +119,10 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
                 5, 5, 5, 5);
 
         addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+        
+        addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
     }

@@ -40,6 +40,7 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
     private JTextField answerField;
     private JLabel answerLabel;
     private JButton checkButton; // Add the check button
+    private JButton hintButton;
     
     /**
      * Initialize this view including creating and laying out its child components.
@@ -51,11 +52,14 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-         if(answerField.getText().equals("")){
-             JOptionPane.showMessageDialog(this, "Please proivde an answer");
-        }
-         else if (event.getSource() == checkButton) {
-            verifyAnswer();
+        if (event.getSource() == checkButton) {
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            } else {
+                verifyAnswer();
+            }
+        } else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
         }
     }
     
@@ -86,6 +90,9 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
     }
     
     /**
@@ -111,8 +118,12 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
         addc(answerField, 1, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
+
         addc(checkButton, 0, 2, 2, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+
+        addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
