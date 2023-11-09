@@ -116,8 +116,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         
         addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-       
+                5, 5, 5, 5);  
     }
     
     public static String choiceFunction(String x, String y, String z) {
@@ -177,5 +176,15 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
             JOptionPane.showMessageDialog(this, "Incorrect, "
                     + "correct answer: " + correctAnswer);
         }
+      
+    public void actionPerformed(ActionEvent e) {
+        String correctAnswer = choiceFunction(stringX, stringY, stringZ);
+       
+       if(correctAnswer.equals(answerField.getText())) {
+           JOptionPane.showMessageDialog(this, "Correct!");
+       } else {
+           JOptionPane.showMessageDialog(this, "Incorrect, "
+                   + "correct answer: " + correctAnswer);
+       }
     }
 }

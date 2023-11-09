@@ -86,7 +86,6 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
-
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button

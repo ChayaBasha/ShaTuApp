@@ -54,7 +54,6 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
             }
         } else if (event.getSource() == hintButton) {
             JOptionPane.showMessageDialog(this, "Hint");
-        }
     }
 
     /**
@@ -73,6 +72,9 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
         
         hintButton = new JButton("Check");
         hintButton.addActionListener(this);
+      
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this); // Add an action listener for the check button
     }
 
     /**

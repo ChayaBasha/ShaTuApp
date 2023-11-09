@@ -54,6 +54,7 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
                 JOptionPane.showMessageDialog(this, "Please proivde an answer");
             } else {
                 verifyAnswer();
+                JOptionPane.showMessageDialog(this, "Incorrect.");
             }
         } else if (event.getSource() == hintButton) {
             JOptionPane.showMessageDialog(this, "Hint");

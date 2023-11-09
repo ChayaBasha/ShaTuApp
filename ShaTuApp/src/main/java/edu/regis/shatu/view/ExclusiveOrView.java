@@ -36,7 +36,8 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
    private JTextField answerField;
    private JLabel answerLabel;
    private JButton checkButton;
-    private JButton hintButton;
+   private JButton hintButton;
+
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -104,7 +105,6 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
         addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
 
     }
     
@@ -179,5 +179,15 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
             JOptionPane.showMessageDialog(this, "Incorrect, "
                     + "correct answer: " + correctAnswer);
         }}
+       String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
+      
+
+       if(correctAnswer.equals(answerField.getText())) {
+           JOptionPane.showMessageDialog(this, "Correct!");
+       } else {
+           JOptionPane.showMessageDialog(this, "Incorrect, "
+                   + "correct answer: " + correctAnswer);
+       }
+    }
     
 }
