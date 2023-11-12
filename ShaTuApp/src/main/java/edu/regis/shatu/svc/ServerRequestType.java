@@ -38,7 +38,7 @@ public enum ServerRequestType {
      * The student or client requested another example
      * 
      */
-    NEXT_EXAMPLE(":NextExample"),
+    NEW_EXAMPLE(":NewExample"),
     
     /**
      * An existing student is attempting to sign in. 

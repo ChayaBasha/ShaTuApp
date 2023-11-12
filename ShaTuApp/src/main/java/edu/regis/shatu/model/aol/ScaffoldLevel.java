@@ -47,7 +47,7 @@ public enum ScaffoldLevel {
     /**
      * EXTREME - Student plays a passive role and must immediately execute
      *           the currently expected step. This level is used to demo
-     *           the tutor in the first scenario.
+     *           the tutor in the first SeeOne scenario.
      */
     EXTREME("Extreme");
      
