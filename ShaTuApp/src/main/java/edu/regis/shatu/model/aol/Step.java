@@ -26,6 +26,7 @@ import java.util.ArrayList;
  * @author rickb
  */
 public class Step extends TitledModel { 
+    private ScaffoldLevel scaffolding;
     
     private StepSubType subType;
     /**
@@ -45,10 +46,10 @@ public class Step extends TitledModel {
     protected final ArrayList<Hint> hints;
     
     /**
-     * The amount of time the student can take on this step before the GUI
+     * The amount of seconds the student can take on this step before the GUI
      * prompts the student concerning their inaction.
      */
-    protected final Timeout timeout;
+    protected Timeout timeout;
     
     /**
      * If true, the GUI immediately notifies the tutor when the student performs
@@ -73,6 +74,7 @@ public class Step extends TitledModel {
      * 
      * @param id
      * @param sequenceId
+     * @param subType
      */
     public Step(int id,int sequenceId, StepSubType subType) {
         super(id);
@@ -97,6 +99,14 @@ public class Step extends TitledModel {
         this.subType = subType;
     }
 
+    public ScaffoldLevel getScaffolding() {
+        return scaffolding;
+    }
+
+    public void setScaffolding(ScaffoldLevel scaffolding) {
+        this.scaffolding = scaffolding;
+    }
+
     public ArrayList<Hint> getHints() {
         return hints;
     }
@@ -115,6 +125,10 @@ public class Step extends TitledModel {
 
     public Timeout getTimeout() {
         return timeout;
+    }
+    
+    public void setTimeout(Timeout timeout) {
+        this.timeout = timeout;
     }
     
     public void addHint(Hint hint) {
@@ -156,5 +170,4 @@ public class Step extends TitledModel {
     public void setData(String data) {
         this.data = data;
     }
-    
 }

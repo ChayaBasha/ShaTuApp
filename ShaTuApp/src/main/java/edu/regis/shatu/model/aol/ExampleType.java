@@ -13,31 +13,18 @@
 package edu.regis.shatu.model.aol;
 
 /**
- * The legal step types
- * 
- * This class is essentially kludge since I couldn't get subclassing of
- * Gson/Json subtypes to work. So, I now manually handle it. 
+ * The legal types of practice examples that a student can request.
  * 
  * @author rickb
  */
-public enum StepSubType {
-    /**
-     * The student has completed the current step.
-     */
-    COMPLETE_STEP("CompleteStep"),
-    
-    /**
-
-     */
-    COMPLETE_TASK("CompleteTask"),
-    
+public enum ExampleType {
     /**
      * Represents a request to 
      * 
      * Data: An EncodeAsciiExample specifying the length of the string to be
      *       encoded.
      */
-    ENCODE_ASCII("ASCII Encode"),
+    ASCII_ENCODE("ASCII Encode"),
     
     ADD_ONE_BIT("Add One Bit"),
     
@@ -68,18 +55,18 @@ public enum StepSubType {
      */
     DEFAULT("Unknown");
     
-    /**
+     /**
      * The name used by the server to identify this request.
      */
-    private final String subType;
+    private final String requestName;
     
     /**
      * Initialize this enum object with the given title.
      * 
-     * @param subType 
+     * @param requestName 
      */
-    StepSubType(String subType) {
-        this.subType = subType;
+    ExampleType(String requestName) {
+        this.requestName = requestName;
     }
     
     /**
@@ -87,17 +74,17 @@ public enum StepSubType {
      * 
      * @return a String 
      */
-    public String getSubType() {
-        return subType;
+    public String getRequestName() {
+        return requestName;
     }
     
     /**
-     * Return the subType name that is used by the server
+     * Return the request name that is used by the server
      * 
      * @return a String
      */
     @Override
     public String toString() {
-        return subType;
+        return requestName;
     }
 }
