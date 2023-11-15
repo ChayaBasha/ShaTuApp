@@ -16,6 +16,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,7 +27,7 @@ import javax.swing.JTextField;
  *
  * @author rickb
  */
-public class ExclusiveOrView extends GPanel implements ActionListener {
+public class ExclusiveOrView extends GPanel implements ActionListener, KeyListener {
    private final String BINARY_NUMBER_ONE = "0001";
    private final String BINARY_NUMBER_TWO = "1111";
    private JLabel binaryNumberOneLabel;
@@ -34,7 +36,8 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
    private JTextField answerField;
    private JLabel answerLabel;
    private JButton checkButton;
-   
+   private JButton hintButton;
+
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -56,9 +59,15 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
+        answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
+        checkButton.addActionListener(this); 
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
+        
     }
     /**
      * Layout the child components in this view.
@@ -92,9 +101,10 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
         addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         
-        checkButton.addActionListener(this); // Add an action listener for the check button
+        addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
 
     }
     
@@ -131,6 +141,44 @@ public class ExclusiveOrView extends GPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == checkButton) {
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            } else {
+                verifyAnswer();
+            }
+        } else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private void verifyAnswer() {
+        String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
+        if (correctAnswer.equals(answerField.getText())) {
+            JOptionPane.showMessageDialog(this, "Correct!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect, "
+                    + "correct answer: " + correctAnswer);
+        }}
        String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
       
 
