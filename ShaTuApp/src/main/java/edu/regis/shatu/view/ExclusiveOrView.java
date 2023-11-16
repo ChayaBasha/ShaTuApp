@@ -178,16 +178,15 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect, "
                     + "correct answer: " + correctAnswer);
-        }}
-       String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
+        }
+//       String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
       
 
-       if(correctAnswer.equals(answerField.getText())) {
-           JOptionPane.showMessageDialog(this, "Correct!");
-       } else {
-           JOptionPane.showMessageDialog(this, "Incorrect, "
-                   + "correct answer: " + correctAnswer);
-       }
-    }
-    
+//       if(correctAnswer.equals(answerField.getText())) {
+//           JOptionPane.showMessageDialog(this, "Correct!");
+//       } else {
+//           JOptionPane.showMessageDialog(this, "Incorrect, "
+//                   + "correct answer: " + correctAnswer);
+//       }
+    }  
 }
