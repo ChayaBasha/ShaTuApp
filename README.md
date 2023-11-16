@@ -2,18 +2,14 @@
 ## Overview
 Sha256 Tutoring Application Developed By Students for Students at Regis University. First version began Capstone Fall 2023.
 
-## To Do for Week 11
+## To Do for Week 13
 - Documentation of System
-    - Data base logic? (JOhanna)
-    - Quiz me flow? 
-- Make Sure These are Done from previous weeks (mostly add key listener and error box if nothing entered)
-    - Sha 0 (Damian) 
-    - Rotate n bit cleanup (Damian)
-    - Fixing Add 2 n bit (damian)
-    - Choice Function (Damian)
-    - Maj Function (Damian)
-    - Sha Sum 1 (Damian)
+    - Data base logic? (Johanna--we will need to talk with Rick about this probably wiat until next term)
+    - Quiz me flow?
 - Sign OutFlow (Jack)
+- Next Quesiton (Damian)
+-Junit tests (Damian)
+- Back Button (Jack)
 
 ## To Do (last updated November 2, 2023)
 - Encode As ASCII (Priority Later)
