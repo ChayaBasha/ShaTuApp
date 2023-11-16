@@ -169,22 +169,23 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
 
     private void verifyAnswer() {
         String correctAnswer = choiceFunction(stringX, stringY, stringZ);
-
         if (correctAnswer.equals(answerField.getText())) {
             JOptionPane.showMessageDialog(this, "Correct!");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect, "
                     + "correct answer: " + correctAnswer);
         }
-      
-    public void actionPerformed(ActionEvent e) {
-        String correctAnswer = choiceFunction(stringX, stringY, stringZ);
-       
-       if(correctAnswer.equals(answerField.getText())) {
-           JOptionPane.showMessageDialog(this, "Correct!");
-       } else {
-           JOptionPane.showMessageDialog(this, "Incorrect, "
-                   + "correct answer: " + correctAnswer);
-       }
     }
 }
+      
+//    public void actionPerformed(ActionEvent e) {
+//        String correctAnswer = choiceFunction(stringX, stringY, stringZ);
+//       
+//       if(correctAnswer.equals(answerField.getText())) {
+//           JOptionPane.showMessageDialog(this, "Correct!");
+//       } else {
+//           JOptionPane.showMessageDialog(this, "Incorrect, "
+//                   + "correct answer: " + correctAnswer);
+//       }
+//    }
+//}

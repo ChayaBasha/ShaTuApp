@@ -55,6 +55,7 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
             }
         } else if (event.getSource() == hintButton) {
             JOptionPane.showMessageDialog(this, "Hint");
+        }
     }
 
     /**
@@ -71,10 +72,9 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this);
-        checkButton.addActionListener(this); // Add an action listener for the check button
         
         hintButton = new JButton("Hint");
-        hintButton.addActionListener(this);
+        hintButton.addActionListener(this); // Add an action listener for the check button
     }
 
     /**
