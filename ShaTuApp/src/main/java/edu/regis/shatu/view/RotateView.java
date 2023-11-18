@@ -16,16 +16,19 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  *
  * @author rickb
  */
-public class RotateView extends GPanel implements ActionListener {
+public class RotateView extends GPanel implements ActionListener, KeyListener {
    /**
      * The ASCII character the student is being asked to convert
      */
@@ -37,6 +40,7 @@ public class RotateView extends GPanel implements ActionListener {
     private JTextField answerField;
     private JLabel answerLabel;
     private JButton checkButton; // Add the check button
+    private JButton hintButton;
     
     /**
      * Initialize this view including creating and laying out its child components.
@@ -48,17 +52,28 @@ public class RotateView extends GPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        String correctAnswer;
         if (event.getSource() == checkButton) {
-            correctAnswer = rotateString(EXAMPLE_INPUT,NO_ROTATIONS);
-            // Get the text from the answerField when the checkButton is clicked
-            String userAnswer = answerField.getText();
-            
-            if (userAnswer.equals(correctAnswer)) {
-                JOptionPane.showMessageDialog(this, "Correct");
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
             } else {
-                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+                verifyAnswer();
             }
+        } else if (event.getSource() == hintButton) {
+            JOptionPane.showMessageDialog(this, "Hint");
+        }
+    }
+    
+    
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
         }
     }
 
@@ -70,10 +85,13 @@ public class RotateView extends GPanel implements ActionListener {
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
-
+        answerField.addKeyListener(this);
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
     }
     
     /**
@@ -99,8 +117,12 @@ public class RotateView extends GPanel implements ActionListener {
         addc(answerField, 1, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
+
         addc(checkButton, 0, 2, 2, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+
+        addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
@@ -122,4 +144,21 @@ public class RotateView extends GPanel implements ActionListener {
 
         return answer;
       }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        
+    }
+
+    private void verifyAnswer() {
+            String correctAnswer = rotateString(EXAMPLE_INPUT,NO_ROTATIONS);
+            // Get the text from the answerField when the checkButton is clicked
+            String userAnswer = answerField.getText();
+            
+            if (userAnswer.equals(correctAnswer)) {
+                JOptionPane.showMessageDialog(this, "Correct");
+            } else {
+                JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+            }
+    }
 }

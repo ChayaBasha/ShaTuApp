@@ -90,6 +90,8 @@ public class ShaTuApp {
         
         LOGGER.info("ShaTu properties initialization completed.");
         
+        System.out.println("Finished initializing");
+        //Damian
         // ToDo: Remove this example of using the SHA-256 algorithm.
         //  SHA_256 alg = new SHA_256();
         //alg.doit("Regis Computer Science Rocks!");

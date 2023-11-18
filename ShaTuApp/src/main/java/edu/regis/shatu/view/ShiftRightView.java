@@ -16,12 +16,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  *
  * @author rickb
  */
-public class ShiftRightView extends GPanel implements ActionListener {
+public class ShiftRightView extends GPanel implements ActionListener, KeyListener {
     /**
      * The ASCII character the student is being asked to convert
      */
@@ -34,7 +36,6 @@ public class ShiftRightView extends GPanel implements ActionListener {
     private JLabel answerLabel;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
-
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -45,19 +46,13 @@ public class ShiftRightView extends GPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        String correctAnswer;
         if (event.getSource() == checkButton) {
-            correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
-            // Get the text from the answerField when the checkButton is clicked
-            String userAnswer = answerField.getText();
-
-            if (userAnswer.equals(correctAnswer)) {
-                JOptionPane.showMessageDialog(this, "Correct");
+            if (answerField.getText().equals("")) {
+                JOptionPane.showMessageDialog(this, "Please proivde an answer");
             } else {
-                JOptionPane.showMessageDialog(this, "Incorrect.");
+                verifyAnswer();
             }
-        }
-        else if (event.getSource() == hintButton) {
+        } else if (event.getSource() == hintButton) {
             JOptionPane.showMessageDialog(this, "Hint");
         }
     }
@@ -66,16 +61,16 @@ public class ShiftRightView extends GPanel implements ActionListener {
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-
         exampleInputLabel = new JLabel("Perform Shift right an 32 bit   " + Integer.toBinaryString(EXAMPLE_INPUT) + "  number " + X_PLACES + " places");
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
+        answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
-        
+      
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this); // Add an action listener for the check button
     }
@@ -124,5 +119,34 @@ public class ShiftRightView extends GPanel implements ActionListener {
 
         return Integer.toBinaryString(result);
 
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    private void verifyAnswer() {
+        String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
+        // Get the text from the answerField when the checkButton is clicked
+        String userAnswer = answerField.getText();
+
+        if (userAnswer.equals(correctAnswer)) {
+            JOptionPane.showMessageDialog(this, "Correct");
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+        }
     }
 }

@@ -1,10 +1,10 @@
 {
-  "securityToken": "2ada71b82c70e5581699c95a148b328598cfe05185c0c81c38516844c9ef0e87",
+  "securityToken": "d2f800f38a85fcabb33838f239d1f790258582f157a864ccf5f2971129f4b130",
   "account": {
     "userId": "test@regis.edu",
     "password": "36f9ddba5d5523949b946df7e94dc15652857b57612d6e39ee1aec1b3b091314",
-    "firstName": "Test",
-    "lastName": "User"
+    "firstName": "Testy",
+    "lastName": "McTest"
   },
   "isActive": true,
   "task": {

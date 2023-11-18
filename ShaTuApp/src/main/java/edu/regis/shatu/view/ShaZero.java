@@ -18,12 +18,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 /**
  *
  * @author rickb
  */
-public class ShaOne extends GPanel implements ActionListener, KeyListener {
+public class ShaZero extends GPanel implements ActionListener, KeyListener {
     /**
      * The ASCII character the student is being asked to convert
      */
@@ -34,13 +35,13 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
     private JLabel exampleInputLabel;
     private JTextField answerField;
     private JLabel answerLabel;
-    private JButton checkButton; // Add the check button
+    private JButton checkButton;
     private JButton hintButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
      */
-    public ShaOne() {
+    public ShaZero() {
         initializeComponents();
         initializeLayout();
     }
@@ -63,7 +64,7 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
      */
     private void initializeComponents() {
 
-        exampleInputLabel = new JLabel("Given an 𝑛 bit binary number, output the value of the SHA 𝛴₁ function");
+        exampleInputLabel = new JLabel("Given an 𝑛 bit binary number, output the value of the SHA 𝛴₀  function");
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
@@ -71,7 +72,7 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
-        checkButton.addActionListener(this);
+        checkButton.addActionListener(this); // Add an action listener for the check button
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this); // Add an action listener for the check button
@@ -110,21 +111,20 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
                 5, 5, 5, 5);
     }
 
-    public String shiftRightString(int x, int places) {
-
-        // Perform the right shift operation
-        int result = x >> places;
-
-        // Print the original and shifted binary numbers
-        System.out.println("Original Binary: " + Integer.toBinaryString(x));
-        System.out.println("Shifted Binary:  " + Integer.toBinaryString(result));
-
-        return Integer.toBinaryString(result);
-
+    private String calculateSigma(int input) {
+        RotateView rotate = new RotateView();
+        ShiftRightView shiftRight = new ShiftRightView();
+        
+        String answer = rotate.rotateString(input+"", X_PLACES); // on each step it will be updated accordingly
+        answer = rotate.rotateString(answer, X_PLACES + 10);// on each step it will be updated accordingly
+        answer = shiftRight.shiftRightString(Integer.parseInt(answer),X_PLACES); // on each step it will be updated accordingly 
+        
+        return answer;
     }
-    
+
     @Override
     public void keyTyped(KeyEvent e) {
+        
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
     }
 
     private void verifyAnswer() {
-        String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
+        String correctAnswer = calculateSigma(EXAMPLE_INPUT);
         // Get the text from the answerField when the checkButton is clicked
         String userAnswer = answerField.getText();
 

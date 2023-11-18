@@ -86,7 +86,7 @@ public class SplashPanel extends GPanel {
 	layoutComponents();
         
         // ToDo: TMP DEBUGGING (saves me typing), remove this for real
-        userId.setText("rblument@regis.edu");
+        userId.setText("");
     }
     
     /**
