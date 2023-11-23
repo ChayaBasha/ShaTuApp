@@ -36,6 +36,9 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
 
     private JTextField answerField;
     private JLabel answerLabel;
+    private JLabel instructionLabel;
+    private JLabel stringLabel1;
+    private JLabel stringLabel2;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
 
@@ -65,7 +68,11 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-
+        instructionLabel = new JLabel("Add two binary numbers using modulo 2^"+ m+ " addition");
+        
+        stringLabel1 = new JLabel("binary number1 : " + binary1);
+        stringLabel2 = new JLabel("binary number2 : " + binary2);
+        
         answerLabel = new JLabel("         Your answer: ");
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
@@ -86,45 +93,35 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
+        
 
-        // Add exampleInputLabel centered
-        addc(new JLabel("Add two binary numbers using modulo 2^"+ m+ " addition"), 0, 0, 4, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add instructionLabel centered
+        addc(instructionLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel("binary number1 : "), 0, 1, 4, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add binaryNumberOneLabel centered below instructionLabel
+        addc(stringLabel1, 0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel(binary1), 1, 1, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add binaryNumberTwoLabel centered below binaryNumberOneLabel
+        addc(stringLabel2, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel("binary number2 : "), 0, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add answerField centered below binaryNumberTwoLabel
+        addc(answerField, 0, 4, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        addc(new JLabel(binary2), 1, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-
-        // Add answerLabel to the layout, centered
-        addc(answerLabel, 0, 3, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-        // Add answerField to the layout, centered
-        addc(answerField, 1, 3, 1, 1, 1.0, 0.0,
-                GridBagConstraints.LINE_START, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-        addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add checkButton centered below answerField
+        addc(checkButton, 0, 5, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
         
-        addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
 

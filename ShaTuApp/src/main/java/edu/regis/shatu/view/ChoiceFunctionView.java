@@ -62,8 +62,8 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         instructionLabel = new JLabel("Ch(𝑥,𝑦,𝑧)=(𝑥∧𝑦)⊕(¬𝑥∧𝑧)");
         
         stringXLabel = new JLabel("x: " + stringX);
-        stringYLabel = new JLabel("x: " + stringY);
-        stringZLabel = new JLabel("x: " + stringZ);
+        stringYLabel = new JLabel("y: " + stringY);
+        stringZLabel = new JLabel("z: " + stringZ);
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
@@ -81,7 +81,8 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-                GridBagConstraints centerConstraints = new GridBagConstraints();
+        
+        GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
 
