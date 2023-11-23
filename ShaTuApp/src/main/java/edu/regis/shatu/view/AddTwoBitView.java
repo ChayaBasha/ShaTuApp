@@ -167,7 +167,7 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }

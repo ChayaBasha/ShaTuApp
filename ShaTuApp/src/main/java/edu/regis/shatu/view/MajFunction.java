@@ -51,10 +51,9 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
             if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please proivde an answer");
+                JOptionPane.showMessageDialog(this, "Please provide an answer");
             } else {
                 verifyAnswer();
-                JOptionPane.showMessageDialog(this, "Incorrect.");
             }
         } else if (event.getSource() == hintButton) {
             JOptionPane.showMessageDialog(this, "Hint");
@@ -186,7 +185,7 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
