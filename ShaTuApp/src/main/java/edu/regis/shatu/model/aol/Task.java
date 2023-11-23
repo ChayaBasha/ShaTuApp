@@ -34,6 +34,11 @@ public class Task extends TitledModel {
     private TaskKind taskType = TaskKind.PROBLEM;
     
     /**
+     * The scaffolding support for this task.
+     */
+    private ScaffoldLevel scaffolding = ScaffoldLevel.EXTREME;
+    
+    /**
      * Indicates the student's overall progress on this task.
      * (For IN_PROGRESS tasks, the student model has the current step.)
      */
@@ -71,8 +76,7 @@ public class Task extends TitledModel {
     /**
      * Instantiate this task with the given id.
      * 
-     * @param sequenceId
-     * @param steps
+     * @param id database id of this task.
      */
     public Task(int id) {
         super(id);
@@ -89,6 +93,16 @@ public class Task extends TitledModel {
     public void setTaskType(TaskKind type) {
         this.taskType = type;
     }
+
+    public ScaffoldLevel getScaffolding() {
+        return scaffolding;
+    }
+
+    public void setScaffolding(ScaffoldLevel scaffolding) {
+        this.scaffolding = scaffolding;
+    }
+    
+    
     
     public TaskState getState() {
         return state;
@@ -98,6 +112,10 @@ public class Task extends TitledModel {
         this.state = state;
     } 
 
+    public void addStep(Step step) {
+        steps.add(step);
+    }
+    
     public ArrayList<Step> getSteps() {
         System.out.println("Task.getStepts: " + steps.size());
         return steps;
@@ -119,7 +137,7 @@ public class Task extends TitledModel {
     public Step currentStep() {    
         System.out.println("*** Task.currentStep: " + steps.size());
         for (Step step : steps)
-            if (step.getSequenceId() == state.getCurrentStep())
+            if (step.getSequenceId() == currentStepIndex)
                 return step;
 
         return null;

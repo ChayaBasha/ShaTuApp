@@ -27,15 +27,28 @@ public class ClientRequest {
     private ServerRequestType requestType;
     
     /**
+     * The id of the user that made this request.
+     */
+    private String userId;
+    
+    /**
+     * The sing-in session id associated with the user making this request.
+     */
+    private String sessionId;
+    
+    /**
      * A JSon encoded object whose format depends on the associated request.
      * (See the requestType documentation.)
      */
-    private String data = "";
+    private String data;
     
     /**
      * Initialize an empty client request.
      */
-    public ClientRequest() {   
+    public ClientRequest() {
+        userId = "";
+        sessionId = "";
+        data = "";
     }
 
     public ServerRequestType getRequestType() {
@@ -44,6 +57,22 @@ public class ClientRequest {
 
     public void setRequest(ServerRequestType requestType) {
         this.requestType = requestType;
+    }
+    
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     /**
