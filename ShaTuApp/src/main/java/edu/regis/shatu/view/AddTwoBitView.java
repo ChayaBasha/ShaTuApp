@@ -35,12 +35,12 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
 
 
     private JTextField answerField;
-    private JLabel answerLabel;
     private JLabel instructionLabel;
     private JLabel stringLabel1;
     private JLabel stringLabel2;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
+    private JButton nextQuestionButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -53,14 +53,11 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please proivde an answer");
-            } else {
-                verifyAnswer();
-                JOptionPane.showMessageDialog(this, "Incorrect.");
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -68,12 +65,11 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        instructionLabel = new JLabel("Add two binary numbers using modulo 2^"+ m+ " addition");
+        instructionLabel = new JLabel("Add two binary numbers using modulo 2^"+ m + " addition");
         
         stringLabel1 = new JLabel("binary number1 : " + binary1);
         stringLabel2 = new JLabel("binary number2 : " + binary2);
         
-        answerLabel = new JLabel("         Your answer: ");
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
 
@@ -83,13 +79,15 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
     }
 
     /**
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-
         GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
@@ -121,6 +119,10 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
                 5, 5, 5, 5);
         
         addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(nextQuestionButton, 0, 7, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
@@ -183,6 +185,22 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
             JOptionPane.showMessageDialog(this, "Correct");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+        }
+    }
+
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
         }
     }
 }

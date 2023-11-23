@@ -41,9 +41,9 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     private JLabel binaryStringLabel3;
     
     private JLabel instructionLabel;
-    private JLabel answerLabel;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
+    private JButton nextQuestionButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -56,13 +56,11 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please provide an answer");
-            } else {
-                verifyAnswer();
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -75,7 +73,6 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
         binaryStringLabel2 = new JLabel("Binary number 2: " + binary2);
         binaryStringLabel3 = new JLabel("Binary number 3 " + binary3);
   
-        answerLabel = new JLabel("         Your answer: ");
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
 
@@ -85,6 +82,9 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
     }
 
     /**
@@ -126,6 +126,10 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
                 5, 5, 5, 5);
         
         addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
@@ -188,5 +192,21 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+    }
+    
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
+        }
     }
 }

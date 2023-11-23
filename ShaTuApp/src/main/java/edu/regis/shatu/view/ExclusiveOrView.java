@@ -37,6 +37,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
    private JLabel answerLabel;
    private JButton checkButton;
    private JButton hintButton;
+   private JButton nextQuestionButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -67,6 +68,9 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
         
     }
     /**
@@ -105,7 +109,11 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
         addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
+        
+        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
     }
     
 
@@ -142,13 +150,11 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please provide an answer");
-            } else {
-                verifyAnswer();
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -179,5 +185,21 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
             JOptionPane.showMessageDialog(this, "Incorrect, "
                     + "correct answer: " + correctAnswer);
         }
-    }  
+    }
+    
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
+        }
+    }
 }
