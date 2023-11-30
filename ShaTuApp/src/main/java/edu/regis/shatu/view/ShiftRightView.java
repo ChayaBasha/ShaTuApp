@@ -33,9 +33,9 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     private String answer;
     private JLabel exampleInputLabel;
     private JTextField answerField;
-    private JLabel answerLabel;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
+    private JButton nextQuestionButton;
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -47,13 +47,11 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please proivde an answer");
-            } else {
-                verifyAnswer();
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -63,7 +61,6 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     private void initializeComponents() {
         exampleInputLabel = new JLabel("Perform Shift right an 32 bit   " + Integer.toBinaryString(EXAMPLE_INPUT) + "  number " + X_PLACES + " places");
 
-        answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
 
@@ -73,6 +70,9 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
       
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this); // Add an action listener for the check button
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
     }
 
     /**
@@ -89,13 +89,8 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        // Add answerLabel to the layout, centered
-        addc(answerLabel, 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-
         // Add answerField to the layout, centered
-        addc(answerField, 1, 1, 1, 1, 1.0, 0.0,
+        addc(answerField, 0, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
@@ -104,6 +99,10 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
                 5, 5, 5, 5);
         
         addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
@@ -128,7 +127,7 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
@@ -147,6 +146,22 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
             JOptionPane.showMessageDialog(this, "Correct");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+        }
+    }
+    
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
         }
     }
 }

@@ -40,6 +40,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
     private JLabel answerLabel;
     private JButton checkButton;
     private JButton hintButton;
+    private JButton nextQuestionButton;
     
    /**
      * The ASCII character the student is being asked to convert
@@ -62,8 +63,8 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         instructionLabel = new JLabel("Ch(𝑥,𝑦,𝑧)=(𝑥∧𝑦)⊕(¬𝑥∧𝑧)");
         
         stringXLabel = new JLabel("x: " + stringX);
-        stringYLabel = new JLabel("x: " + stringY);
-        stringZLabel = new JLabel("x: " + stringZ);
+        stringYLabel = new JLabel("y: " + stringY);
+        stringZLabel = new JLabel("z: " + stringZ);
 
         answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
@@ -75,13 +76,17 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
     }
     
     /**
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-                GridBagConstraints centerConstraints = new GridBagConstraints();
+        
+        GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
 
@@ -117,9 +122,13 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);  
+        
+        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
     }
     
-    public static String choiceFunction(String x, String y, String z) {
+    private static String choiceFunction(String x, String y, String z) {
         // Convert the binary strings to integer values
         int intX = Integer.parseInt(x, 2);
         int intY = Integer.parseInt(y, 2);
@@ -140,13 +149,11 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please proivde an answer");
-            } else {
-                verifyAnswer();
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -157,7 +164,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
@@ -176,16 +183,20 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
                     + "correct answer: " + correctAnswer);
         }
     }
+    
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
+        }
+    }
 }
-      
-//    public void actionPerformed(ActionEvent e) {
-//        String correctAnswer = choiceFunction(stringX, stringY, stringZ);
-//       
-//       if(correctAnswer.equals(answerField.getText())) {
-//           JOptionPane.showMessageDialog(this, "Correct!");
-//       } else {
-//           JOptionPane.showMessageDialog(this, "Incorrect, "
-//                   + "correct answer: " + correctAnswer);
-//       }
-//    }
-//}

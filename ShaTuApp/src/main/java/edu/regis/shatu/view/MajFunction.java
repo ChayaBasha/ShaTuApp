@@ -35,9 +35,15 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     private final String binary3 = "110011";
 
     private JTextField answerField;
-    private JLabel answerLabel;
+    
+    private JLabel binaryStringLabel1;
+    private JLabel binaryStringLabel2;
+    private JLabel binaryStringLabel3;
+    
+    private JLabel instructionLabel;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
+    private JButton nextQuestionButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -50,14 +56,11 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please proivde an answer");
-            } else {
-                verifyAnswer();
-                JOptionPane.showMessageDialog(this, "Incorrect.");
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -65,8 +68,11 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-
-        answerLabel = new JLabel("         Your answer: ");
+        instructionLabel = new JLabel("Given three 𝑛-bit binary numbers, output the value of the Majority (Maj) function.");
+        binaryStringLabel1 = new JLabel("Binary number 1: " + binary1);
+        binaryStringLabel2 = new JLabel("Binary number 2: " + binary2);
+        binaryStringLabel3 = new JLabel("Binary number 3 " + binary3);
+  
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
 
@@ -76,6 +82,9 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
     }
 
     /**
@@ -87,52 +96,41 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
 
-        // Add exampleInputLabel centered
-        addc(new JLabel("Given three 𝑛-bit binary numbers, output the value of the Majority (Maj) function."), 0, 0, 4, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add instructionLabel centered
+        addc(instructionLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel("binary number1 : "), 0, 1, 4, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add binaryNumberOneLabel centered below instructionLabel
+        addc(binaryStringLabel1, 0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel(binary1), 1, 1, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-        addc(new JLabel("binary number2 : "), 0, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-        addc(new JLabel(binary2), 1, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add binaryNumberTwoLabel centered below binaryNumberOneLabel
+        addc(binaryStringLabel2, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
         
-        addc(new JLabel("binary number3 : "), 0, 3, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        addc(binaryStringLabel3, 0, 3, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel(binary3), 1, 3, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add answerField centered below binaryNumberTwoLabel
+        addc(answerField, 0, 4, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-
-        // Add answerLabel to the layout, centered
-        addc(answerLabel, 0, 4, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-        // Add answerField to the layout, centered
-        addc(answerField, 1, 4, 1, 1, 1.0, 0.0,
-                GridBagConstraints.LINE_START, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
+        // Add checkButton centered below answerField
         addc(checkButton, 0, 5, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
         
         addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
 
@@ -186,7 +184,7 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
@@ -194,5 +192,21 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+    }
+    
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
+        }
     }
 }

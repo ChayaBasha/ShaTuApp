@@ -35,9 +35,12 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
 
 
     private JTextField answerField;
-    private JLabel answerLabel;
+    private JLabel instructionLabel;
+    private JLabel stringLabel1;
+    private JLabel stringLabel2;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
+    private JButton nextQuestionButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -50,14 +53,11 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please proivde an answer");
-            } else {
-                verifyAnswer();
-                JOptionPane.showMessageDialog(this, "Incorrect.");
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -65,8 +65,11 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-
-        answerLabel = new JLabel("         Your answer: ");
+        instructionLabel = new JLabel("Add two binary numbers using modulo 2^"+ m + " addition");
+        
+        stringLabel1 = new JLabel("binary number1 : " + binary1);
+        stringLabel2 = new JLabel("binary number2 : " + binary2);
+        
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
 
@@ -76,55 +79,51 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
     }
 
     /**
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-
         GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
+        
 
-        // Add exampleInputLabel centered
-        addc(new JLabel("Add two binary numbers using modulo 2^"+ m+ " addition"), 0, 0, 4, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add instructionLabel centered
+        addc(instructionLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel("binary number1 : "), 0, 1, 4, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add binaryNumberOneLabel centered below instructionLabel
+        addc(stringLabel1, 0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel(binary1), 1, 1, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add binaryNumberTwoLabel centered below binaryNumberOneLabel
+        addc(stringLabel2, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        addc(new JLabel("binary number2 : "), 0, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add answerField centered below binaryNumberTwoLabel
+        addc(answerField, 0, 4, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        addc(new JLabel(binary2), 1, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-
-        // Add answerLabel to the layout, centered
-        addc(answerLabel, 0, 3, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-        // Add answerField to the layout, centered
-        addc(answerField, 1, 3, 1, 1, 1.0, 0.0,
-                GridBagConstraints.LINE_START, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-
-        addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        // Add checkButton centered below answerField
+        addc(checkButton, 0, 5, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
         
-        addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+        addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(nextQuestionButton, 0, 7, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
 
@@ -167,7 +166,7 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
@@ -186,6 +185,22 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
             JOptionPane.showMessageDialog(this, "Correct");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+        }
+    }
+
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
         }
     }
 }
