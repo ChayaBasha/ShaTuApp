@@ -4,7 +4,7 @@
  *  (C) Johanna & Richard Blumenthal, All rights reserved
  *
  *  Unauthorized use, duplication or distribution without the authors'
- *  permission is strictly prohibted.
+ *  permission is strictly prohibited.
  *
  *  Unless required by applicable law or agreed to in writing, this
  *  software is distributed on an "AS IS" basis without warranties
@@ -21,19 +21,21 @@ import java.awt.event.KeyListener;
 import java.math.BigInteger;
 
 /**
+ * AddTwoBitView class represents a GUI view for adding two binary numbers modulo 2^m.
+ * Users can input their answers in a JTextField and check correctness.
+ * Provides functionality for hints and moving to the next question.
  *
  * @author rickb
  */
 public class AddTwoBitView extends GPanel implements ActionListener, KeyListener {
     /**
-     * The ASCII character the student is being asked to convert
+     * The modulo value for addition of binary numbers.
      */
     private final int m = 8; // will be changed and dynamically updated
 
     private final String binary1 = "101100";
     private final String binary2 = "011011";
-
-
+    
     private JTextField answerField;
     private JLabel instructionLabel;
     private JLabel stringLabel1;
@@ -43,13 +45,18 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     private JButton nextQuestionButton;
 
     /**
-     * Initialize this view including creating and laying out its child components.
+     * Initializes the AddTwoBitView by creating and laying out its child components.
      */
     public AddTwoBitView() {
         initializeComponents();
         initializeLayout();
     }
 
+    /**
+     * Handles action events for components.
+     *
+     * @param event The ActionEvent to be handled.
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
@@ -62,7 +69,7 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     }
 
     /**
-     * Create the child GUI components appearing in this frame.
+     * Creates child GUI components for the view.
      */
     private void initializeComponents() {
         instructionLabel = new JLabel("Add two binary numbers using modulo 2^"+ m + " addition");
@@ -85,7 +92,7 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
     }
 
     /**
-     * Layout the child components in this view.
+     * Lays out the child components in the view.
      */
     private void initializeLayout() {
         GridBagConstraints centerConstraints = new GridBagConstraints();
@@ -127,7 +134,14 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
                 5, 5, 5, 5);
     }
 
-    public String calculateModulo(String binary1, String binary2) {
+    /**
+     * Calculates the modulo addition of two binary numbers.
+     *
+     * @param binary1 The first binary number.
+     * @param binary2 The second binary number.
+     * @return The result of the modulo addition in binary form.
+     */
+    private String calculateModulo(String binary1, String binary2) {
         if (binary1 == null || binary1.isEmpty()) {
             return "";
         }
@@ -159,10 +173,20 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         return resultBinary;
     }
 
+    /**
+     * Handles the keyTyped event for the view.
+     *
+     * @param e The KeyEvent that occurred.
+     */
     @Override
     public void keyTyped(KeyEvent e) {
     }
 
+    /**
+     * Handles the keyPressed event for the view.
+     *
+     * @param e The KeyEvent that occurred.
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
@@ -172,10 +196,18 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Handles the keyReleased event for the view.
+     *
+     * @param e The KeyEvent that occurred.
+     */
     @Override
     public void keyReleased(KeyEvent e) {
     }
 
+    /**
+     * Verifies the user's answer against the correct answer.
+     */
     private void verifyAnswer() {
         String correctAnswer = calculateModulo(binary1, binary2);
         // Get the text from the answerField when the checkButton is clicked
@@ -188,14 +220,23 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Handles the action for the Next Question button.
+     */
     private void onNextQuestion() {
         JOptionPane.showMessageDialog(this, "Next Question");
     }
 
+    /**
+     * Handles the action for the Hint button.
+     */
     private void onNextHint() {
         JOptionPane.showMessageDialog(this, "Hint");
     }
 
+    /**
+     * Handles the action for the Check button.
+     */
     private void onCheckButton() {
         if (answerField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");
@@ -204,3 +245,4 @@ public class AddTwoBitView extends GPanel implements ActionListener, KeyListener
         }
     }
 }
+
