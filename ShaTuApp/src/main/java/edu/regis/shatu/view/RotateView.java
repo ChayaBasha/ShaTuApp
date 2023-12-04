@@ -1,14 +1,12 @@
-/*
+/**
  * SHATU: SHA-256 Tutor
- * 
- *  (C) Johanna & Richard Blumenthal, All rights reserved
- * 
- *  Unauthorized use, duplication or distribution without the authors'
- *  permission is strictly prohibited.
- * 
- *  Unless required by applicable law or agreed to in writing, this
- *  software is distributed on an "AS IS" basis without warranties
- *  or conditions of any kind, either expressed or implied.
+ * <p>
+ * (C) Johanna & Richard Blumenthal, All rights reserved
+ * <p>
+ * Unauthorized use, duplication, or distribution without the authors' permission is strictly prohibited.
+ * <p>
+ * Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" basis
+ * without warranties or conditions of any kind, either expressed or implied.
  */
 package edu.regis.shatu.view;
 
@@ -26,7 +24,10 @@ import javax.swing.JTextField;
 /**
  * RotateView class represents the GUI view for rotating strings using ROTR (Right Rotate).
  * It extends GPanel and implements ActionListener and KeyListener interfaces.
- * 
+ * <p>
+ * The class provides a user interface for performing right rotations on strings and checking the results.
+ * Inline comments have been added for better understanding of the code.
+ *
  * @author rickb
  */
 public class RotateView extends GPanel implements ActionListener, KeyListener {
@@ -35,19 +36,19 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
      * The number of rotations used in the ROTR operation.
      */
     private final int NO_ROTATIONS = 7; // will be changed and dynamically updated
-    
+
     /**
      * Example input string for ROTR operation.
      */
     private final String EXAMPLE_INPUT = "Example Input";
-    
+
     private String answer;
     private JLabel exampleInputLabel;
     private JTextField answerField;
     private JButton checkButton; // Add the check button
     private JButton hintButton;
     private JButton nextQuestionButton;
-    
+
     /**
      * Initializes the RotateView by creating and laying out its child components.
      */
@@ -66,7 +67,7 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
             onNextQuestion();
         }
     }
-    
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -85,21 +86,21 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
      */
     private void initializeComponents() {
         exampleInputLabel = new JLabel("Perform ROTR(" + NO_ROTATIONS + ") on: " + EXAMPLE_INPUT);
-        
+
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
-        
+
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
-        
+
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
-        
+
         nextQuestionButton = new JButton("Next Question");
         nextQuestionButton.addActionListener(this);
     }
-    
+
     /**
      * Lays out the child components in this view using GridBagConstraints.
      */
@@ -126,22 +127,22 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
         addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
-        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
+
+        addc(nextQuestionButton, 0, 7, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
-    
+
     /**
      * Performs right rotation (ROTR) on the given input string for the specified number of positions.
-     * 
-     * @param input The input string to rotate.
+     *
+     * @param input     The input string to rotate.
      * @param positions The number of positions for the rotation.
      * @return The rotated string.
      */
     public String rotateString(String input, int positions) {
         if (input == null || input.isEmpty()) {
-            return input; 
+            return input;
         }
 
         int length = input.length();
@@ -159,7 +160,7 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-        
+
     }
 
     /**
@@ -169,22 +170,31 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
         String correctAnswer = rotateString(EXAMPLE_INPUT, NO_ROTATIONS);
         // Get the text from the answerField when the checkButton is clicked
         String userAnswer = answerField.getText();
-        
+
         if (userAnswer.equals(correctAnswer)) {
             JOptionPane.showMessageDialog(this, "Correct");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
         }
     }
-    
+
+    /**
+     * Displays a message dialog indicating the start of the next question.
+     */
     private void onNextQuestion() {
         JOptionPane.showMessageDialog(this, "Next Question");
     }
 
+    /**
+     * Displays a message dialog indicating the provision of a hint.
+     */
     private void onNextHint() {
         JOptionPane.showMessageDialog(this, "Hint");
     }
 
+    /**
+     * Handles the click event of the check button, verifying the user's answer.
+     */
     private void onCheckButton() {
         if (answerField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");

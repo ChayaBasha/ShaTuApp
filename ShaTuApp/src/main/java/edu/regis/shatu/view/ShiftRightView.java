@@ -1,14 +1,12 @@
-/*
+/**
  * SHATU: SHA-256 Tutor
- *
- *  (C) Johanna & Richard Blumenthal, All rights reserved
- *
- *  Unauthorized use, duplication or distribution without the authors'
- *  permission is strictly prohibted.
- *
- *  Unless required by applicable law or agreed to in writing, this
- *  software is distributed on an "AS IS" basis without warranties
- *  or conditions of any kind, either expressed or implied.
+ * <p>
+ * (C) Johanna & Richard Blumenthal, All rights reserved
+ * <p>
+ * Unauthorized use, duplication, or distribution without the authors' permission is strictly prohibited.
+ * <p>
+ * Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" basis
+ * without warranties or conditions of any kind, either expressed or implied.
  */
 package edu.regis.shatu.view;
 
@@ -20,12 +18,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
+ * ShiftRightView class represents the GUI view for performing the right shift operation on a binary number.
+ * It extends GPanel and implements ActionListener and KeyListener interfaces.
+ * <p>
+ * The class provides a user interface for shifting a binary number to the right by a specified number of places
+ * and checking the result. Inline comments have been added for better understanding of the code.
  *
  * @author rickb
  */
 public class ShiftRightView extends GPanel implements ActionListener, KeyListener {
     /**
-     * The ASCII character the student is being asked to convert
+     * The number of places for the right shift operation.
      */
     private final int X_PLACES = 10; // will be changed and dynamically updated
     private final int EXAMPLE_INPUT = 0b11011010101010101010101010101010;
@@ -36,6 +39,7 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     private JButton checkButton; // Add the check button
     private JButton hintButton;
     private JButton nextQuestionButton;
+
     /**
      * Initialize this view including creating and laying out its child components.
      */
@@ -107,6 +111,13 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
                 5, 5, 5, 5);
     }
 
+    /**
+     * Performs the right shift operation on the given input binary number for the specified number of places.
+     *
+     * @param x      The input binary number.
+     * @param places The number of places for the right shift.
+     * @return The result after performing the right shift operation.
+     */
     public String shiftRightString(int x, int places) {
 
         // Perform the right shift operation
@@ -137,6 +148,9 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     public void keyReleased(KeyEvent e) {
     }
 
+    /**
+     * Verifies the user's answer by comparing it with the correct result of the right shift operation.
+     */
     private void verifyAnswer() {
         String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
         // Get the text from the answerField when the checkButton is clicked
@@ -149,14 +163,23 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
         }
     }
     
+    /**
+     * Displays a message dialog indicating the start of the next question.
+     */
     private void onNextQuestion() {
         JOptionPane.showMessageDialog(this, "Next Question");
     }
 
+    /**
+     * Displays a message dialog indicating the provision of a hint.
+     */
     private void onNextHint() {
         JOptionPane.showMessageDialog(this, "Hint");
     }
 
+    /**
+     * Handles the click event of the check button, verifying the user's answer.
+     */
     private void onCheckButton() {
         if (answerField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");
