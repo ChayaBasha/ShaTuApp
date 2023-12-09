@@ -124,7 +124,12 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
 
     /**
      * Performs the XOR operation on two binary strings.
-     *
+     * 
+     * The method compares
+     * corresponding bits of the two binary strings and produces a new string
+     * where a bit is set to '1' if the corresponding bits in the input strings
+     * are different and '0' otherwise.
+     * 
      * @param binary1 The first binary string.
      * @param binary2 The second binary string.
      * @return The result of XOR operation as a binary string.
