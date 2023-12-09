@@ -140,7 +140,7 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
      * @param positions The number of positions for the rotation.
      * @return The rotated string.
      */
-    public String rotateString(String input, int positions) {
+    protected String rotateString(String input, int positions) {
         if (input == null || input.isEmpty()) {
             return input;
         }
@@ -153,6 +153,9 @@ public class RotateView extends GPanel implements ActionListener, KeyListener {
         }
 
         // Perform the rotation
+        // The rotated string is formed by concatenating two substrings:
+        // 1. The substring starting from (length - positions) to the end of the string.
+        // 2. The substring from the beginning of the string to (length - positions).
         answer = input.substring(length - positions) + input.substring(0, length - positions);
 
         return answer;
