@@ -17,10 +17,9 @@ import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
 import edu.regis.shatu.model.Account;
 import edu.regis.shatu.model.User;
-import java.util.ArrayList;
 
 /**
- * Specifies the API for {@link User} life-cycle maintenance (persistence).
+ * Specifies the API for {@link User} life-cycle maintenance (CRUD persistence).
  * 
  * Note: this is only user and password information @see Student
  * 
@@ -31,28 +30,20 @@ public interface UserSvc {
      * Insert the given User into the DB (cannot insert an admin).
      *
      * @param user a user containing the information to insert
-     * @throws IllegalArgException a StudentUser with the given user id already exists
+     * @throws IllegalArgException an account with the given user id already exists
      * @throws NonRecoverableException also see getCause().getErrorCode().
      */
     void create(Account user) throws IllegalArgException, NonRecoverableException;
     
     /**
-     * Delete the StudentUser with the given user id from the database.
-     *
-     * @param userId the unique key
-     * @throws NonRecoverableException also see getCause().getErrorCode().
-     */
-    void delete(String userId) throws NonRecoverableException;
-    
-    /**
-     * Return the StudentUser, if any, with the given user id.
+     * Return the user, if any, with the given user id.
      * 
-     * @param userId the id of the StudentUser to return
-     * @return a StudentUser with the given id
-     * @throws ObjNotFoundException no StudentUser with the given id exists
+     * @param userId the id of the user to return
+     * @return a User with the given id
+     * @throws ObjNotFoundException no user with the given id exists
      * @throws NonRecoverableException also see getCause().getErrorCode().
      */
-    User findById(String userId) throws ObjNotFoundException, NonRecoverableException;
+    User retrieve(String userId) throws ObjNotFoundException, NonRecoverableException;
     
     /**
      * Update the given user's password (requires existing password).
@@ -60,11 +51,18 @@ public interface UserSvc {
      * @param user the userId and existing password
      * @param newPassword the new SHA-256 encrypted password
      * @throws ObjNotFoundException user doesn't exists in the database
-     * @throws IllegalArgException
      * @throws NonRecoverableException also see getCause().getErrorCode().
      */
     void update(User user, String newPassword) 
-            throws ObjNotFoundException, IllegalArgException, NonRecoverableException;
+            throws ObjNotFoundException, NonRecoverableException;
+    
+    /**
+     * Delete the session from the database for the given student user id.
+     * 
+     * @param userId the student's user id (email: user@university.edu)
+     * @throws NonRecoverableException 
+     */
+    void delete(String userId) throws NonRecoverableException;
 }
 
 

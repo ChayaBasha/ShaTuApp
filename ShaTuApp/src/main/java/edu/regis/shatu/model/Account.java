@@ -38,7 +38,7 @@ public class Account {
     protected String firstName;
     
     /**
-     * The last name of this StudentUser.
+     * The last name of this student user.
      */
     protected String lastName;
 

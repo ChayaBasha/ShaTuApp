@@ -12,22 +12,12 @@
  */
 package edu.regis.shatu.err;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- * Root of all checked ShaTu application exceptions, which are logged when
- * instantiated.
+ * Root of all checked ShaTu application (logging should be done in subclasses). 
  * 
  * @author Rickb
  */
-public class ShaTuException extends Exception {
-    /**
-     * Handler for logging messages.
-     */
-    private static final Logger LOGGER = 
-            Logger.getLogger(ShaTuException.class.getName());
-
+public abstract class ShaTuException extends Exception {
     /**
      * Initialize this new instance with the given message.
      *
@@ -35,8 +25,6 @@ public class ShaTuException extends Exception {
      */
     public ShaTuException(String msg) {
 	super(msg);
-        
-        LOGGER.log(Level.SEVERE, "ShaTuException: {0}", msg);
     }
 
     /**
@@ -48,7 +36,5 @@ public class ShaTuException extends Exception {
      */
     public ShaTuException(String msg, Throwable cause) {
 	super(msg, cause);
-
-        LOGGER.log(Level.SEVERE, msg, cause);
     }
 }

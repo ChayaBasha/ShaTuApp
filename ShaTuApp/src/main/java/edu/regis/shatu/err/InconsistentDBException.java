@@ -18,11 +18,23 @@ package edu.regis.shatu.err;
  * 
  * @author rickb
  */
-public class InconsistentDBException extends ShaTuException {
+public class InconsistentDBException extends NonRecoverableException {
+    /**
+     * Initialize this new instance with the given message and log the exception.
+     *
+     * @param msg a string describing the cause of this exception.
+     */
     public InconsistentDBException(String msg) {
         super(msg);
     }
     
+    /**
+     * Initialize this new instance with the given message and the underlying
+     * Java exception that caused this ShaTu exception and log the exception.
+     *
+     * @param msg a string describing the cause of this exception.
+     * @param cause the Java exception that caused this ShaTu exception.
+     */
     public InconsistentDBException(String msg, Throwable cause) {
         super(msg, cause);
     }

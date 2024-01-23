@@ -15,6 +15,9 @@ package edu.regis.shatu.err;
 /**
  * Thrown when a property cannot be found in a "*.properties" file.
  * 
+ * ToDo: Should this extend NonRecoverableException (vs. are there appropriate
+ * defaults when a property is missing)?
+ * 
  * @author rickb
  */
 public class MissingPropertyException extends ShaTuException {

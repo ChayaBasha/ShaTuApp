@@ -13,11 +13,6 @@
 
 package edu.regis.shatu;
 
-import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
-import edu.regis.shatu.model.aol.CompleteTaskStep;
-import edu.regis.shatu.model.aol.EncodeAsciiStep;
-import edu.regis.shatu.model.aol.RotateStep;
-import edu.regis.shatu.model.aol.Step;
 import edu.regis.shatu.svc.ShaTuServer;
 import edu.regis.shatu.util.ResourceMgr;
 import edu.regis.shatu.view.MainFrame;

@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 
 /**
  * An MVC controller handling a user GUI gesture requesting the creation of a
- * new student StudentUser account within the NewAccountPanel.
+ * new student account within the NewAccountPanel.
  *
  * @author rickb
  */
@@ -99,8 +99,7 @@ public class CreateAcctAction extends ShaTuGuiAction {
         
         Account account = frame.getAccount();
 
-        ClientRequest request = new ClientRequest();
-        request.setRequest(ServerRequestType.CREATE_ACCOUNT);
+        ClientRequest request = new ClientRequest(ServerRequestType.CREATE_ACCOUNT);
         request.setData(gson.toJson(account));
        
         TutorReply reply = SvcFacade.instance().tutorRequest(request);
@@ -108,6 +107,8 @@ public class CreateAcctAction extends ShaTuGuiAction {
         String msg;
         switch (reply.getStatus()) {
             case "Created":
+                frame.clearNewAccountPanel();
+                
                 msg = "Student user account successfully created\n\n" +
                         "Press okay and we'll return you to the sign-in screen\n\n" +
                         "Then, please sign-in to the tutor using this account.";

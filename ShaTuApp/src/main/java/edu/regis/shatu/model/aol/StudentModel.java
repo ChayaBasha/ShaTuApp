@@ -30,8 +30,9 @@ public class StudentModel extends Model {
     
     /**
      * The assessments of outcomes for the student associated with this model.
+     * The key is the id of the knowledge component in the associated assessment.
      */
-    private HashMap<Outcome, Assessment> assessments;
+    private HashMap<Integer, Assessment> assessments;
     
     /**
      * The current scaffolding being used to support the student.
@@ -54,6 +55,10 @@ public class StudentModel extends Model {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+    
+    public void addAssessment(int knowledgeComponentId, Assessment assessment) {
+        assessments.put(knowledgeComponentId, assessment);
+    }
 
     /**
      * Return whether this student has an assessment for the given outcome.
@@ -61,8 +66,8 @@ public class StudentModel extends Model {
      * @param outcome
      * @return true if the student has an assessment for the given outcome.
      */
-    public boolean containsAssessment(Outcome outcome) {
-        return assessments.containsKey(outcome);
+    public boolean containsAssessment(int knowledgeComponentId) {
+        return assessments.containsKey(knowledgeComponentId);
     }
     
     /**
@@ -72,8 +77,8 @@ public class StudentModel extends Model {
      * 
      * @return an Assessment of the student.
      */
-    public Assessment findAssessment(Outcome outcome) {
-        return assessments.get(outcome);
+    public Assessment findAssessment(int knowledgeComponentId) {
+        return assessments.get(knowledgeComponentId);
     }
     
     /**

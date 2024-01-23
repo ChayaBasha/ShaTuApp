@@ -44,8 +44,12 @@ public class ClientRequest {
     
     /**
      * Initialize an empty client request.
+     * 
+     * @param requestType the type of request encoded in client request.
      */
-    public ClientRequest() {
+    public ClientRequest(ServerRequestType requestType) {
+        this.requestType = requestType;
+        
         userId = "";
         sessionId = "";
         data = "";

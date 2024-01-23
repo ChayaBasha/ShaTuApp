@@ -10,10 +10,13 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
-package edu.regis.shatu.model.aol;
+package edu.regis.shatu.model;
 
-import edu.regis.shatu.model.Model;
-import edu.regis.shatu.model.TitledModel;
+import edu.regis.shatu.model.aol.Problem;
+import edu.regis.shatu.model.aol.ScaffoldLevel;
+import edu.regis.shatu.model.aol.StepCompletion;
+import edu.regis.shatu.model.aol.TaskKind;
+import edu.regis.shatu.model.aol.TaskState;
 import java.util.ArrayList;
 
 /**
@@ -68,6 +71,11 @@ public class Task extends TitledModel {
      * ToDo: the tasks already completed in this task???
      */
     private TaskState state;
+    
+    /**
+     * The knowledge component outcomes demonstrated/exercised by this step.
+     */
+    protected ArrayList<Integer> exercisedComponentIds;
  
     public Task() {
         this(Model.DEFAULT_ID);
@@ -82,6 +90,8 @@ public class Task extends TitledModel {
         super(id);
         
         this.steps = new ArrayList<>();
+        
+        exercisedComponentIds = new ArrayList<>();
         
         state = new TaskState();
     }
@@ -196,6 +206,16 @@ public class Task extends TitledModel {
         this.currentStepIndex = currentStepIndex;
     }
     
+    public void addExercisedComponentId(int componentId) {
+        exercisedComponentIds.add(componentId);
+    }
     
+    public ArrayList<Integer> getExercisedComponentIds() {
+        return exercisedComponentIds;
+    }
+
+    public void setExercisedComponentIds(ArrayList<Integer> componentIds) {
+        this.exercisedComponentIds = componentIds;
+    }
 }
 

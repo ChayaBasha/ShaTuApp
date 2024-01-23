@@ -42,9 +42,20 @@ public abstract class TitledModel extends Model {
      *           persist this model.
      */
     public TitledModel(int id) {
+        this(id, "");
+    }
+    
+    /**
+     * Initialize this model with the given id and title.
+     * 
+     * @param id the model's unique id, as determined by the database used to
+     *           persist this model.
+     * @param title a String that can be displayed to the user.
+     */
+    public TitledModel(int id, String title) {
         super(id);
         
-        title = "";
+        this.title = title;
         description = "";
     }
 

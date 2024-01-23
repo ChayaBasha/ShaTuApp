@@ -10,9 +10,11 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
-package edu.regis.shatu.model.aol;
+package edu.regis.shatu.model;
 
-import edu.regis.shatu.model.TitledModel;
+import edu.regis.shatu.model.aol.ScaffoldLevel;
+import edu.regis.shatu.model.aol.StepSubType;
+import edu.regis.shatu.model.aol.Timeout;
 import java.util.ArrayList;
 
 /**
@@ -25,15 +27,21 @@ import java.util.ArrayList;
  * 
  * @author rickb
  */
-public class Step extends TitledModel { 
+public class Step extends TitledModel {
+    /**
+     * The scaffold level associated with this step.
+     */
     private ScaffoldLevel scaffolding;
     
+    /**
+     * The type of this step, which determines the object specified in this
+     * step's data along with a potential cont
+     */
     private StepSubType subType;
     /**
      * Which step this is in the parent task.
      */
     protected int sequenceId = 1;
-
     
     /**
      * The hint currently available to the student (index into hints).
@@ -67,6 +75,15 @@ public class Step extends TitledModel {
      */
     protected boolean isCompleted;
     
+    /**
+     * The knowledge component outcomes demonstrated/exercised by this step.
+     */
+    protected ArrayList<Integer> exercisedComponentIds;
+    
+    /**
+     * A JSon encoded object specified by out step subtype, which provides the
+     * contextual environment (information) related to this step.
+     */
     private String data;
     
     /**
@@ -83,6 +100,8 @@ public class Step extends TitledModel {
 
         timeout = null;
 
+        exercisedComponentIds = new ArrayList<>();
+        
         hints = new ArrayList<>();
            
         isCompleted = false;
@@ -132,6 +151,7 @@ public class Step extends TitledModel {
     }
     
     public void addHint(Hint hint) {
+        System.out.println("Adding hint");
         hints.add(hint);
     }
     
@@ -161,8 +181,20 @@ public class Step extends TitledModel {
 
     public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
-    }    
+    }
+    
+    public void addExercisedComponentId(int componentId) {
+        exercisedComponentIds.add(componentId);
+    }
+    
+    public ArrayList<Integer> getExercisedComponentIds() {
+        return exercisedComponentIds;
+    }
 
+    public void setExercisedComponentIds(ArrayList<Integer> componentIds) {
+        this.exercisedComponentIds = componentIds;
+    }
+    
     public String getData() {
         return data;
     }

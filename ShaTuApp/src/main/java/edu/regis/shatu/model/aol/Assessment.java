@@ -12,32 +12,46 @@
  */
 package edu.regis.shatu.model.aol;
 
+import edu.regis.shatu.model.KnowledgeComponent;
+
 /**
- * An assessment by the tutor of an outcome.
+ * An assessment by the tutor of a knowledge component outcome.
  * 
  * @author rickb
  */
 public class Assessment {
     /**
-     * The outcome assessed in this assessment
+     * The  knowledge component assessed in this assessment
      */
-    private Outcome outcome;
+    private KnowledgeComponent outcome;
     
     /**
      * The student assessment of the outcome being assessed.
      */
     private AssessmentLevel assessment;
     
-    public Assessment(Outcome outcome, AssessmentLevel assessment) {
+    /**
+     * The number of times within a task step the student was exposed to the
+     * knowledge component in this assessment.
+     */
+    private int exposures;
+    
+    /**
+     * The number of times the student successfully demonstrated knowledge or
+     * use of the knowledge component in this assessment.
+     */
+    private int successess;
+    
+    public Assessment(KnowledgeComponent outcome, AssessmentLevel assessment) {
         this.outcome = outcome;
         this.assessment = assessment;
     }
 
-    public Outcome getOutcome() {
+    public KnowledgeComponent getOutcome() {
         return outcome;
     }
 
-    public void setOutcome(Outcome outcome) {
+    public void setOutcome(KnowledgeComponent outcome) {
         this.outcome = outcome;
     }
 
@@ -52,5 +66,21 @@ public class Assessment {
 
     public void setAssessment(AssessmentLevel assessment) {
         this.assessment = assessment;
+    }
+
+    public int getExposures() {
+        return exposures;
+    }
+
+    public void setExposures(int exposures) {
+        this.exposures = exposures;
+    }
+
+    public int getSuccessess() {
+        return successess;
+    }
+
+    public void setSuccessess(int successess) {
+        this.successess = successess;
     }
 }

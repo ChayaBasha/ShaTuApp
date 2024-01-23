@@ -23,12 +23,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A Facade that is used to standardize all requests from GUI Client to the 
- * tutor as a single JSon encoded object String.
+ * A Facade that standardizes requests from the GUI Client to the ShaTu tutor 
+ * server via a socket connection with requests and replies encoded as JSon
+ * encoded object strings
  *
  * Conceptually, this facade is part of the Swing-based GUI client.
  *
-* This facade exists to facilitate a subsequent port from the Swing-based GUI
+ * This facade exists to facilitate a subsequent port from the Swing-based GUI
  * to a Restful HTML client. As such, it is currently a logical part of the 
  * Swing-based GUI client, but for a Web-Browser client, it would be implemented
  * as part of the Server Socket Connection, which would forward the HTTML JSon 
@@ -95,30 +96,33 @@ public class SvcFacade {
     private SvcFacade() {  
     }
 
-    
+    /**
+     * Encodes the given client request as a JSon object and sends it to the
+     * tutor returning the tutor's reply.
+     * 
+     * @param request the ClientRequest being sent to the tutor.
+     * @return the TutorReply from the tutor.
+     */
     public TutorReply tutorRequest(ClientRequest request) {
         Gson gson = new Gson();
         // ToDo: remove debugging stmt.
         String jsonRequest = gson.toJson(request);
         System.out.println("*** jasonRequest *" + jsonRequest + "*");
-        
-        //ClientRequest request = gson.fromJson(jsonRequest, ClientRequest.class);
   
         String jsonReply = send(jsonRequest);
         
         System.out.println("*** jsonReply: " + jsonReply);
         
         return gson.fromJson(jsonReply, TutorReply.class);
-        
-
     }
     
-     /**
-     * Send a request to the server to encrypt (decrypt) the given message
+    /**
+     * Send the given request to the ShaTu server and return the reply.
      * 
-     * @param cmd 
-     * @param msg 
-     * @return 
+     * Communication with the SERVER occurs via the socket connection on port PORT.
+     * 
+     * @param request a JSon encoded ClientRequest object
+     * @return a JSon encoded TutorReply from the tutor
      */
     private String send(String request) {
         Socket client = null;
@@ -132,7 +136,7 @@ public class SvcFacade {
             
             out = new PrintWriter(client.getOutputStream());
             out.println(request);
-            //out.println(cmd + " " + msg);
+            
             out.flush();
             
             return in.readLine();
@@ -142,8 +146,7 @@ public class SvcFacade {
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "IOException client", e);
         } finally {
-            // About as ugly as it gets, but the following code ensures that
-            // we've at least tried to close an open socket and its associated
+            // Kludgy, but tries to close an open socket and its associated
             // input and output streams in every possible error scenario
             // If we didn't, it's possible that we're leaking memory.
             try {
@@ -166,7 +169,8 @@ public class SvcFacade {
             }
         }
         
-        return ":error";
+        // Return this as a JSon encoded TutorReply object string.
+        return "{'status':':ERR','data':'A non-recoverable error occurred in the socket connection (see logs)'}";
     }
 }
 
