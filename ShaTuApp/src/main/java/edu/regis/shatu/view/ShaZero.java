@@ -1,14 +1,12 @@
-/*
+/**
  * SHATU: SHA-256 Tutor
- *
- *  (C) Johanna & Richard Blumenthal, All rights reserved
- *
- *  Unauthorized use, duplication or distribution without the authors'
- *  permission is strictly prohibted.
- *
- *  Unless required by applicable law or agreed to in writing, this
- *  software is distributed on an "AS IS" basis without warranties
- *  or conditions of any kind, either expressed or implied.
+ * <p>
+ * (C) Johanna & Richard Blumenthal, All rights reserved
+ * <p>
+ * Unauthorized use, duplication, or distribution without the authors' permission is strictly prohibited.
+ * <p>
+ * Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" basis
+ * without warranties or conditions of any kind, either expressed or implied.
  */
 package edu.regis.shatu.view;
 
@@ -21,12 +19,17 @@ import java.awt.event.KeyListener;
 import java.util.Random;
 
 /**
+ * ShaZero class represents the GUI view for performing the SHA Σ₀ function, involving rotation and right shift operations.
+ * It extends GPanel and implements ActionListener and KeyListener interfaces.
+ * <p>
+ * The class provides a user interface for performing rotations and right shifts on binary numbers and checking the results.
+ * Inline comments have been added for better understanding of the code.
  *
  * @author rickb
  */
 public class ShaZero extends GPanel implements ActionListener, KeyListener {
     /**
-     * The ASCII character the student is being asked to convert
+     * The number of places for the right shift operation.
      */
     private final int X_PLACES = 10; // will be changed and dynamically updated
     private final int EXAMPLE_INPUT = 0b11011010101010101010101010101010;
@@ -34,9 +37,9 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
     private String answer;
     private JLabel exampleInputLabel;
     private JTextField answerField;
-    private JLabel answerLabel;
     private JButton checkButton;
     private JButton hintButton;
+    private JButton nextQuestionButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -49,13 +52,11 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
-            if (answerField.getText().equals("")) {
-                JOptionPane.showMessageDialog(this, "Please proivde an answer");
-            } else {
-                verifyAnswer();
-            }
+            onCheckButton();
         } else if (event.getSource() == hintButton) {
-            JOptionPane.showMessageDialog(this, "Hint");
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
         }
     }
 
@@ -66,7 +67,6 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
 
         exampleInputLabel = new JLabel("Given an 𝑛 bit binary number, output the value of the SHA 𝛴₀  function");
 
-        answerLabel = new JLabel("Your answer: ");
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
 
@@ -76,6 +76,9 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this); // Add an action listener for the check button
+        
+        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton.addActionListener(this);
     }
 
     /**
@@ -92,13 +95,8 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        // Add answerLabel to the layout, centered
-        addc(answerLabel, 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-
         // Add answerField to the layout, centered
-        addc(answerField, 1, 1, 1, 1, 1.0, 0.0,
+        addc(answerField, 0, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
@@ -109,8 +107,18 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
         addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
+        
+        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
     }
 
+    /**
+     * Calculates the SHA Σ₀ function involving rotation and right shift operations.
+     *
+     * @param input The input binary number.
+     * @return The result after performing the SHA Σ₀ function.
+     */
     private String calculateSigma(int input) {
         RotateView rotate = new RotateView();
         ShiftRightView shiftRight = new ShiftRightView();
@@ -130,7 +138,7 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please proivde an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
@@ -140,6 +148,9 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
     }
 
+    /**
+     * Verifies the user's answer by comparing it with the correct result of the SHA Σ₀ function.
+     */
     private void verifyAnswer() {
         String correctAnswer = calculateSigma(EXAMPLE_INPUT);
         // Get the text from the answerField when the checkButton is clicked
@@ -149,6 +160,31 @@ public class ShaZero extends GPanel implements ActionListener, KeyListener {
             JOptionPane.showMessageDialog(this, "Correct");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+        }
+    }
+    
+    /**
+     * Displays a message dialog indicating the start of the next question.
+     */
+    private void onNextQuestion() {
+        JOptionPane.showMessageDialog(this, "Next Question");
+    }
+
+    /**
+     * Displays a message dialog indicating the provision of a hint.
+     */
+    private void onNextHint() {
+        JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    /**
+     * Handles the click event of the check button, verifying the user's answer.
+     */
+    private void onCheckButton() {
+        if (answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else {
+            verifyAnswer();
         }
     }
 }

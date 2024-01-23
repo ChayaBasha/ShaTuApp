@@ -9,6 +9,45 @@
   "course": {
     "title": "SHA-256 Message Digest",
     "description": "\n        Familiarizes students with the operation of the SHA-256 message digest\n        algorithm along with its underlying bitwise operations and encodings.\n    ",
+  "isActive": true,
+  "task": {
+    "taskType": "PROBLEM",
+    "scaffolding": "EXTREME",
+    "sequenceId": 0,
+    "currentStepIndex": 0,
+    "steps": [
+      {
+        "scaffolding": "EXTREME",
+        "subType": "COMPLETE_STEP",
+        "sequenceId": 0,
+        "currentHintIndex": 0,
+        "hints": [
+          {
+            "text": "Encode the first Character of the String",
+            "sequenceId": 1,
+            "id": -1
+          },
+          {
+            "text": "Use the ASCII lookup table For example \u0027A\u0027 -\u003e 65",
+            "sequenceId": 2,
+            "id": -1
+          }
+        ],
+        "notifyTutor": false,
+        "isCompleted": false,
+        "title": "",
+        "description": "Encode the string in Ascii",
+        "id": 0
+      }
+    ],
+    "state": {
+      "currentTask": 0,
+      "currentStep": 0,
+      "currentHint": 0,
+      "completedSteps": []
+    },
+    "title": "",
+    "description": "The first task in the SHA-256 algorithm is to encode the input string as an ASCII byte string. As an example considerthe string \"Regis Computer Science Rocks!\"",
     "id": 1
   },
   "unit": {
