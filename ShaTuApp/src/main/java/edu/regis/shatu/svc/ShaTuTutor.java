@@ -20,21 +20,29 @@ import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
 import edu.regis.shatu.model.Account;
+import edu.regis.shatu.model.Course;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.User;
+import edu.regis.shatu.model.aol.BitOpExample;
+import edu.regis.shatu.model.aol.BitOpStep;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
-import edu.regis.shatu.model.aol.Hint;
+import edu.regis.shatu.model.Hint;
+import edu.regis.shatu.model.KnowledgeComponent;
 import edu.regis.shatu.model.aol.ScaffoldLevel;
-import edu.regis.shatu.model.aol.Step;
+import edu.regis.shatu.model.Step;
+import edu.regis.shatu.model.Student;
 import edu.regis.shatu.model.aol.StepSubType;
-import edu.regis.shatu.model.aol.Task;
+import edu.regis.shatu.model.Task;
 import edu.regis.shatu.model.aol.TaskKind;
-import edu.regis.shatu.model.aol.TaskState;
 import edu.regis.shatu.model.aol.Timeout;
+import edu.regis.shatu.model.Unit;
+import edu.regis.shatu.model.aol.Assessment;
+import edu.regis.shatu.model.aol.AssessmentLevel;
+import edu.regis.shatu.model.aol.StudentModel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,10 +55,16 @@ import java.util.logging.Logger;
 public class ShaTuTutor implements TutorSvc {
 
     /**
+     * The id of the default course taught by the this tutor.
+     */
+    private static final int DEFAULT_COURSE_ID = 1;
+    /**
      * The maximum number of characters allowed for encoding a example ASCII
      * encoding request from the student.
      */
     private static final int MAX_ASCII_SIZE = 20;
+
+    private static final int MAX_BITS_SIZE = 32;
 
     /**
      * Handler for logging non-exception messages from this class versus thrown
@@ -63,19 +77,12 @@ public class ShaTuTutor implements TutorSvc {
      * The current tutoring session, which contains information on the current
      * Student, StudentModel, Course, Task, Step, etc.
      */
-    private TutoringSession currentSession;
-
-    /**
-     * Currently there is only one course and its id is hardcoded here
-     */
-    private int courseId = 1;
+    private TutoringSession session;
 
     /**
      * Convenience reference to the current gson object.
      */
     private Gson gson;
-
-    TutoringSession session;
 
     /**
      * Initialize the tutor singleton (a NoOp).
@@ -88,8 +95,8 @@ public class ShaTuTutor implements TutorSvc {
      */
     @Override
     public TutorReply request(ClientRequest request) {
-        // Uses reflecto to invoke a method derived the the request name in
-        // the client request (e.g., ":SignIn" invokes "signIn").
+        // Uses reflection to invoke a method derived from the request name in
+        // the client request (e.g., ":SignIn" invokes "signIn(...)").
         Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, request.getRequestType().getRequestName());
 
         // Efficiently produce "signIn" from ":SignIn", for example.         
@@ -102,9 +109,8 @@ public class ShaTuTutor implements TutorSvc {
         }
 
         String methodName = new String(m);
-        System.out.println("Method: *" + methodName + "*");
 
-        // Most methods require verify the given security token with the known one.
+        // Most methods require verifying the given security token with the known one.
         switch (methodName) {
             case "completedStep":
             case "completedTask":
@@ -116,19 +122,20 @@ public class ShaTuTutor implements TutorSvc {
             } catch (ObjNotFoundException ex) {
                 return createError("No session exists for user: " + request.getUserId(), ex);
             } catch (IllegalArgException ex) {
-                return createError("Illegal session for user: " + request.getUserId(), ex);
+                return createError("Illegal session token sent for user: " + request.getUserId(), ex);
             } catch (NonRecoverableException ex) {
                 return createError(ex.toString(), ex);
             }
+
             String msg = "Session verified for " + request.getUserId();
             Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, msg);
             break;
 
-            default:
+            default: // e.g., signIn itself, newAccount
                 Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, "No token verification required");
         }
 
-        // Security token has been verified or not required (e.g., signIn).
+        // Security token has been verified or not required (e.g., signIn, createAccount).
         try {
             Method method = getClass().getMethod(methodName, String.class);
 
@@ -156,33 +163,39 @@ public class ShaTuTutor implements TutorSvc {
      * @return a TutorReply if successful the status is "Created", otherwise the
      * status is "ERR".
      */
-    public TutorReply createAccount(String jsonAcct) {
-        // Gson gson = new GsonBuilder()
-        //     .registerTypeAdapterFactory(ShaTuApp.typeAdapterFactory())
-        //   .create();
+    public TutorReply createAccount(String jsonAcct) throws NonRecoverableException {
         gson = new GsonBuilder().setPrettyPrinting().create();
 
         Account acct = gson.fromJson(jsonAcct, Account.class);
+
+        int courseId = DEFAULT_COURSE_ID; // Currently only one course
+
+        StudentSvc stuSvc = ServiceFactory.findStudentSvc();
+
+        if (stuSvc.exists(acct.getUserId()))
+            return new TutorReply("IllegalUserId");
 
         try {
             ServiceFactory.findUserSvc().create(acct);
 
             try {
-                createSession(acct);
-            } catch (NonRecoverableException e) {
-                // ToDo: Delete the user's account file since no associated
-                // session was created.
-                throw e;
+                CourseSvc courseSvc = ServiceFactory.findCourseSvc();
+
+                Course course = courseSvc.retrieve(courseId);
+
+                session = createSession(acct, course);
+
+                createStudent(acct, course, session);
+
+                return new TutorReply("Created");
+
+            } catch (ObjNotFoundException ex) {
+                return createError("Unknown course: " + courseId, null);
             }
 
-            return new TutorReply("Created");
-
         } catch (IllegalArgException ex) {
-            // The user id already exists for another student.
+            // Should never get here since we tested whether the account exists
             return new TutorReply("IllegalUserId");
-
-        } catch (NonRecoverableException e) {
-            return new TutorReply();
         }
     }
 
@@ -198,7 +211,6 @@ public class ShaTuTutor implements TutorSvc {
     public TutorReply signIn(String jsonUser) {
         System.out.println("Received sign in: " + jsonUser);
         gson = new GsonBuilder()
-                // .registerTypeAdapterFactory(ShaTuApp.typeAdapterFactory())
                 .setPrettyPrinting()
                 .create();
 
@@ -206,11 +218,11 @@ public class ShaTuTutor implements TutorSvc {
         );
 
         try {
-            User dbUser = ServiceFactory.findUserSvc().findById(user.getUserId());
+            User dbUser = ServiceFactory.findUserSvc().retrieve(user.getUserId());
 
             if (dbUser.getPassword().equals(user.getPassword())) {
                 SessionSvc svc = ServiceFactory.findSessionSvc();
-                TutoringSession session = svc.findById(user.getUserId());
+                TutoringSession session = svc.retrieve(user.getUserId());
 
                 TutorReply reply = new TutorReply("Authenticated");
 
@@ -320,43 +332,89 @@ public class ShaTuTutor implements TutorSvc {
      *
      * @param account the student user
      * @throws NonRecoverableException
+     * @return the new TutoringSession
      */
-    private void createSession(Account account) throws NonRecoverableException {
-        TutoringSession session = new TutoringSession();
-        session.setAccount(account);
+    private TutoringSession createSession(Account account, Course course) throws NonRecoverableException {
+        try {
+            Task task = getFirstTask(course);
 
-        Random rnd = new Random();
-        String clearToken = "Session" + account.getUserId() + Integer.toString(rnd.nextInt());
+            TutoringSession tSession = new TutoringSession();
+            tSession.setAccount(account);
 
-        session.setSecurityToken(SHA_256.instance().sha256(clearToken));
+            Random rnd = new Random();
+            String clearToken = "Session" + account.getUserId() + Integer.toString(rnd.nextInt());
+            tSession.setSecurityToken(SHA_256.instance().sha256(clearToken));
 
+            tSession.setCourse(course.getDigest());
+
+            Unit unit = course.currentUnit();
+            if (unit != null)
+                tSession.setUnit(unit.getDigest());
+         
+            tSession.addTask(task);
+
+            ServiceFactory.findSessionSvc().create(tSession);
+
+            return tSession;
+
+        } catch (IllegalArgException ex) {
+            // Should never get here
+            throw new NonRecoverableException("Session already exists " + account.getUserId());
+        }
+    }
+
+    /**
+     * Create and save the student and their initial student model.
+     *
+     * @param acct
+     * @param course
+     * @return
+     */
+    private Student createStudent(Account acct, Course course, TutoringSession session)
+            throws NonRecoverableException {
         
-        //ToDo: hardcoded instead read from DB
-        ArrayList<Step> steps = new ArrayList<>();
-        Step step = new Step(0, 0, StepSubType.COMPLETE_STEP);
-        step.setScaffolding(ScaffoldLevel.EXTREME);
-        step.setDescription("Encode the string in Ascii");
+        Student student = new Student(acct.getUserId(), acct.getPassword());
+        StudentModel model = student.getStudentModel();
 
-        //System.out.println("In tutor: step: " + step.getMyTypeName());
-        Hint hint = new Hint();
-        hint.setSequenceId(1);
-        hint.setText("Encode the first Character of the String");
-        step.addHint(hint);
+        try {
+            // As the student has at least one task and step to complete,
+            // add the associated knowledge component assessment(s) to the 
+            // student model of the student.
+            HashSet<Integer> componentIds = new HashSet<>();
+            for (Task task : session.getTasks()) {
+                for (int componentId : task.getExercisedComponentIds()) {
+                    componentIds.add(componentId);
+                }
 
-        hint = new Hint();
-        hint.setSequenceId(2);
-        hint.setText("Use the ASCII lookup table For example 'A' -> 65");
-        step.addHint(hint);
+                for (Step step : task.getSteps()) {
+                    for (int cid : step.getExercisedComponentIds()) {
+                        componentIds.add(cid);
+                    }
+                }
+            }
 
-        steps.add(step);
+            for (int id : componentIds) {
+                if (!model.containsAssessment(id)) {
+                    KnowledgeComponent comp = course.findKnowledgeComponent(id);
+                    model.addAssessment(id, new Assessment(comp, AssessmentLevel.VERY_LOW));
+                    
+                    
+                }
+            }
 
-        Task task = new Task(1);
-        task.setSteps(steps);
-        task.setDescription("The first task in the SHA-256 algorithm is to encode the input string as an ASCII byte string. As an example considerthe string \"Regis Computer Science Rocks!\"");
+            StudentSvc svc = ServiceFactory.findStudentSvc();
+            svc.create(student);
 
-        session.setTask(task);
+            return student;
 
-        ServiceFactory.findSessionSvc().create(session);
+        } catch (IllegalArgException e) {
+            // We should never get here since 
+            throw new NonRecoverableException("Student already exists " + acct.getUserId());
+
+        } catch (ObjNotFoundException e) {
+            throw new NonRecoverableException("Inconsistent Course in DB knowledge component" + course.getId());
+        }
+
     }
 
     /**
@@ -372,12 +430,50 @@ public class ShaTuTutor implements TutorSvc {
             throws ObjNotFoundException, IllegalArgException, NonRecoverableException {
 
         SessionSvc svc = ServiceFactory.findSessionSvc();
-        TutoringSession session = svc.findById(userId);
+        TutoringSession locSession = svc.retrieve(userId);
 
-        if (session.getSecurityToken().equals(sessionId)) {
-            return session;
+        if (locSession.getSecurityToken().equals(sessionId)) {
+            return locSession;
         } else {
             throw new IllegalArgException("Illegal session id for user: " + userId);
+        }
+    }
+
+    /**
+     * Return the first task that should be performed in the given course.
+     *
+     * @param course
+     * @return a Task that should be completed first.
+     * @throws IllegalArgException see the message text.
+     */
+    private Task getFirstTask(Course course) throws IllegalArgException {
+        switch (course.getPrimaryPedagogy()) {
+            case STUDENT_CHOICE:
+                return null; // ToDo
+
+            case FIXED_SEQUENCE:
+                Unit unit = course.findUnitBySequenceId(0);
+
+                if (unit == null) {
+                    throw new IllegalArgException("Unit 0 not found in course: " + course.getId());
+                }
+
+                Task task = unit.findTaskBySequence(0);
+
+                if (task == null) {
+                    throw new IllegalArgException("Task 0 not found in Unit 0 of course: " + course.getId());
+                }
+
+                return task;
+
+            case MASTERY_LEARNING:
+                return null; // ToDo
+
+            case MICROADAPTATION:
+                return null; // ToDo
+
+            default:
+                throw new IllegalArgException("Unknwon task selection in course: " + course.getId());
         }
     }
 
@@ -455,7 +551,65 @@ public class ShaTuTutor implements TutorSvc {
      * @return a TutorReply
      */
     private TutorReply newAddOneBitExample(TutoringSession session, String jsonData) {
+        Random rnd = new Random();
+
+        BitOpExample example = gson.fromJson(jsonData, BitOpExample.class);
+
+        int size = example.getPreSize();
+
+        Account account = session.getAccount();
+
+        if (size == 0) {
+            // ToDo: The tutor should generate the string length and timeout
+            // based on the the current student model.
+
+            size = rnd.nextInt(MAX_ASCII_SIZE - 1) + 1;
+            example.setTimeOut(600);
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            builder.append(String.valueOf(rnd.nextBoolean() ? 0 : 1));
+        }
+
+        example.setPreSize(size);
+        example.setOperand1(builder.toString());
+        example.setOperand2("");
+
+        builder.append("1");
+
+        example.setResult(builder.toString());
+        example.setPostSize(size + 1);
+
+        BitOpStep subStep = new BitOpStep();
+        subStep.setExample(example);
+        subStep.setMultiStep(false);
+
+        Hint hint = new Hint();
+        hint.setSequenceId(0);
+        hint.setText("Add one bit with a value to the given bits.");
+
+        Step step = new Step(1, 0, StepSubType.ADD_ONE_BIT);
+        step.setCurrentHintIndex(0);
+        step.addHint(hint);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+
+        step.setData(gson.toJson(subStep));
+
+        // TaskState state = new TaskState();
+        // state.set
+        Task task = new Task();
+        task.setTaskType(TaskKind.PROBLEM);
+        task.setDescription("Add one bit to the given bit string");
+        task.addStep(step);
+
+        // ToDo: Add the task to the session and update it.
         TutorReply reply = new TutorReply(":Success");
+        reply.setData(gson.toJson(task));
 
         return reply;
     }
@@ -543,7 +697,77 @@ public class ShaTuTutor implements TutorSvc {
      * @return a TutorReply
      */
     private TutorReply newXorBitsExample(TutoringSession session, String jsonData) {
+
+        Random rnd = new Random();
+
+        BitOpExample example = gson.fromJson(jsonData, BitOpExample.class);
+
+        int size = example.getPreSize();
+
+        if (size == 0) {
+            // ToDo: The tutor should generate the string length and timeout
+            // based on the the current student model.
+            size = rnd.nextInt(MAX_BITS_SIZE - 1) + 1;
+            example.setTimeOut(600);
+
+        } else if (size > MAX_BITS_SIZE) {
+            // The student is requesting practice for a specific string length.
+            size = MAX_ASCII_SIZE;
+            example.setTimeOut(0);
+        }
+
+        example.generatedRandomOperands(size);
+
+        //example.setPreSize(size);
+        //example.setPostSize(size);
+        //int maxOperandVal = (int) Math.pow(2.0d, size) - 1; // e.g., 2^8 - 1 = 255
+        // int operand1 = rnd.nextInt((maxOperandVal - 1) + 1);
+        //example.setOperand1Val(operand1);
+        //int operand2 = rnd.nextInt((maxOperandVal - 1) + 1);
+        //example.setOperand2Val(operand2);
+        //int xor = operand1 ^ operand2;
+        int xor = (int) example.getOperand1Val() ^ (int) example.getOperand2Val();
+        example.setResultVal(xor);
+
+        /*
+        builder.setLength(0); // clear the builder
+        for (int i = 0; i < size; i++) {
+            char char1 = operand1.charAt(i);
+            char char2 = operand2.charAt(i);
+            if (((char1 == '0') && (char2 == '0')) || ((char1 == '1') && (char2 == '1'))) {
+                builder.append('0');
+            } else {
+                builder.append('1');
+            }
+        }
+        
+        example.setResult(builder.toString());
+         */
+        BitOpStep subStep = new BitOpStep();
+        subStep.setExample(example);
+        //ToDo: multistep should be determined by the student model.
+        subStep.setMultiStep(rnd.nextBoolean());
+
+        Step step = new Step(1, 0, StepSubType.XOR_BITS);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+
+        step.setData(gson.toJson(subStep));
+
+        // TaskState state = new TaskState();
+        // state.set
+        Task task = new Task();
+        task.setTaskType(TaskKind.PROBLEM);
+        task.setDescription("Xor the bits in the two operands");
+        task.addStep(step);
+
+        // ToDo: Add the task to the session and update it.
         TutorReply reply = new TutorReply(":Success");
+        reply.setData(gson.toJson(task));
 
         return reply;
     }
@@ -551,10 +775,81 @@ public class ShaTuTutor implements TutorSvc {
     /**
      * Handles client requests for a new add bits example.
      *
+     * Generates two operands with pre-size n bits. These are added together
+     * using modulo-preSize arithmetic. For example, with preSize 8 bits:</br>
+     * Operand1: 11100111:231 </br>
+     * Operand2: 10101111:175 </br>
+     * Intermediate: 110010110:406 </br>
+     * Result: 10010110:150 (e.g., 406 % 256)
+     *
+     * @param session the current tutoring session.
+     * @param jsonData a BitOpExample encoded object
      * @return a TutorReply
      */
     private TutorReply newAddBitsExample(TutoringSession session, String jsonData) {
+        Random rnd = new Random();
+
+        BitOpExample example = gson.fromJson(jsonData, BitOpExample.class);
+
+        int size = example.getPreSize(); // number of bits
+
+        if (size == 0) {
+            // ToDo: The tutor should generate the string length and timeout
+            // based on the the current student model.
+            size = rnd.nextInt(MAX_BITS_SIZE - 1) + 1;
+            example.setTimeOut(600);
+
+        } else if (size > MAX_BITS_SIZE) {
+            // The student is requesting practice for a specific string length.
+            size = MAX_BITS_SIZE;
+            example.setTimeOut(0);
+        }
+
+        example.setPreSize(size);
+
+        int maxOperandVal = (int) Math.pow(2.0d, size) - 1; // e.g., 2^8 - 1 = 255
+
+        long operand1 = rnd.nextLong((maxOperandVal - 1) + 1);
+        example.setOperand1Val(operand1);
+
+        long operand2 = rnd.nextLong((maxOperandVal - 1) + 1);
+        example.setOperand2Val(operand2);
+
+        // This is Mod size arithmetic
+        example.setPostSize(size);
+        long result = ((long) operand1) + ((long) operand2);
+
+        if (result > maxOperandVal) {
+            result = result % (maxOperandVal + 1);
+        }
+
+        example.setResultVal(result);
+
+        BitOpStep subStep = new BitOpStep();
+        subStep.setExample(example);
+        //ToDo: multistep should be determined by the student model.
+        subStep.setMultiStep(rnd.nextBoolean());
+
+        Step step = new Step(1, 0, StepSubType.ADD_BITS);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+
+        step.setData(gson.toJson(subStep));
+
+        // TaskState state = new TaskState();
+        // state.set
+        Task task = new Task();
+        task.setTaskType(TaskKind.PROBLEM);
+        task.setDescription("Xor the bits in the two operands");
+        task.addStep(step);
+
+        // ToDo: Add the task to the session and update it.
         TutorReply reply = new TutorReply(":Success");
+        reply.setData(gson.toJson(task));
 
         return reply;
     }

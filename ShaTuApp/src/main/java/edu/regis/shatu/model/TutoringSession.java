@@ -12,7 +12,7 @@
  */
 package edu.regis.shatu.model;
 
-import edu.regis.shatu.model.aol.Task;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 /**
@@ -21,14 +21,26 @@ import java.util.GregorianCalendar;
  * @author rickb
  */
 public class TutoringSession {   
+    /**
+     * An SHA-256 encrypted security token that must be communicated to the
+     * tutor/server in all subsequent requests after signing in.
+     */
     private String securityToken = "";
     
     /**
      * The student being tutored in this session.
-     * 
-     * The user's password is not found in the account. 
      */
     private Account account;
+    
+    /**
+     * A summary of the course currently being taught in this session.
+     */
+    private CourseDigest course;
+    
+    /**
+     * A summary of the unit currently being taught in this session.
+     */
+    private UnitDigest unit;
     
      /**
      * True, if the session is currently active (though the student may not
@@ -42,15 +54,19 @@ public class TutoringSession {
     private GregorianCalendar startDate;
  
      /**
-     * The index of the current event within this session (not the event id).
-     * Defaults to 1 since all sessions have an associated creation event.
+     * The current task list.
+     * 
+     * If there are multiple tasks, the first one is the current task and the
+     * remaining tasks are pending. Multiple tasks occur when a student 
+     * overrides the task proposed by the tutor.
      */
-    private Task task;
+    private ArrayList<Task> tasks;
 
     /**
      * Initialize this session with default information.
      */
     public TutoringSession() {
+        tasks = new ArrayList<>();
     }
 
     public String getSecurityToken() {
@@ -74,6 +90,22 @@ public class TutoringSession {
         this.account = account;
     }
 
+    public CourseDigest getCourse() {
+        return course;
+    }
+
+    public void setCourse(CourseDigest course) {
+        this.course = course;
+    }
+
+    public UnitDigest getUnit() {
+        return unit;
+    }
+
+    public void setUnit(UnitDigest unit) {
+        this.unit = unit;
+    }
+    
     public boolean isIsActive() {
         return isActive;
     }
@@ -89,12 +121,30 @@ public class TutoringSession {
     public void setStartDate(GregorianCalendar startDate) {
         this.startDate = startDate;
     }
-
-    public Task getTask() {
-        return task;
+    
+    public Task currentTask() {
+        return tasks.get(0);
+    }
+    
+    public void addTask(Task task) {
+        tasks.add(task);
     }
 
-    public void setTask(Task task) {
-        this.task = task;
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(ArrayList<Task> tasks) {
+        this.tasks = tasks;
+    }
+    
+    public void removeTask(Task task) {
+        tasks.remove(task);
+    }
+    
+    public void removeTask(int taskId) {
+        for (Task task : tasks) 
+            if (task.getId() == taskId)
+                removeTask(task);
     }
 }

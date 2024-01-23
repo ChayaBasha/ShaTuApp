@@ -13,6 +13,7 @@
 package edu.regis.shatu.dao;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.regis.shatu.err.IllegalArgException;
@@ -38,6 +39,11 @@ import java.nio.file.Paths;
  */
 public class UserDAO implements UserSvc {
     /**
+     * Data directory containing student user account files.
+     */
+    private static final String DATA_DIRECTORY = "src/main/java/resources/Data/";
+    
+    /**
      * Initialize this DAO via the parent constructor.
      */
     public UserDAO() {
@@ -49,32 +55,26 @@ public class UserDAO implements UserSvc {
      */
     @Override
     public void create(Account acct) throws IllegalArgException, NonRecoverableException {      
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
        
         String userId = acct.getUserId();
-        String fileName = "src/main/java/resources/Data/User_" + userId.replace('@', '_').replace('.', '_') + ".json";
-        
+        String fileName = fullyQualifedFileName(userId); 
         File file = new File(fileName);
-
-        //System.out.println("Abs: " + file.getAbsolutePath());
-        
-        File newFile = new File(file.getAbsolutePath());
+        File absFile = new File(file.getAbsolutePath());
 
         try {
-            newFile.createNewFile();
+            absFile.createNewFile();
       
             Path path = Paths.get(fileName);
         
             try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-                gson.toJson(acct, writer);
-                
-
-                
+                gson.toJson(acct, writer);                
             } catch (IOException ex) {
-                throw new NonRecoverableException("Create Acct Writer Error", ex);
+                throw new NonRecoverableException("Create User Accountt Writer Error", ex);
             }
+            
         }   catch (IOException ex) {
-            throw new NonRecoverableException("Create Acct File Error", ex);
+            throw new NonRecoverableException("Create User Accountt File Error", ex);
         }
     }
 
@@ -83,6 +83,7 @@ public class UserDAO implements UserSvc {
      */
     @Override
     public void delete(String userId) throws NonRecoverableException {
+        //ToDo: add functionality
        throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -90,10 +91,10 @@ public class UserDAO implements UserSvc {
      * {@inheritDoc}
      */
     @Override
-    public User findById(String userId) throws ObjNotFoundException, NonRecoverableException {
+    public User retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
         Gson gson = new Gson();
        
-        String fileName = "src/main/java/resources/Data/User_" + userId.replace('@', '_').replace('.', '_') + ".json";
+        String fileName = fullyQualifedFileName(userId);
         
         Path path = Paths.get(fileName);
      
@@ -115,7 +116,18 @@ public class UserDAO implements UserSvc {
      * {@inheritDoc}
      */
     @Override
-    public void update(User user, String newPassword) throws ObjNotFoundException, IllegalArgException, NonRecoverableException {
+    public void update(User user, String newPassword) throws ObjNotFoundException, NonRecoverableException {
+        //ToDo: add functionality
         throw new UnsupportedOperationException("Not supported yet."); 
+    }
+    
+    /**
+     * Return the fully qualified name of the user file for the given user.
+     * 
+     * @param userId the id of the user whose session file name is returned.
+     * @return a String specifying a fully qualified file name.
+     */
+    private String fullyQualifedFileName(String userId) {
+        return DATA_DIRECTORY + "User_" + userId.replace('@', '_').replace('.', '_') + ".json";
     }
 }

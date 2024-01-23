@@ -14,10 +14,9 @@ package edu.regis.shatu.view.act;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import edu.regis.shatu.ShaTuApp;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.model.TutoringSession;
-import edu.regis.shatu.model.aol.Step;
+import edu.regis.shatu.model.Step;
 import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import edu.regis.shatu.svc.SvcFacade;
@@ -26,8 +25,6 @@ import edu.regis.shatu.view.MainFrame;
 import edu.regis.shatu.view.SplashFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.logging.Logger;
 import static javax.swing.Action.MNEMONIC_KEY;
 import static javax.swing.Action.SHORT_DESCRIPTION;
@@ -36,12 +33,13 @@ import static javax.swing.Action.SHORT_DESCRIPTION;
  * An (MVC) controller handling a GUI gesture representing a user's request to
  * login to the tutor via the WelcomePanel.
  *
- * If successful, a trial will be started or resumed for the student via
- * launch session.
- * 
+ * If successful, a trial will be started or resumed for the student via launch
+ * session.
+ *
  * @author rickb
  */
 public class SignInAction extends ShaTuGuiAction {
+
     /**
      * Exceptions occurring in this class are also logged to this logger.
      */
@@ -54,9 +52,9 @@ public class SignInAction extends ShaTuGuiAction {
     private static final SignInAction SINGLETON;
 
     /**
-     * Create the singleton for this action, which occurs when this class
-     * is loaded by the Java class loaded, as a result of the class being 
-     * referenced by executing SignInAction.instance() in the 
+     * Create the singleton for this action, which occurs when this class is
+     * loaded by the Java class loaded, as a result of the class being
+     * referenced by executing SignInAction.instance() in the
      * initializeComponents() method of the SplashPanel class.
      */
     static {
@@ -79,69 +77,55 @@ public class SignInAction extends ShaTuGuiAction {
         super("Sign In");
 
         putValue(SHORT_DESCRIPTION, "Sign-in to the tutor");
-        
-        
+
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
      * Handle the user's request to sign-in by sending it to the DICE tutor.
-     * 
+     *
      * If successful, the MaingFrame with the Courtroom View is displayed.
      *
      * @param evt ignored
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
-        Gson gson = new GsonBuilder()
-          //     .registerTypeAdapterFactory(ShaTuApp.typeAdapterFactory())
-                .setPrettyPrinting()
-               .create();
-          // Gson gson = new Gson();
-        
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
         User user = SplashFrame.instance().getUser();
 
-        ClientRequest request = new ClientRequest();
-        request.setRequest(ServerRequestType.SIGN_IN);
+        ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
         request.setData(gson.toJson(user));
-        
+
         TutorReply reply = SvcFacade.instance().tutorRequest(request);
 
-        String status = reply.getStatus();
-            
-        if (status.equals("Authenticated")) {   
-              //   gson = new GsonBuilder()
-              //           .setPrettyPrinting()
-              // .create();
-            
-    
-           MainFrame frame = MainFrame.instance();
-     
-          
-            Step step = gson.fromJson(reply.getData(), Step.class);
-          
+        switch (reply.getStatus()) {
+            case "Authenticated":
+                MainFrame frame = MainFrame.instance();
 
-            TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);     
-           
-           SplashFrame.instance().setVisible(false);
-                
-           frame.setVisible(true);
-  
-           frame.setModel(session);
+                TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
 
-        } else if (status.equals("InvalidPassword")) {
-            SplashFrame.instance().invalidPass();
+                SplashFrame.instance().setVisible(false);
 
-        } else if (status.equals("UnknownUser")) {
-            SplashFrame.instance().unknownUser();
+                frame.setVisible(true);
 
-        } else {
-            // If we get here, there is a coding error in the tutor svc
-            //frame.displayError("Ooops, an unexpected error occurred: SI_1");
-            System.out.println("Coding error  status: " + status);
+                frame.setModel(session);
+
+                break;
+
+            case "InvalidPassword":
+                SplashFrame.instance().invalidPass();
+                break;
+
+            case "UnknownUser":
+                SplashFrame.instance().unknownUser();
+                break;
+
+            default:
+                // If we get here, there is a coding error in the tutor svc
+                //frame.displayError("Ooops, an unexpected error occurred: SI_1");
+                System.out.println("Coding error  status: " + reply.getStatus());
         }
-        
     }
-
 }

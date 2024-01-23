@@ -10,7 +10,7 @@
  *  software is distributed on an "AS IS" basis without warranties
  *  or conditions of any kind, either expressed or implied.
  */
-package edu.regis.shatu.model.aol;
+package edu.regis.shatu.model;
 
 /**
  * Bloom's cognitive levels where each level includes the level before it.
@@ -26,12 +26,12 @@ public enum BloomLevel {
      KNOWLEDGE("Knowledge"),
 
      /**
-      *  Student controls a scenario and may ask for unpenalized hints.
+      *  
       */
      COMPREHENSION("Comprehension"),
 
      /**
-      *  Student may ask clarifying contextual questions.
+      *  Student is expected to apply the associated concept.
       */
      APPLICATION("Application"),
 

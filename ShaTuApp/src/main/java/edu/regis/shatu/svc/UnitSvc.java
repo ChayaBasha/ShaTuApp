@@ -14,7 +14,7 @@ package edu.regis.shatu.svc;
 
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
-import edu.regis.shatu.model.aol.Unit;
+import edu.regis.shatu.model.Unit;
 
 /**
  * Specifies the API for Unit life-cycle maintenance (database persistence).

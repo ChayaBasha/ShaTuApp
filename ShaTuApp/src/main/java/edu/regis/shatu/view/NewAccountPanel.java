@@ -117,6 +117,17 @@ public class NewAccountPanel extends GPanel {
     public void updateFocus() {
         fName.requestFocusInWindow();
     }
+    
+    /**
+     * Set all of the text fields in this view to the empty string.
+     */
+    public void clearFields() {
+        fName.setText("");
+        lName.setText("");
+        userId.setText("");
+        pass1.setText("");
+        pass2.setText("");
+    }
 
     /**
      * Update our model with the current values displayed in this view

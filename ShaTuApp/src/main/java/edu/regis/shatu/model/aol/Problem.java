@@ -21,7 +21,7 @@ import edu.regis.shatu.model.Model;
  * In VanLehn's sense, this is a task for the student to complete, but we treat
  * tasks at a finer granularity i.e. as subproblems within the primary problem.
  * The tasks within a problem are derived from the specific nature of the
- * problem (i.e. by implementing subclasses, such as CourtCase).
+ * problem.
  * 
  * @author rickb
  */

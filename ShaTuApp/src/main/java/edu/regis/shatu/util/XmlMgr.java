@@ -50,6 +50,11 @@ public class XmlMgr {
     private static final Logger LOGGER = Logger.getLogger(XmlMgr.class.getName());
     
     /**
+     * Data directory containing data files within the current NetBeans project.
+     */
+    private static final String DATA_DIRECTORY = "src/main/java/resources/Data/";
+    
+    /**
      * The singleton instance of this class.
      */
     public static final XmlMgr SINGLETON = new XmlMgr();
@@ -64,17 +69,12 @@ public class XmlMgr {
     }
     
     /**
-     * The "Data/" directory path within the current NetBeans project
-     */
-    private final String dataDirectory;
-    
-    /**
      * Initialize this Xml Manager by setting the default data directory.
      */
     private XmlMgr() {
-        String netBeansDir = System.getProperty("user.dir");
-        dataDirectory =  netBeansDir + "/Data/";
-        System.out.println("Data Directory: " + dataDirectory);
+       // String netBeansDir = System.getProperty("user.dir");
+       // dataDirectory =  netBeansDir + "/Data/";
+       // System.out.println("Data Directory: " + dataDirectory);
     }
     
     /**
@@ -89,12 +89,10 @@ public class XmlMgr {
      * @param subDirectory an empty string or path beginning with a '/'
      * @return 
      */
-    public List<File>findAllFiles(String subDirectory) {
+    public List<File>findAllFiles(String fileName) {
         ArrayList<File> xmlFiles = new ArrayList<>();
         
-        String directory = dataDirectory + subDirectory;
-        
-        File folder = new File(directory);
+        File folder = new File(DATA_DIRECTORY);
         
         FilenameFilter filter = new FilenameFilter() {
             @Override
@@ -145,7 +143,7 @@ public class XmlMgr {
      */
     public FileOutputStream openFile(String fileName) throws FileNotFoundException {
 
-        String path = dataDirectory + fileName;
+        String path = DATA_DIRECTORY + fileName;
             
         return new FileOutputStream(new File(path));
     }
@@ -157,7 +155,9 @@ public class XmlMgr {
      * @throws ShaTuException a nonrecoverable exception
      */
     public void deleteFile(String fileName) throws ShaTuException {
-        File file = findFile(fileName);
+        String path = DATA_DIRECTORY + fileName;
+        
+        File file = findFile(path);
   
         file.delete();
     }
@@ -169,9 +169,11 @@ public class XmlMgr {
      * @return a File object corresponding to the given file name
      */
     public File findFile(String fileName) {
-        String path = dataDirectory + fileName;
-        
-        return new File(path);
+        String dir = DATA_DIRECTORY + fileName;
+
+        File file = new File(dir);
+  
+        return file;
     }
     
     /**
@@ -190,9 +192,9 @@ public class XmlMgr {
         
         do {
             fileName = fileName + id + ".xml";
-            String fullPath = dataDirectory + fileName;
+            String fullPath = DATA_DIRECTORY + fileName;
 
-            Path path = Paths.get(dataDirectory);
+            Path path = Paths.get(DATA_DIRECTORY);
 
             if (Files.exists(path)) {
                 return id;
@@ -218,7 +220,7 @@ public class XmlMgr {
             InputStream in = new FileInputStream(findFile(fileName));
  
             if (in == null)
-                throw new ObjNotFoundException(dataDirectory + fileName);
+                throw new ObjNotFoundException(DATA_DIRECTORY + fileName);
             
             return findRoot(in);
         
@@ -283,7 +285,7 @@ public class XmlMgr {
     }
 
     /**
-     * Search the given element for an element tage that appears only once in
+     * Search the given element for an element tag that appears only once in
      * the document and return the content of the found element.
      * 
      * @param root the root element of the corresponding document to search

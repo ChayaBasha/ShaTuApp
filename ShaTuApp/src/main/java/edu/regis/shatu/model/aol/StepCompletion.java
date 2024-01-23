@@ -30,6 +30,10 @@ public class StepCompletion {
      */
     private long date;
     
+    private boolean timeoutOccur;
+    
+    private int hintsGiven;
+    
     /**
      * Initialize this completion with the current date and time.
      */

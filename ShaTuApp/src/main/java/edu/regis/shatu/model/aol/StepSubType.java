@@ -22,14 +22,26 @@ package edu.regis.shatu.model.aol;
  */
 public enum StepSubType {
     /**
-     * The student has completed the current step.
+     * The user must acknowledge a message (i.e., perhaps via a pop-up dialog)
      */
-    COMPLETE_STEP("CompleteStep"),
+    INFO_MESSAGE("Information Message"),
     
     /**
-
+    * A step in which the student must perform some GUI action, which is 
+    * typically performed outside of actual tutoring for purposes of learning 
+    * the GUI, such as learning to request a hint.
      */
-    COMPLETE_TASK("CompleteTask"),
+    GUI_ACTION("GUI Action"),
+    
+    /**
+     * A request to encode a number as binary digits
+     */
+    ENCODE_BINARY("Encode Binary"),
+    
+    /**
+     * A request to encode a number as hexadecimal digits.
+     */
+    ENCODE_HEX("Encode Hex"),
     
     /**
      * Represents a request to 

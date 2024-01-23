@@ -26,7 +26,7 @@ public class Student extends User {
     protected String firstName;
     
     /**
-     * The last name of this StudentUser.
+     * The last name of this student user.
      */
     protected String lastName;
     
@@ -47,6 +47,8 @@ public class Student extends User {
      * @param password an SHA-256 encrypted password.
      */
     public Student(String userId, String password) { 
+        this.userId = userId;
+        this.password = password;
         studentModel = new StudentModel();
     }
 
@@ -59,7 +61,7 @@ public class Student extends User {
     }
 
     /**
-     * Assign this StudentUser's first name.
+     * Assign this Student User's first name.
      * @param firstName the name String
      */
     public void setFirstName(String firstName) {
@@ -67,7 +69,7 @@ public class Student extends User {
     }
 
     /**
-     * Return this StudentUser's last name
+     * Return this Student User's last name
      * @return the name String
      */
     public String getLastName() {
@@ -75,7 +77,7 @@ public class Student extends User {
     }
 
     /**
-     * Assign this StudentUser's last name.
+     * Assign this Student User's last name.
      * @param lastName the name String
      */
     public void setLastName(String lastName) {

@@ -185,6 +185,13 @@ public class SplashFrame extends JFrame {
     }
     
     /**
+     * Reset the text fields in the new account panel to the empty string
+     */
+    public void clearNewAccountPanel() {
+        newAccountPanel.clearFields();
+    }
+    
+    /**
      * Display to the user they entered an unknown user during a sign in.
      */
     public void unknownUser() {

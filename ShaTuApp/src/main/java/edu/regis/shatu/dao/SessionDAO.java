@@ -14,60 +14,55 @@ package edu.regis.shatu.dao;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import edu.regis.shatu.ShaTuApp;
+import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
 import edu.regis.shatu.model.TutoringSession;
-import edu.regis.shatu.model.aol.Step;
-import edu.regis.shatu.model.aol.Task;
 import edu.regis.shatu.svc.SessionSvc;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * ToDo: Set this up as a socket server that receives requests from the Tutor
+ * A Data Access Object implementing {@link SessionSvc} behaviors.
  * 
  * @author rickb
  */
 public class SessionDAO implements SessionSvc {
     /**
+     * Data directory containing student session files.
+     */
+    private static final String DATA_DIRECTORY = "src/main/java/resources/Data/";
+    
+    /**
      * {@inheritDoc}
      */
     @Override
-    public void create(TutoringSession session) throws NonRecoverableException {
-       //Gson gson = new Gson();
-      // Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Gson gson = new GsonBuilder()
-             //  .registerTypeAdapterFactory(ShaTuApp.typeAdapterFactory())
-              .setPrettyPrinting()
-               .create();
+    public void create(TutoringSession session) throws IllegalArgException, NonRecoverableException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
        
         String userId = session.getAccount().getUserId();
-        String fileName = "src/main/java/resources/Data/Session_" + userId.replace('@', '_').replace('.', '_') + ".json";
+        
+        String fileName = fullyQualifedFileName(userId);
         
         File file = new File(fileName);
         
         File newFile = new File(file.getAbsolutePath());
 
+        if (newFile.exists())
+            throw new IllegalArgException("A session already exists: " + userId);
+        
         try {
             newFile.createNewFile();
       
@@ -92,67 +87,17 @@ public class SessionDAO implements SessionSvc {
      * {@inheritDoc}
      */
     @Override
-    public TutoringSession findById(String userId) throws ObjNotFoundException, NonRecoverableException {
-        Gson gson = new GsonBuilder()
-              // .registerTypeAdapterFactory(ShaTuApp.typeAdapterFactory())
-                .setPrettyPrinting()
-               .create();
+    public TutoringSession retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
        
-        String fileName = "src/main/java/resources/Data/Session_" + userId.replace('@', '_').replace('.', '_') + ".json";
-        
-        Path path = Paths.get(fileName);
+        Path path = Paths.get(fullyQualifedFileName(userId));
      
         try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             JsonObject jsonObj = JsonParser.parseReader(reader).getAsJsonObject();
-            
-            /*
-            // Debug
-            System.out.println("Session.findById");
-            Set<String> keys = jsonObj.keySet();
-            for (String key : keys) {
-                System.out.println("Json member: " + key + " : " + jsonObj.get(key));
-            }
-            
-            JsonObject taskEl = (JsonObject) jsonObj.get("task");
-            System.out.println("Json Task El: " + taskEl);
-            Task taskPrime = gson.fromJson(taskEl, Task.class);
-            System.out.println("taskPRime curre: " + taskPrime.getCurrentStep());
-            
-            JsonElement stepsArrStr = taskEl.get("steps");
-            System.out.println("Json stpews arr str: " + stepsArrStr);
-            
-            JsonArray arr = taskEl.getAsJsonArray("steps");
-            System.out.println("Json array: " + arr);
-            
-            JsonElement stepEl = arr.get(0);
-            System.out.println("Step El: " + stepEl);
-            
-           // TypeToken token = new TypeToken<Step>() {};
-           // Step astep = gson.fromJson(stepEl, token.getType());
-           
-           // THis works , but is using the subclass, which defeates the idea
-           // of the adapter.
-            Step aStep = gson.fromJson(stepEl, CompleteStepStep.class);
-            System.out.println("aStep: " + aStep.getMyTypeName());
-            
-            
-            TutoringSession session = gson.fromJson(jsonObj, TutoringSession.class);
-            System.out.println("Session in findBy step name: " + session.getTask().getCurrentStep().getMyTypeName());
-            
-            ArrayList<Step> steps = session.getTask().getSteps();
-            for (Step step : steps) {
-                System.out.println("StepId: " + step.getSequenceId());
-                System.out.println("Step: " + step.getMyTypeName());
-            }
-            
-            return session;
-            
-            
-*/
+   
             return gson.fromJson(jsonObj, TutoringSession.class);
 
         } catch (FileNotFoundException ex) {
-            // This not necessarily an error since the user may have a typo
             throw new ObjNotFoundException(String.valueOf(userId));
         } catch (IOException ex) {
             String errMsg = "find user: " + userId;
@@ -160,5 +105,82 @@ public class SessionDAO implements SessionSvc {
         }
     }
     
+    /**
+     * {@inheritDoc}
+     * 
+     * 1. Rename existing session file
+     * 2. Create a new session file using the given update
+     * 3. Delete the original, but now renamed file.
+     */
+    @Override
+    public void update(TutoringSession session) throws ObjNotFoundException, NonRecoverableException {
+        String userId = session.getAccount().getUserId();
+        
+        String fileName = fullyQualifedFileName(userId);
+        File file = new File(fileName);
+        File absFile = new File(file.getAbsolutePath());
+        
+        if (!absFile.exists())
+            throw new ObjNotFoundException("Session doesn't exist in update: " + userId);
+        
+        // Rename the file before deleting
+        String tmpName = DATA_DIRECTORY + "Session_tmp_" + userId.replace('@', '_').replace('.', '_') + ".json";
+        File tmpFile = new File(tmpName);
+        File destFile = new File(tmpFile.getAbsolutePath());
+        absFile.renameTo(destFile);
+        
+    
+        try {
+            create(session);
+            
+            delete(absFile); // Delete the previous, but now renamed file
+       
+        } catch (IllegalArgException | NonRecoverableException ex) {
+            String msg = "Cannot create a deleted session attempting restore: " + userId; 
+            Logger.getLogger(SessionDAO.class.getName()).log(Level.SEVERE, msg, ex);
+            
+            // Set the name back to the original session name before the update
+            fileName = fullyQualifedFileName(userId);
+            file = new File(fileName);
+            File originalAbsFile = new File(file.getAbsolutePath());
+            absFile.renameTo(originalAbsFile);
+            
+            throw new NonRecoverableException("Session Update Failed", ex);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(String userId) throws NonRecoverableException {
+        String fileName = fullyQualifedFileName(userId);
+        
+        File file = new File(fileName);
+        
+        File absFile = new File(file.getAbsolutePath());
+
+        delete(absFile);
+    }
+    
+    /**
+     * Utility that deletes the given a file.
+     * 
+     * @param file a File with an absolute path to delete.
+     */
+    private void delete(File file) {
+        if (file.exists())
+            file.delete();
+    }
+    
+    /**
+     * Return the fully qualified name of the session file for the given user.
+     * 
+     * @param userId the id of the user whose session file name is returned.
+     * @return a String specifying a fully qualified file name.
+     */
+    private String fullyQualifedFileName(String userId) {
+        return DATA_DIRECTORY + "Session_" + userId.replace('@', '_').replace('.', '_') + ".json";
+    }
 }
 

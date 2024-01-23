@@ -13,23 +13,9 @@
 package edu.regis.shatu.model.aol;
 
 /**
- * A knowledge component representing a piece of information known to be true.
- * 
+ *
  * @author rickb
  */
-public class Fact extends KnowledgeComponent {
-    public Fact() {
-        this(DEFAULT_ID);
-    }
+public class ContextualEnvironment {
     
-    /**
-     * Instantiate this fact with the given id.
-     * 
-     * @param id a unique id, as determined by the database used to
-     *           persist this fact
-     */
-    public Fact(int id) {
-        super(id);
-    }
 }
-

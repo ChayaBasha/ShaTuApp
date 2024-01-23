@@ -19,16 +19,17 @@ import edu.regis.shatu.model.Student;
 import edu.regis.shatu.model.aol.StudentModel;
 
 /**
- * Specifies the API for {@link Student} life-cycle maintenance (persistence).
+ * Specifies the API for {@link Student} life-cycle maintenance (CRUD persistence).
  * 
  * @author rickb
  */
 public interface StudentSvc  {
     /**
-     * Insert the given {@link Student} into the database.
+     * Insert the given {@link Student} and {@link StudentModel} into the database.
      * 
-     * @param student
-     * @throws IllegalArgException
+     * @param student the student's email address is used as the student id
+     *                (email: user@university.edu)
+     * @throws IllegalArgException a student with the given user id already exists
      * @throws NonRecoverableException perhaps see getCause().getErrorCode()
      */
     void create(Student student) throws IllegalArgException, NonRecoverableException;
@@ -39,8 +40,8 @@ public interface StudentSvc  {
      * The idea is that this will execute quickly since it avoid loading the
      * student model.
      * 
-     * @param userId
-     * @return
+     * @param userId the student's user id (email: user@university.edu)
+     * @return true if the given student exists, otherwise false
      * @throws NonRecoverableException
      */
     boolean exists(String userId) throws NonRecoverableException;
@@ -50,23 +51,32 @@ public interface StudentSvc  {
      * 
      * See exists(String) for a faster check as to whether a student exists.
      * 
-     * @param userId the email address of the student to find
+     * @param userId the student's user id (email: user@university.edu)
      * @return the desired student
      * @throws ObjNotFoundException no student with the give user id exists
      * @throws NonRecoverableException perhaps see getCause().getErrorCode()
      */
-    Student findStudentById(String userId) throws ObjNotFoundException, NonRecoverableException;
+    Student retrieve(String userId) throws ObjNotFoundException, NonRecoverableException;
     
     /**
      * Return the {@link StudentModel} for the given user id.
      * 
-     * @param userId the student's user id (email addr)
+     * @param userId the student's user id (email: user@university.edu)
      * @return the StudentModel for the Student with the given user id
      * @throws ObjNotFoundException No student with the given user id exists
 
      * @throws NonRecoverableException perhaps see getCause().getErrorCode()
      */
-    StudentModel findModelByUserId(String userId) throws ObjNotFoundException, 
+    StudentModel findModelById(String userId) throws ObjNotFoundException, 
             NonRecoverableException;
+    
+    /**
+     * Delete the student from the database including the student's account,
+     * current session, and student model.
+     * 
+     * @param userId the student's user id (email: user@university.edu)
+     * @throws NonRecoverableException 
+     */
+    void delete(String userId) throws NonRecoverableException;
 }
 

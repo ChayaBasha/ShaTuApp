@@ -14,8 +14,7 @@ package edu.regis.shatu.svc;
 
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
-import edu.regis.shatu.err.ShaTuException;
-import edu.regis.shatu.model.aol.Course;
+import edu.regis.shatu.model.Course;
 
 /**
  * Specifies the API for Course life-cycle maintenance (database persistence).
@@ -31,5 +30,5 @@ public interface CourseSvc {
      * @exception ObjNotFoundException No course with the given id exists.
      * @throws NonRecoverableException see the documentation for this exception.
      */
-    Course findById(int id) throws ObjNotFoundException, NonRecoverableException;
+    Course retrieve(int id) throws ObjNotFoundException, NonRecoverableException;
 }

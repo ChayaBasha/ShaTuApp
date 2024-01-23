@@ -24,6 +24,11 @@ public enum ServerRequestType {
     COMPLETED_STEP(":CompletedStep"),
     
     /**
+     * Completed an entire task containing one ore more steps.
+     */
+    completed_Task(":CompletedTask"),
+    
+    /**
      * A new user is requesting to create a new account
      * 
      * The ClientRequest data is a JSon Account object
