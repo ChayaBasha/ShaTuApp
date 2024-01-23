@@ -1,20 +1,14 @@
 {
-<<<<<<< HEAD
   "securityToken": "ce9609c198b058b2ace199b206c8148f276dade445b1a9ddf6825ae771d0acd0",
-=======
-  "securityToken": "1c43733e6be26281c548cbde76b15bf2069649c396811043d7621121d4910feb",
->>>>>>> c539a95ffa1d330b21ed568b16c44c62d0f33aeb
   "account": {
     "userId": "test@regis.edu",
     "password": "36f9ddba5d5523949b946df7e94dc15652857b57612d6e39ee1aec1b3b091314",
     "firstName": "Testy",
     "lastName": "McTest"
   },
-<<<<<<< HEAD
   "course": {
     "title": "SHA-256 Message Digest",
     "description": "\n        Familiarizes students with the operation of the SHA-256 message digest\n        algorithm along with its underlying bitwise operations and encodings.\n    ",
-=======
   "isActive": true,
   "task": {
     "taskType": "PROBLEM",
@@ -54,7 +48,6 @@
     },
     "title": "",
     "description": "The first task in the SHA-256 algorithm is to encode the input string as an ASCII byte string. As an example considerthe string \"Regis Computer Science Rocks!\"",
->>>>>>> c539a95ffa1d330b21ed568b16c44c62d0f33aeb
     "id": 1
   },
   "unit": {
