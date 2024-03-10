@@ -12,162 +12,203 @@
  */
 package edu.regis.shatu.view;
 
-import edu.regis.shatu.svc.SHA_256;
-import edu.regis.shatu.svc.SHA_256Listener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.regis.shatu.model.AddOneStep;
+import edu.regis.shatu.model.Hint;
+import edu.regis.shatu.model.Step;
+import edu.regis.shatu.model.Task;
+import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.svc.ClientRequest;
+import edu.regis.shatu.svc.ServerRequestType;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 /**
- * A view that adds one to the current binary bytes.
+ * A view that requests the student to add a single '1' bit to the byte prompt.
  * 
  * @author rickb
  */
-public class Add1View extends GPanel implements ActionListener, KeyListener, SHA_256Listener {
-        
+public class Add1View extends GPanel implements ActionListener {
     /**
-     * The ASCII character the student is being asked to convert
+     * The tutoring session displayed in this view.
      */
-    private JLabel exampleCharacter;
+    private TutoringSession model;
+    
+    /**
+     * The part of the tutoring session model that is displayed in this view.
+     */
+    private AddOneStep stepDataModel;
+    
+    /**
+     * The source input string to which one bit is to be added.
+     */
+    private JLabel source;
     
     /**
      * The input entered by the student
      */
-    private JTextField charInput;
+    private JTextField target;
     
-    private JButton verifyBut;
+    private JButton submitBut, hintBut;
+    
+    /**
+     * The number of hint requests made by the student.
+     */
+    private int hintsRequested;
+    
+    /**
+     * Utility reference used to convert between Java and JSon. 
+     */
+    private Gson gson;
     
     /**
      * Initialize this view including creating and laying out its child components.
      */
-    public Add1View() {       
+    public Add1View() { 
+        gson = new GsonBuilder().setPrettyPrinting().create();
+        
         initializeComponents();
         initializeLayout();
     }
     
-    public void notifyAsciiEncoding(byte[] bytes) {
-        // ToDo: This is simply a temporary test
-        System.out.println("MsgByte.len: " + bytes.length);
-        System.out.println("Msg: ");
-        for (int i = 0; i < bytes.length; i++)
-            System.out.println("Byte " + i + ": " + bytes[i]);
+    public void setModel(TutoringSession model) {
+        this.model = model;
+        
+        updateDisplay();
     }
-    
-    public static String convertStringToBinary(String input) {
-
-        StringBuilder result = new StringBuilder();
-        char[] chars = input.toCharArray();
-        for (char aChar : chars) {
-            result.append(
-                    String.format("%8s", Integer.toBinaryString(aChar))   
-                            .replaceAll(" ", "0")
-            );
-            result.append(' ');
-        }
-        result.append('1');
-        return result.toString();
-
-    }
-   
     
     @Override
     public void actionPerformed(ActionEvent event) {
-       if (event.getSource() == verifyBut) {
-           String userInput = charInput.getText();
+        if (event.getSource() == submitBut) {
+            submitAnswer();
            
-           String result = convertStringToBinary(userInput);
-           
-           JOptionPane.showMessageDialog(this, result);
-           
-       }
+        } else if (event.getSource() == hintBut) {
+            requestHint();
+        }
     }
     
-    
-    @Override
-    public void keyTyped(KeyEvent event){
-       if (event.getSource()== charInput){
-          String userInput = charInput.getText();
 
-       }
-    }
-    
-    @Override 
-    public void keyPressed(KeyEvent event){
-       if(event.getSource()== charInput && event.getKeyCode()== KeyEvent.VK_ENTER) {
-         String userInput = charInput.getText(); 
-          
-          
-           // ToDo: this is simply a test of the SHA-256 algorithm
-           SHA_256 alg = GuiController.instance().getSha256Alg();
-           System.out.println("Alg: " + alg);
-           alg.addListener(this);
-         
-           
-           String digest = alg.sha256("Regis Computer Science Rocks!");
-           System.out.println("Enter Digest: " + digest);
-       }
-    }
-    
-    @Override
-    public void keyReleased(KeyEvent event) {
-       
-    }
-    
- 
     /**
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        exampleCharacter = new JLabel("");
+        source = new JLabel("");
         
-        charInput = new JTextField(20);
-        charInput.addKeyListener(this);
+        target = new JTextField(65);
         
-        verifyBut = new JButton("Check");
-        verifyBut.setToolTipText("Click to verify input");
-        verifyBut.addActionListener(this);
+        submitBut = new JButton("Submit");
+        submitBut.setToolTipText("Click to submit your answer to the tutor");
+        submitBut.addActionListener(this);
         
+        hintBut = new JButton("Hint");
+        hintBut.setToolTipText("Click to request a hint");
+        hintBut.addActionListener(this);
     }
     
     /**
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-        JLabel label = new JLabel("Enter Character: ");
-        label.setLabelFor(exampleCharacter);
-        addc(label, 0, 0, 1, 1, 0.0, 0.0,
+        JLabel prompt = new JLabel("In this step, you must add a single '1' bit to the end of the following binary data:");
+        addc(prompt, 0, 0, 2, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+                5, 5, 20, 5);
+  
+        JLabel sourceLabel = new JLabel("Input: ");
+        sourceLabel.setLabelFor(source);
+        addc(sourceLabel, 0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 20, 5);
+
+        addc(source, 1, 1, 1, 1, 1.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
+                5, 5, 20, 5);
      
-        addc(exampleCharacter, 1, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
         
-        
-        label = new JLabel("Type Here:");
-        label.setLabelFor(charInput);
-        addc(label, 0, 1, 1, 1, 0.0, 0.0,
+        JLabel outputLabel = new JLabel("Output:");
+        outputLabel.setLabelFor(target);
+        addc(outputLabel, 0, 2, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
       
-        addc(charInput, 1, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        addc(target, 1, 2, 1, 1, 1.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
         
-        addc(verifyBut, 0, 2, 2, 1, 0.0, 0.0,
+        addc(submitBut, 0, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+                25, 5, 5, 15);
+        
+        addc(hintBut, 1, 3, 2, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                25, 5, 5, 5);
         
         // Fills the remaining space
-        addc(new JLabel("Test"), 0, 3, 2, 1, 1.0, 1.0,
+        addc(new JLabel(" "), 0, 4, 2, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
+    }
+    
+    /**
+     * Display the current tutoring session model in this view.
+     */
+    private void updateDisplay() {
+        Task task = model.currentTask();
+        Step step = task.currentStep();
         
+        String data = step.getData();
+        
+        stepDataModel = gson.fromJson(data, AddOneStep.class);
+        
+        source.setText(stepDataModel.getSource());
+    }
+    
+    /**
+     * Submit the student's answer to the tutor.
+     */
+    public void submitAnswer() {
+        ClientRequest request = new ClientRequest(ServerRequestType.COMPLETED_STEP);     
+        request.setUserId(model.getAccount().getUserId());
+        request.setSessionId(model.getSecurityToken());    
+        request.setData(gson.toJson(stepDataModel));
+        
+        GuiController.instance().tutorRequest(request);
+    }
+    
+    /**
+     * Process the students request for a hint.
+     */
+    public void requestHint() {
+        Task task = model.currentTask();
+        Step step = task.currentStep();
+        
+        ArrayList<Hint> hints = step.getHints();
+        int maxHints = hints.size();
+        
+
+        String hintText;
+        if (hintsRequested < maxHints) {
+            hintText = hints.get(hintsRequested).getText();
+        } else {
+            hintText = "Sorry, there are no additional hints for this step.";
+        }
+        
+        JOptionPane.showMessageDialog(this, hintText, "Hint", JOptionPane.OK_OPTION);
+        
+        hintsRequested++;
+        
+        ClientRequest request = new ClientRequest(ServerRequestType.REQUEST_HINT); 
+        request.setUserId(model.getAccount().getUserId());
+        request.setSessionId(model.getSecurityToken());
+        request.setData(":HintGiven");
+        
+        GuiController.instance().tutorRequest(request);
     }
 }

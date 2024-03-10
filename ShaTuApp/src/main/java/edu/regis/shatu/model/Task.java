@@ -12,9 +12,9 @@
  */
 package edu.regis.shatu.model;
 
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.Problem;
 import edu.regis.shatu.model.aol.ScaffoldLevel;
-import edu.regis.shatu.model.aol.StepCompletion;
 import edu.regis.shatu.model.aol.TaskKind;
 import edu.regis.shatu.model.aol.TaskState;
 import java.util.ArrayList;
@@ -34,7 +34,13 @@ public class Task extends TitledModel {
     /**
      * Indicates the type of task the student trying to complete.
      */
-    private TaskKind taskType = TaskKind.PROBLEM;
+    private TaskKind kind = TaskKind.PROBLEM;
+    
+    /**
+     * The type of this task, which can be used to determine the appropriate
+     * view to display, if different from each of its steps.
+     */
+    private ExampleType type;
     
     /**
      * The scaffolding support for this task.
@@ -96,12 +102,20 @@ public class Task extends TitledModel {
         state = new TaskState();
     }
     
-    public TaskKind getTaskType() {
-        return taskType;
+    public TaskKind getKind() {
+        return kind;
     }
 
-    public void setTaskType(TaskKind type) {
-        this.taskType = type;
+    public void setKind(TaskKind kind) {
+        this.kind = kind;
+    }
+
+    public ExampleType getType() {
+        return type;
+    }
+
+    public void setType(ExampleType type) {
+        this.type = type;
     }
 
     public ScaffoldLevel getScaffolding() {
@@ -157,13 +171,10 @@ public class Task extends TitledModel {
      * Locally update the task state to note that the given step has been 
      * performed by the student (this doesn't notify the tutor).
      * 
-     * @param step the Step that was completed by the student.
+     * @param completion the Step that was completed by the student.
      */
-    public void completedStep(Step step) {
-        StepCompletion completion = new StepCompletion();
-        completion.setStepId(step.getId());
-        
-        step.setIsCompleted(true);
+    public void completedStep(StepCompletion completion) { 
+        completion.getStep().setIsCompleted(true);
         
         state.addStepCompletion(completion);
     }

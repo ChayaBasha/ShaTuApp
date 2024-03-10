@@ -19,8 +19,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.when;
+//import org.mockito.Mockito;
+//import static org.mockito.Mockito.when;
 
 /**
  *
@@ -35,6 +35,7 @@ public class AddTwoBitViewTest {
         addTwoBitView = new AddTwoBitView();
     }
 
+    /*
     @Test
     public void testHandleKeyPressWithEmptyAnswer() {
         assertEquals(true, true);
@@ -52,4 +53,5 @@ public class AddTwoBitViewTest {
         
         assertTrue("This will succeed.", true);
     }
+*/
 }

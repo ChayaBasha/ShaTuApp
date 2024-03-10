@@ -12,7 +12,13 @@
  */
 package edu.regis.shatu.view;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.regis.shatu.model.StepCompletionReply;
+import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.SHA_256;
+import edu.regis.shatu.svc.SvcFacade;
+import edu.regis.shatu.svc.TutorReply;
 
 /**
  * A mediator between the GUI and the SHA-256 algorithm.
@@ -52,6 +58,11 @@ public class GuiController {
      * The SHA-256 algorithm.
      */
     private final SHA_256 sha256Alg;
+
+    /**
+     * Utility reference used to convert between Java and JSon. 
+     */
+    private final Gson gson;
     
     /**
      * Return the SHA-256 algorithm.
@@ -78,10 +89,32 @@ public class GuiController {
         this.stepView = stepView;
     }
     
+     public TutorReply tutorRequest(ClientRequest request) {      
+         
+        TutorReply reply = SvcFacade.instance().tutorRequest(request);
+         
+        switch(reply.getStatus()) {
+            case "StepCompletionReply":
+                handleStepCompletionReply(reply);
+                return null;
+        }
+         
+        // TO_DO: This is probably temporary until all GUIs are converted
+        return reply;
+     }
+     
+     private void handleStepCompletionReply(TutorReply reply) {
+         String data = reply.getData();
+         
+         StepCompletionReply stepReply = gson.fromJson(data, StepCompletionReply.class);
+     }
+    
     /**
      * If not already initialed, initialize the SHA-256 algorithm.
      */
     private GuiController() {
+        gson = new GsonBuilder().setPrettyPrinting().create();
+        
         sha256Alg = SHA_256.instance();
     }
 }

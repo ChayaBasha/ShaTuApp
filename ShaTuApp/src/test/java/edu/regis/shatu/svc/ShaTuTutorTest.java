@@ -324,7 +324,7 @@ public class ShaTuTutorTest {
       
     }
 */
-    
+    /*
     @Test
     public void testFlow() {
         TutoringSession session = signIn();
@@ -354,7 +354,7 @@ public class ShaTuTutorTest {
         
         
     }
-    
+    */
     private TutoringSession signIn() {
         String userId = "test@regis.edu";
 

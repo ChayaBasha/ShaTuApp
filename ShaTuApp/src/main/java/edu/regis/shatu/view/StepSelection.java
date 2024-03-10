@@ -50,7 +50,10 @@ public enum StepSelection {
     
     SHA_ZERO(new HighlightLabel("SHA Sum 0 value")),
     
-    SHA_ONE(new HighlightLabel("SHA Sum 1 value"));
+    SHA_ONE(new HighlightLabel("SHA Sum 1 value")),
+    
+    // Isn't displayed in StepSelectionView
+    STEP_REPLY(new HighlightLabel("Step Reply"));
 
 
 
