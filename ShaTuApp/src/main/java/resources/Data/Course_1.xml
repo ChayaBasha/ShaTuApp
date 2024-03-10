@@ -100,14 +100,14 @@ SHATU: SHA-256 Tutor
                     
             </Step>
             
-            <Step id="0" sequenceId="0" title="Decimal to Binary Chart"
-                  scaffolding="Extreme" type="">
+            <Step id="12" sequenceId="0" title="Character to Binary"
+                  scaffolding="Extreme" type="EncodeASCII">
               <Description>
                   Encode a given number as binary digits.
               </Description>            
             </Step>
             
-            <Step id="0" sequenceId="0" title="Decimal to Binary Chart"
+            <Step id="14" sequenceId="0" title="Decimal to Binary Chart"
                   scaffolding="Extreme" type="Encode Binary">
               <Description>
                   Encode a given number as binary digits.

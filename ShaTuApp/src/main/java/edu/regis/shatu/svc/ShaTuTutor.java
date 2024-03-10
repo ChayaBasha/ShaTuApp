@@ -30,6 +30,8 @@ import edu.regis.shatu.model.Hint;
 import edu.regis.shatu.model.KnowledgeComponent;
 import edu.regis.shatu.model.aol.ScaffoldLevel;
 import edu.regis.shatu.model.Step;
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.StepCompletionReply;
 import edu.regis.shatu.model.Student;
 import edu.regis.shatu.model.aol.StepSubType;
 import edu.regis.shatu.model.Task;
@@ -38,6 +40,7 @@ import edu.regis.shatu.model.aol.Timeout;
 import edu.regis.shatu.model.Unit;
 import edu.regis.shatu.model.aol.Assessment;
 import edu.regis.shatu.model.aol.AssessmentLevel;
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.StudentModel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -263,8 +266,175 @@ public class ShaTuTutor implements TutorSvc {
         return new TutorReply();
     }
 
-    public TutorReply completedStep(String stepInfo) {
-        return new TutorReply();
+    /**
+     * 
+     * 
+     * @param jsonObj a JSon encoded StepCompletion object
+     * @return 
+     */
+    public TutorReply completedStep(String jsonObj) {
+        StepCompletion completion = gson.fromJson(jsonObj, StepCompletion.class);
+        
+        Step step = completion.getStep();
+        
+        switch (step.getSubType()) {
+            case INFO_MESSAGE:
+                return completeInfoMsgStep(completion);
+
+            case ENCODE_BINARY: // TO_DO: Really the same
+            case ENCODE_HEX:
+            case ENCODE_ASCII:
+               return completeEncodeStep(completion);
+                
+            case ADD_ONE_BIT:
+               return completeAddOneStep(completion);
+    
+            case PAD_ZEROS:  
+                return completePadZerosStep(completion);
+                
+            case ADD_MSG_LENGTH:
+                return completeAddMsgLenStep(completion);
+                
+            case PREPARE_SCHEDULE:
+                return completePrepareScheduleStep(completion);
+            
+            case INITIALIZE_VARS:
+                return completeInitVarsStep(completion);
+                
+            case COMPRESS_ROUND:
+                return completeCompressRoundStep(completion);
+            
+            case ROTATE_BITS:
+                return completeRotateStep(completion);
+    
+            case SHIFT_BITS:
+                return completeShiftBitsStep(completion);
+            
+            case XOR_BITS:
+                return completeXorBitsStep(completion);
+            
+            case ADD_BITS:
+                return completeAddBitsStep(completion);
+            
+            case MAJORITY_FUNCTION:
+                return completeMajorityStep(completion);
+            
+            case CHOICE_FUNCTION:
+                return completeChoiceStep(completion);
+                
+            default:
+                return createError("Unknown step completion: " + step.getSubType(), null);
+        }
+    }
+    
+    public TutorReply completeRotateStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+    
+    public TutorReply completeInfoMsgStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+    
+    
+    
+      public TutorReply completeEncodeStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+ 
+    public TutorReply completeAddOneStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        // As adding one bit doesn't require any additional information,
+        // the data is the string with one '1' bit added. 
+        String data = completion.getData();
+        
+        // TO_DO: look up the problem given to the student , then check if one bit
+        // added
+        
+        StepCompletionReply stepReply = new StepCompletionReply();
+        
+        // TO_DO: Use Student Model
+        // ultimately, we'll probably only practice adding '1' bit twice
+        // so this would correspond to the first replay
+        
+        stepReply.setIsCorrect(true);
+        stepReply.setIsNewStep(true);
+        stepReply.setIsNewTask(false);
+        stepReply.setIsRepeatStep(false);
+        
+        // TO_DO: keep track of next step id and sequence id
+        // this is really a new example at this point
+        Step nextStep = new Step(10, 10, StepSubType.ADD_ONE_BIT);
+        
+        stepReply.setData(gson.toJson(nextStep));
+        
+        reply.setData(gson.toJson(stepReply));
+        
+        return reply;
+    }
+    
+    public TutorReply completePadZerosStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+        
+    public TutorReply completeAddMsgLenStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }  
+          
+    public TutorReply completePrepareScheduleStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+           
+    public TutorReply completeInitVarsStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+  
+    public TutorReply completeCompressRoundStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+
+    public TutorReply completeShiftBitsStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+    public TutorReply completeXorBitsStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+    public TutorReply completeAddBitsStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+
+    public TutorReply completeMajorityStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;
+    }
+                
+    public TutorReply completeChoiceStep(StepCompletion completion) {
+        TutorReply reply = new TutorReply(":StepCompletionReply");
+        
+        return reply;                
     }
 
     public TutorReply completedTask(String taskInfo) {
@@ -534,7 +704,8 @@ public class ShaTuTutor implements TutorSvc {
         // TaskState state = new TaskState();
         // state.set
         Task task = new Task();
-        task.setTaskType(TaskKind.PROBLEM);
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.ASCII_ENCODE);
         task.setDescription("Encode a string as ASCII values");
         task.addStep(step);
 
@@ -603,7 +774,8 @@ public class ShaTuTutor implements TutorSvc {
         // TaskState state = new TaskState();
         // state.set
         Task task = new Task();
-        task.setTaskType(TaskKind.PROBLEM);
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.ADD_ONE_BIT);
         task.setDescription("Add one bit to the given bit string");
         task.addStep(step);
 
@@ -761,7 +933,8 @@ public class ShaTuTutor implements TutorSvc {
         // TaskState state = new TaskState();
         // state.set
         Task task = new Task();
-        task.setTaskType(TaskKind.PROBLEM);
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.XOR_BITS);
         task.setDescription("Xor the bits in the two operands");
         task.addStep(step);
 
@@ -843,7 +1016,8 @@ public class ShaTuTutor implements TutorSvc {
         // TaskState state = new TaskState();
         // state.set
         Task task = new Task();
-        task.setTaskType(TaskKind.PROBLEM);
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.ADD_BITS);
         task.setDescription("Xor the bits in the two operands");
         task.addStep(step);
 

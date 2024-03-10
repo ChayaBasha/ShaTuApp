@@ -12,6 +12,7 @@
  */
 package edu.regis.shatu.model.aol;
 
+import edu.regis.shatu.model.StepCompletion;
 import java.util.LinkedList;
 
 /**

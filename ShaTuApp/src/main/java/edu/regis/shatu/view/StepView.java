@@ -59,6 +59,8 @@ public class StepView extends JPanel {
     
     private ChoiceFunctionView choiceFunctionView;
     
+    private StepCompletionReplyView stepReplyView;
+    
     /**
      * Initialize and layout the child components (cards) displayed in this view.
      */
@@ -70,9 +72,9 @@ public class StepView extends JPanel {
         initializeComponents();
         initializeLayout();
         
-         setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
-        selectPanel(StepSelection.ENCODE);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        selectPanel(StepSelection.ENCODE);   
     }
 
     
@@ -109,6 +111,7 @@ public class StepView extends JPanel {
         initVarView = new InitVarView();
         exclusiveOrView = new ExclusiveOrView();
         choiceFunctionView = new ChoiceFunctionView();
+        stepReplyView = new StepCompletionReplyView();
     }
     
     /**
@@ -130,5 +133,7 @@ public class StepView extends JPanel {
         add(initVarView, StepSelection.INIT_VARS.toString());
         add(exclusiveOrView, StepSelection.XOR.toString());
         add(choiceFunctionView, StepSelection.CHOICE_FUNCTION.toString());
+        
+        add(stepReplyView, StepSelection.STEP_REPLY.toString());
     }
 }
