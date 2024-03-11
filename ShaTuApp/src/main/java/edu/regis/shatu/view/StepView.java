@@ -41,7 +41,25 @@ public class StepView extends JPanel {
     
     private PadView padView;
     
+    private RotateView rotateView;
+    
     private InitVarView initVarView;
+
+    private ShiftRightView shiftRightView;
+    
+    private ExclusiveOrView exclusiveOrView;
+
+    private AddTwoBitView addTwoBitView;
+    
+    private MajFunction majFunction;
+    
+    private ShaZero shaZero;
+    
+    private ShaOne shaOne;
+    
+    private ChoiceFunctionView choiceFunctionView;
+    
+    private StepCompletionReplyView stepReplyView;
     
     /**
      * Initialize and layout the child components (cards) displayed in this view.
@@ -54,9 +72,9 @@ public class StepView extends JPanel {
         initializeComponents();
         initializeLayout();
         
-         setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
-        selectPanel(StepSelection.ENCODE);
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        selectPanel(StepSelection.ENCODE);   
     }
 
     
@@ -80,9 +98,20 @@ public class StepView extends JPanel {
         encodeView = new EncodeView();
         prepareScheduleView = new PrepareScheduleView();
         compressionView = new CompressionCanvasView();
+        rotateView = new RotateView();
+        shiftRightView = new ShiftRightView();
+        exclusiveOrView = new ExclusiveOrView();
+        addTwoBitView = new AddTwoBitView();
+        majFunction = new MajFunction();
+        shaZero = new ShaZero();
+        shaOne = new ShaOne();
         add1View = new Add1View();
         padView = new PadView();
+        rotateView = new RotateView();
         initVarView = new InitVarView();
+        exclusiveOrView = new ExclusiveOrView();
+        choiceFunctionView = new ChoiceFunctionView();
+        stepReplyView = new StepCompletionReplyView();
     }
     
     /**
@@ -92,8 +121,19 @@ public class StepView extends JPanel {
         add(encodeView, StepSelection.ENCODE.toString());
         add(prepareScheduleView, StepSelection.PREPARE.toString());
         add(compressionView, StepSelection.COMPRESS.toString());
+        add(shiftRightView, StepSelection.SHIFT_RIGHT.toString());
+        add(exclusiveOrView, StepSelection.XOR.toString());
+        add(addTwoBitView, StepSelection.ADD_TWO_BIT.toString());
+        add(majFunction, StepSelection.MAJ_FUNCTION.toString());
+        add(shaZero, StepSelection.SHA_ZERO.toString());
+        add(shaOne, StepSelection.SHA_ONE.toString());
         add(add1View, StepSelection.ADD1.toString());
         add(padView, StepSelection.PAD.toString());
+        add(rotateView, StepSelection.ROTATE_BITS.toString());
         add(initVarView, StepSelection.INIT_VARS.toString());
+        add(exclusiveOrView, StepSelection.XOR.toString());
+        add(choiceFunctionView, StepSelection.CHOICE_FUNCTION.toString());
+        
+        add(stepReplyView, StepSelection.STEP_REPLY.toString());
     }
 }

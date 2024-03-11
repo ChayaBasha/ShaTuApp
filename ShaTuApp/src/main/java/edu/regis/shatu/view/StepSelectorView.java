@@ -35,8 +35,8 @@ public class StepSelectorView extends GPanel {
     public StepSelectorView() {
         GuiController.instance().setStepSelectorView(this);
  
-        setBackground(Color.LIGHT_GRAY);
-        setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        setBackground(new Color(241,196,0));
+        setBorder(BorderFactory.createLineBorder(Color.WHITE));
         initializeComponents();
         layoutComponents();
         
@@ -70,7 +70,8 @@ public class StepSelectorView extends GPanel {
      * Layout the child components used in this frame.
      */
     private void layoutComponents() {
-        JLabel label = new JLabel("Step Selection");
+        JLabel label = new JLabel("Step Selections");
+        label.setForeground(new Color(0,43,73));
         addc(label, 0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
@@ -92,10 +93,11 @@ public class StepSelectorView extends GPanel {
     private GPanel createPreprocessingPanel() {
         GPanel panel = new GPanel();
         
-        panel.setBackground(new Color(207, 245, 215)); // A light green
+        panel.setBackground(new Color(0, 43, 73)); // Blue
         panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         
         JLabel label = new JLabel("Message Preprocessing");
+        label.setForeground(Color.WHITE);
         panel.addc(label, 0, 0, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
@@ -127,10 +129,11 @@ public class StepSelectorView extends GPanel {
     private GPanel createHashCompPanel() {
         GPanel panel = new GPanel();
         
-        panel.setBackground(new Color(250, 236, 213)); // A light green
+        panel.setBackground(new Color(0, 43, 73)); // Dark Regis Blue
         panel. setBorder(BorderFactory.createLineBorder(Color.BLACK));
         
         JLabel label = new JLabel("Hash Computation");
+        label.setForeground(Color.WHITE);
         panel.addc(label, 0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
@@ -146,7 +149,39 @@ public class StepSelectorView extends GPanel {
         panel.addc(StepSelection.COMPRESS.getLabel(), 0, 3, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
+
+        panel.addc(StepSelection.ROTATE_BITS.getLabel(), 0, 4, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+
+        panel.addc(StepSelection.SHIFT_RIGHT.getLabel(), 0, 5, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
         
+        panel.addc(StepSelection.XOR.getLabel(), 0, 6, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+
+        panel.addc(StepSelection.ADD_TWO_BIT.getLabel(), 0, 7, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+                
+        panel.addc(StepSelection.CHOICE_FUNCTION.getLabel(), 0, 8, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        
+        panel.addc(StepSelection.MAJ_FUNCTION.getLabel(), 0, 9, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        
+        panel.addc(StepSelection.SHA_ZERO.getLabel(), 0, 10, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+        
+        panel.addc(StepSelection.SHA_ONE.getLabel(), 0, 11, 1, 1, 1.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                5, 5, 5, 5);
+
         return panel;
     }
 }
