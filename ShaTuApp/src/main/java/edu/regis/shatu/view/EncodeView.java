@@ -12,161 +12,702 @@
  */
 package edu.regis.shatu.view;
 
-import edu.regis.shatu.svc.SHA_256;
-import edu.regis.shatu.svc.SHA_256Listener;
+import edu.regis.shatu.model.TutoringSession;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 /**
- * A view that supports the conversion of the input message to ASCII bytes.
+ * This class represents a view for encoding messages into ASCII bytes.
+ * It provides a user interface for inputting text, submitting it for encoding,
+ * receiving feedback, and hints on encoding, along with displaying an ASCII 
+ * table for reference.
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener, KeyListener, SHA_256Listener {
-        
-    /**
-     * The ASCII character the student is being asked to convert
-     */
-    private JLabel exampleCharacter;
+public class EncodeView extends GPanel implements ActionListener {
+    private TutoringSession model;    
+    private JTextPane descriptionTextPane;
+    private JLabel questionLabel, instructionsLabel, messageLengthLabel;
+    private JTextField messageLengthField;
+    private JTextArea responseArea;
+    private JTextArea feedbackArea;
+    private JButton submitButton, nextButton, hintButton;
+    private JTable asciiTable;
+    private JScrollPane responseScrollPane, asciiTableScrollPane, feedbackScrollPane;
+    private String question;
+    private JRadioButton fromDecimalRadioButton, fromBinaryRadioButton, fromHexRadioButton, fromSymbolRadioButton;
+    private JRadioButton toDecimalRadioButton, toBinaryRadioButton, toHexRadioButton, toSymbolRadioButton;
+    private ButtonGroup fromFormatButtonGroup, toFormatButtonGroup;
+    private List<Integer> questionData;
+    
+    // For random character generation
+    private static final Random random = new Random();
+    
+    // Conversion From and To types initialized
+    private ConversionType conversionFrom = ConversionType.SYMBOL;
+    private ConversionType conversionTo = ConversionType.BINARY; 
+
     
     /**
-     * The input entered by the student
+     * Constructor initializes the view by setting up components and layout.
      */
-    private JTextField charInput;
-    
-    private JButton verifyBut;
-    
-    /**
-     * Initialize this view including creating and laying out its child components.
-     */
-    public EncodeView() {       
+    public EncodeView() {
+        questionData = new ArrayList<>();
         initializeComponents();
         initializeLayout();
+        updateToRadioButtonsEnabledState();
+        prepareNextQuestion();
     }
     
-    public void notifyAsciiEncoding(byte[] bytes) {
-        // ToDo: This is simply a temporary test
-        System.out.println("MsgByte.len: " + bytes.length);
-        System.out.println("Msg: ");
-        for (int i = 0; i < bytes.length; i++)
-            System.out.println("Byte " + i + ": " + bytes[i]);
+    /**
+     * Enumeration to hold the various conversion types
+     */
+    public enum ConversionType {
+        DECIMAL, BINARY, HEXADECIMAL, SYMBOL;
     }
     
-    public static String convertStringToBinary(String input) {
-
-        StringBuilder result = new StringBuilder();
-        char[] chars = input.toCharArray();
-        for (char aChar : chars) {
-            result.append(
-                    String.format("%8s", Integer.toBinaryString(aChar))   
-                            .replaceAll(" ", "0")
-            );
-            result.append(' ');
-        }
-        return result.toString();
-
-    }
-   
-    
+    /**
+     * Responds to actions performed in the view, specifically button presses,
+     * and delegates to appropriate methods for handling.
+     * 
+     * @param event the event that triggered the action listener
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
-       if (event.getSource() == verifyBut) {
-           String userInput = charInput.getText();
-           
-           String result = convertStringToBinary(userInput);
-           
-           JOptionPane.showMessageDialog(this, result);
-           
-       }
+        if (event.getSource() == submitButton) {
+            handleSubmission();
+        } else if (event.getSource() == nextButton) {
+            prepareNextQuestion();
+        } else if (event.getSource() == hintButton) {
+            showHint();
+        }
     }
-    
-    
-    @Override
-    public void keyTyped(KeyEvent event){
-       if (event.getSource()== charInput){
-          String userInput = charInput.getText();
-
-       }
-    }
-    
-    @Override 
-    public void keyPressed(KeyEvent event){
-       if(event.getSource()== charInput && event.getKeyCode()== KeyEvent.VK_ENTER) {
-         String userInput = charInput.getText(); 
-          
-          
-           // ToDo: this is simply a test of the SHA-256 algorithm
-           SHA_256 alg = GuiController.instance().getSha256Alg();
-           System.out.println("Alg: " + alg);
-           alg.addListener(this);
-         
-           
-           String digest = alg.sha256("Regis Computer Science Rocks!");
-           System.out.println("Enter gitDigest: " + digest);
-       }
-    }
-    
-    @Override
-    public void keyReleased(KeyEvent event) {
-       
-    }
-    
- 
+      
     /**
-     * Create the child GUI components appearing in this frame.
+     * Initializes all GUI components, setting up their properties and configurations.
      */
-    private void initializeComponents() {
-        exampleCharacter = new JLabel("");
-        
-        charInput = new JTextField(20);
-        charInput.addKeyListener(this);
-        
-        verifyBut = new JButton("Check");
-        verifyBut.setToolTipText("Click to verify input");
-        verifyBut.addActionListener(this);
-        
+    private void initializeComponents() {  
+        setupDescriptionSection();
+        setupRadios();
+        setupQuestionLabel();
+        setupInstructionLabel();
+        setupMessageLengthInput();
+        setupResponseArea();
+        setupFeedbackArea();
+        setupButtons();
+        setupAsciiTable();
     }
-    
+
     /**
-     * Layout the child components in this view.
+     * Lays out the initialized components on the panel using GridBagLayout 
+     * constraints.
      */
     private void initializeLayout() {
-        JLabel label = new JLabel("Enter Character: ");
-        label.setLabelFor(exampleCharacter);
-        addc(label, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-     
-        addc(exampleCharacter, 1, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
         
-        
-        label = new JLabel("Type Here:");
-        label.setLabelFor(charInput);
-        addc(label, 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-      
-        addc(charInput, 1, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        
-        addc(verifyBut, 0, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        
-        // Fills the remaining space
-        addc(new JLabel("Test"), 0, 3, 2, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-        
+        JPanel buttonPanel = createButtonPanel();  
+        JPanel messageLengthPanel = createMessageLengthPanel();
+        JPanel convertFromPanel = createConvertFromRadioPanel();
+        JPanel convertToPanel = createConvertToRadioPanel();
+
+        // Add components to the layout
+        addc(descriptionTextPane, 0, 0, 3, 1, 
+                1.0, 0.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        addc(messageLengthPanel, 0, 1, 1, 1, 
+                1.0, 0.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.NONE, 5, 5, 5, 5);
+        addc(convertFromPanel, 1, 1, 1, 1, 
+                1.0, 0.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.NONE, 5, 5, 5, 5);
+        addc(convertToPanel, 2, 1, 1, 1, 
+                1.0, 0.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.NONE, 5, 5, 5, 5); 
+        addc(questionLabel, 0, 2, 3, 1, 
+                1.0, 0.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+         addc(instructionsLabel, 0, 3, 3, 1, 
+                1.0, 0.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+        addc(responseScrollPane, 0, 4, 3, 1, 
+                1.0, 1.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.BOTH, 5, 5, 5, 5);
+        addc(feedbackScrollPane, 0, 5, 3, 1, 
+                1.0, 1.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.BOTH, 5, 5, 5, 5);
+        addc(buttonPanel, 0, 6, 3, 1, 
+                1.0, 1.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.NONE, 10, 0, 0, 0);
+        addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
+                7, 3.0, 1.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.BOTH, 5, 5, 5, 5);
     }
-}
+
+    /**
+     * Handles the submission of the user's input, comparing it to the expected 
+     * result and providing appropriate feedback.
+     * 
+     * THIS NEEDS UPDATED ONCE MODEL IS CONFIGURED TO HANDLE REQUESTS
+     */
+    private void handleSubmission() {
+        // Trim user input and split it into an array based on spaces.
+        String userInput = responseArea.getText().trim();
+        String[] userEntries = userInput.split("\\s+");  
+        
+        // Generate the expected answers from questionData
+        List<String> expectedAnswers = questionData.stream()
+            .map(value -> convertBasedOnType(value, conversionTo))
+            .collect(Collectors.toList());
+        
+        // Check if the number of user entries matches the number of expected answers.
+        if (userEntries.length != expectedAnswers.size()) {
+            feedbackArea.setText("Incorrect number of entries. Please ensure your answer matches the expected format.");
+        } else {
+            // Assume all answers are correct initially.
+            boolean allCorrect = true;
+            
+             // Iterate through each user entry to compare it against the expected answer.
+            for (int i = 0; i < userEntries.length; i++) {
+                // If a mismatch is found, set allCorrect to false and exit the loop.
+                if (!userEntries[i].trim().equalsIgnoreCase(expectedAnswers.get(i).trim())) {
+                    allCorrect = false;
+                    break;
+                }
+            }
+               
+            // If all user entries matched the expected answers, provide positive feedback.
+            if (allCorrect) {
+                feedbackArea.setText("Correct!");
+            } else {
+                // Otherwise, inform the user that their entries were incorrect, and display the expected answers.
+                feedbackArea.setText(String.format("Incorrect. Please check "
+                        + "your entries. Expected: %s", String.join(" ", expectedAnswers)));
+            }
+        }
+        
+        // Disable the submit button to prevent re-submission, and enable the next question button.
+        submitButton.setEnabled(false);
+        hintButton.setEnabled(false);
+        nextButton.setEnabled(true);
+    }
+
+
+    /**
+     * Prepares the view for the next question by clearing previous inputs
+     * and feedback and generating a new question.
+     * 
+     * THIS NEEDS UPDATED ONCE MODEL IS CONFIGURED TO HANDLE REQUESTS
+     */
+    private void prepareNextQuestion() {
+        // Clear any existing feedback and response from the previous question.
+        feedbackArea.setText("");
+        responseArea.setText("");
+        // Clear the previous question data.
+        questionData.clear();
+        
+        try {      
+            // Parse the desired message length from the input field.
+            int messageLength = Integer.parseInt(messageLengthField.getText().trim());
+            StringBuilder questionBuilder = new StringBuilder();
+
+            for (int i = 0; i < messageLength; i++) {
+                // Generate a random value representing an ASCII character.
+                int value = getRandomCharacter();
+                // Store the value for later verification.
+                questionData.add(value);
+                // Convert the value to the format specified by conversionFrom.
+                String convertedChar = convertBasedOnType(value, conversionFrom);
+                
+                // Add a space between elements for readability, except before the first element.
+                if (i > 0) {
+                    questionBuilder.append(" ");  // Space delimited
+                }
+                // Append the converted character or value to the question.
+                questionBuilder.append(convertedChar);
+            }
+            
+            question = questionBuilder.toString();
+            
+            // Determine the format of the question based on the conversionFrom type.
+            String questionFormat = (conversionFrom == ConversionType.SYMBOL) ? 
+                    "character(s)" : conversionFrom.toString().toLowerCase() + " value(s)";
+            
+            // Update the question label with the new question.
+            questionLabel.setText(String.format("Convert the following "
+                    + "%s to %s: %s", questionFormat, conversionTo.toString()
+                            .toLowerCase(), question));
+            
+            // Enable the Submit and Hint buttons and disable the Next button, ready for the user's response.
+            submitButton.setEnabled(true);
+            hintButton.setEnabled(true);
+            nextButton.setEnabled(false);
+        } catch (NumberFormatException e) {
+            // If the message length input is not a valid number, inform the user.
+            feedbackArea.setText("Please enter a valid message length.");
+        }
+    }
+
+    /**
+    * Converts an integer input into its representation according to the specified conversion type.
+    * This method acts as a central dispatcher that calls specific conversion methods based on the
+    * type required, facilitating conversions between different numeral systems or formats.
+    *
+    * @param input The integer value to be converted.
+    * @param type  The type of conversion to perform, as specified by the {@link ConversionType} enum.
+    *              This can be one of DECIMAL, BINARY, HEXADECIMAL, or SYMBOL.
+    * @return A string representing the converted value of the input. If the conversion type is DECIMAL,
+    *         it returns the string representation of the input integer. For BINARY and HEXADECIMAL, it
+    *         returns a string of the binary or hexadecimal representation, respectively. For SYMBOL, it
+    *         returns the ASCII character corresponding to the integer value. In case of an unrecognized
+    *         conversion type, it returns an empty string, which ideally should never happen.
+    */
+    private String convertBasedOnType(int input, ConversionType type) {
+        switch (type) {
+            case DECIMAL:
+                return "" + input;
+            case BINARY:
+                return intToBinaryByte(input);
+            case HEXADECIMAL:
+                return intToHexString(input);
+            case SYMBOL:
+                return intToSymbol(input);
+            default:
+                return ""; // Default case, should not happen
+        }
+    }
+    
+    /**
+     * Converts a integer to its binary representation, padding each character's 
+     * binary value to 8 bits
+     * 
+     * @param value the integer to be converted.
+     * @return String the binary representation of the input.
+     */
+    public String intToBinaryByte(int value) {
+        // Convert the integer to a binary string and ensure it's 8 characters long, padding with 0s if necessary.
+        return String.format("%8s", Integer.toBinaryString(value & 0xFF)).replace(' ', '0');
+    }
+    
+    /**
+    * Converts an integer value to its hexadecimal string representation.
+    *
+    * @param value the integer value to be converted to a hexadecimal string.
+    * @return A string representing the hexadecimal value of the input integer,
+    *         formatted to be at least two characters long and in uppercase.
+    */
+    public String intToHexString(int value) {
+        // Convert the integer to a hexadecimal string
+        String hexString = Integer.toHexString(value);
+
+        // Ensure the string is at least two characters long, for byte representation
+        // Also, convert to uppercase for standard hexadecimal representation
+        return String.format("%02X", Integer.parseInt(hexString, 16));
+    }
+    
+    /**
+    * Converts an integer value representing an ASCII code to its corresponding
+    * character representation. Special handling is implemented for the space
+    * character to return a descriptive string "<SPACE>" instead of a blank space.
+    *
+    * @param value the ASCII code as an integer, which is to be converted to its character symbol.
+    * @return A string containing the character symbol corresponding to the ASCII code.
+    *         If the character is a space (' '), the string "<SPACE>" is returned.
+    */
+    public String intToSymbol(int value) {
+        // Convert the integer to its corresponding ASCII character
+        char symbol = (char) value;
+
+        // Special handling for the space character
+        if (symbol == ' ') {
+            return "<SPACE>";
+        } else {
+            return String.valueOf(symbol);
+        }
+    }
+
+    
+    /**
+     * Displays a hint in the feedback area to assist the user.
+     */
+    private void showHint() {
+        // TEMPORARY UNTIL WE LOAD THE HINT FROM THE MODEL
+        feedbackArea.setText("Hint: Check the ASCII table to the right for "
+            + "the appropriate representation.");
+    }
+    
+    /**
+     * Sets up the description section of the view, explaining the purpose of 
+     * the encoding exercise.
+     */
+    private void setupDescriptionSection() {
+        descriptionTextPane = new JTextPane();
+        descriptionTextPane.setContentType("text/html");
+        
+        // TEMPORARY UNTIL WE LOAD THE MODEL DATA DESCRIPTION
+        descriptionTextPane.setText(
+                    "<html>" +
+                    "<body>" +
+                    "<h2>ASCII Encoding</h2>" +
+                    "<p>The first step in SHA-256 preprocessing involves " + 
+                    "converting the message to its ASCII equivalent. " +
+                    "Each character in the message is represented by its " + 
+                    "corresponding binary ASCII value.</p>" +
+                    "</body>" +
+                    "</html>"
+            );
+        descriptionTextPane.setEditable(false);
+        descriptionTextPane.setBackground(null);
+        descriptionTextPane.setBorder(null);
+    }
+    
+    /**
+     * Initializes the radio buttons and sets up action listeners
+     * 
+     */
+    private void setupRadios() {
+        // Radio buttons for convert from selection
+        fromDecimalRadioButton = new JRadioButton("Decimal");
+        fromBinaryRadioButton = new JRadioButton("Binary");
+        fromHexRadioButton = new JRadioButton("Hex");
+        fromSymbolRadioButton = new JRadioButton("Symbol", true);
+        
+        // Radio buttons for convert to selection
+        toDecimalRadioButton = new JRadioButton("Decimal");
+        toBinaryRadioButton = new JRadioButton("Binary", true);
+        toHexRadioButton = new JRadioButton("Hex");
+        toSymbolRadioButton = new JRadioButton("Symbol");
+        
+        // Action listeners for "Convert From" radio buttons
+        ActionListener fromListener = e -> {
+            JRadioButton source = (JRadioButton) e.getSource();
+            updateConversionFrom(source);
+            updateToRadioButtonsEnabledState();
+            prepareNextQuestion();
+        };
+        fromDecimalRadioButton.addActionListener(fromListener);
+        fromBinaryRadioButton.addActionListener(fromListener);
+        fromHexRadioButton.addActionListener(fromListener);
+        fromSymbolRadioButton.addActionListener(fromListener);
+
+        // Action listeners for "Convert To" radio buttons
+        ActionListener toListener = e -> {
+            JRadioButton source = (JRadioButton) e.getSource();
+            updateConversionTo(source);
+            prepareNextQuestion();
+        };
+        toDecimalRadioButton.addActionListener(toListener);
+        toBinaryRadioButton.addActionListener(toListener);
+        toHexRadioButton.addActionListener(toListener);
+        toSymbolRadioButton.addActionListener(toListener);
+
+        // Grouping the radio buttons
+        fromFormatButtonGroup = new ButtonGroup();
+        fromFormatButtonGroup.add(fromDecimalRadioButton);
+        fromFormatButtonGroup.add(fromBinaryRadioButton);
+        fromFormatButtonGroup.add(fromHexRadioButton);
+        fromFormatButtonGroup.add(fromSymbolRadioButton);
+
+        toFormatButtonGroup = new ButtonGroup();
+        toFormatButtonGroup.add(toDecimalRadioButton);
+        toFormatButtonGroup.add(toBinaryRadioButton);
+        toFormatButtonGroup.add(toHexRadioButton);
+        toFormatButtonGroup.add(toSymbolRadioButton);
+    }
+    
+    /**
+     * Updates the source conversion type based on the selected "Convert From" radio button.
+     * This method sets the {@code conversionFrom} variable to the corresponding {@code ConversionType}
+     * enum value based on the radio button selected by the user. It is intended to be called by an
+     * action listener associated with each "Convert From" radio button.
+     *
+     * @param source The "Convert From" radio button that triggered the action event, used to
+     *               determine the selected source conversion type.
+     */
+    private void updateConversionFrom(JRadioButton source) {
+        if (source == fromDecimalRadioButton) conversionFrom = ConversionType.DECIMAL;
+        else if (source == fromBinaryRadioButton) conversionFrom = ConversionType.BINARY;
+        else if (source == fromHexRadioButton) conversionFrom = ConversionType.HEXADECIMAL;
+        else if (source == fromSymbolRadioButton) conversionFrom = ConversionType.SYMBOL;
+    }
+    
+    /**
+     * Updates the target conversion type based on the selected "Convert To" radio button.
+     * This method sets the {@code conversionTo} variable to the appropriate {@code ConversionType}
+     * enum value corresponding to the selected radio button. It is triggered by the action listener
+     * attached to the "Convert To" radio buttons.
+     *
+     * @param source The radio button that triggered the action event. This parameter is used to
+     *               determine which conversion type has been selected by the user.
+     */
+    private void updateConversionTo(JRadioButton source) {
+        if (source == toDecimalRadioButton) conversionTo = ConversionType.DECIMAL;
+        else if (source == toBinaryRadioButton) conversionTo = ConversionType.BINARY;
+        else if (source == toHexRadioButton) conversionTo = ConversionType.HEXADECIMAL;
+        else if (source == toSymbolRadioButton) conversionTo = ConversionType.SYMBOL;
+    }
+    
+    /**
+    * Updates the enabled state of the "Convert To" radio buttons based on the 
+    * current selection of the "Convert From" radio buttons.
+    */
+    private void updateToRadioButtonsEnabledState() {
+        toDecimalRadioButton.setEnabled(conversionFrom != ConversionType.DECIMAL);
+        toBinaryRadioButton.setEnabled(conversionFrom != ConversionType.BINARY);
+        toHexRadioButton.setEnabled(conversionFrom != ConversionType.HEXADECIMAL);
+        toSymbolRadioButton.setEnabled(conversionFrom != ConversionType.SYMBOL);
+        
+         // If the currently selected "To" button is now disabled, select a different one
+        if (!toDecimalRadioButton.isEnabled() && toDecimalRadioButton.isSelected()) {
+            toBinaryRadioButton.setSelected(true);
+            conversionTo = ConversionType.BINARY;
+        } else if (!toBinaryRadioButton.isEnabled() && toBinaryRadioButton.isSelected()) {
+            toDecimalRadioButton.setSelected(true);
+            conversionTo = ConversionType.DECIMAL;
+        } else if (!toHexRadioButton.isEnabled() && toHexRadioButton.isSelected()) {
+            toDecimalRadioButton.setSelected(true);
+            conversionTo = ConversionType.DECIMAL;
+        } else if (!toSymbolRadioButton.isEnabled() && toSymbolRadioButton.isSelected()) {
+            toDecimalRadioButton.setSelected(true);
+            conversionTo = ConversionType.DECIMAL;
+        }
+    }
+
+    /**
+     * Initializes the question label
+     */
+    private void setupQuestionLabel() {
+        question = "";
+        questionLabel = new JLabel("");
+    }
+    
+    /**
+     * Initializes the response area and its scroll pane
+     */
+    private void setupResponseArea() {
+        responseArea = new JTextArea(3, 20);
+        responseScrollPane = new JScrollPane(responseArea);
+    }
+
+    /**
+     * Initializes the feedback area and its scroll pane
+     */
+    private void setupFeedbackArea() {
+        feedbackArea = new JTextArea(3, 20);
+        feedbackArea.setEditable(false);
+        feedbackArea.setBackground(null);
+        feedbackScrollPane = new JScrollPane(feedbackArea);
+    }
+
+    /**
+     * Initializes the submit, next, and hint buttons and sets up action listeners
+     * 
+     */
+    private void setupButtons() {
+        submitButton = new JButton("Submit");
+        nextButton = new JButton("Next");
+        hintButton = new JButton("Hint");
+        submitButton.addActionListener(this);
+        nextButton.addActionListener(this);
+        hintButton.addActionListener(this);
+        nextButton.setEnabled(false);
+    }    
+
+    /**
+     * Creates and returns a JPanel containing the action buttons with a FlowLayout
+     * @return JPanel containing the action buttons
+     */
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(submitButton);
+        buttonPanel.add(nextButton);
+        buttonPanel.add(hintButton);
+        return buttonPanel;
+    }
+    
+    /**
+     * Creates and returns a JPanel containing the "convert from" radio buttons 
+     * with a FlowLayout
+     * @return JPanel containing the radio buttons
+     */
+    private JPanel createConvertFromRadioPanel() {
+        // Create a panel for the covert from radio buttons
+        JPanel formatPanel = new JPanel();
+        
+        // BoxLayout for vertical alignment
+        formatPanel.setLayout(new BoxLayout(formatPanel, BoxLayout.Y_AXIS)); 
+        
+        // Convert from Label centered
+        JLabel fromLabel = new JLabel("Convert From:");
+        fromLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        
+        // Panel for radio buttons
+        JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        radioPanel.add(fromDecimalRadioButton);
+        radioPanel.add(fromBinaryRadioButton);
+        radioPanel.add(fromHexRadioButton);
+        radioPanel.add(fromSymbolRadioButton);
+        
+        formatPanel.add(fromLabel);  // Add the label to the main panel
+        formatPanel.add(radioPanel); // Add the radio buttons panel below the label
+        return formatPanel;
+    }
+    
+    /**
+     * Creates and returns a JPanel containing the "convert to" radio buttons with 
+     * a FlowLayout
+     * @return JPanel containing the radio buttons
+     */
+    private JPanel createConvertToRadioPanel() {
+        // Create a panel for the covert to radio buttons
+        JPanel formatPanel = new JPanel();
+        
+        // BoxLayout for vertical alignment
+        formatPanel.setLayout(new BoxLayout(formatPanel, BoxLayout.Y_AXIS)); 
+        
+        // Convert to Label centered
+        JLabel toLabel = new JLabel("Convert To:");
+        toLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        
+        // Panel for radio buttons
+        JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        radioPanel.add(toDecimalRadioButton);
+        radioPanel.add(toBinaryRadioButton);
+        radioPanel.add(toHexRadioButton);
+        radioPanel.add(toSymbolRadioButton);
+        
+        formatPanel.add(toLabel);  // Add the label to the main panel
+        formatPanel.add(radioPanel); // Add the radio buttons panel below the label
+        return formatPanel;
+    }
+    
+    /**
+     * Initializes the components for inputting the message length. This method creates and configures
+     * a JLabel and a JTextField where users can specify the length of the message they want to encode.
+     * The JTextField is initialized with a default value of "1" and is set to align text centrally.
+     */
+    private void setupMessageLengthInput() {
+        messageLengthLabel = new JLabel("Message Length:");
+        messageLengthField = new JTextField("1", 5);  // Default length 1, adjust size as needed
+        messageLengthField.setHorizontalAlignment(JTextField.CENTER);
+    }
+    
+    /**
+     * Creates and returns a JPanel dedicated to setting the message length. 
+     *
+     * @return A JPanel containing components for message length input, arranged vertically.
+     */
+    private JPanel createMessageLengthPanel() {
+        JPanel messageLengthPanel = new JPanel();
+        messageLengthPanel.add(messageLengthLabel);
+        messageLengthPanel.add(messageLengthField);
+        messageLengthPanel.setLayout(new BoxLayout(messageLengthPanel, BoxLayout.Y_AXIS));
+        return messageLengthPanel;
+    }
+    
+    private void setupInstructionLabel() {
+        instructionsLabel = new JLabel("Please separate your entries with spaces. "
+                + "Note: Represent the space character as &lt;SPACE&gt; "
+                + "in your answers.");
+        instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
+    }
+
+    /**
+     * Generates and returns a random character from ASCII table values 
+     * 
+     * @return int the random integer to be returned
+     */
+    private int getRandomCharacter() {
+        // Generates a random integer between 32 (inclusive) and 127 (exclusive)
+        int randomInt = 32 + random.nextInt(127 - 32);
+        return randomInt; 
+    }
+    
+    /**
+     * Initializes the ASCII table and its scroll pane
+     */
+    private void setupAsciiTable() {
+        DefaultTableModel tableModel = new DefaultTableModel(new Object[]{"Decimal", "Binary", "Hex", "Symbol"}, 0);
+        fillAsciiTable(tableModel); // Method to fill table data
+        asciiTable = new JTable(tableModel);
+        configureAsciiTable(); // Method to configure table appearance
+        asciiTableScrollPane = new JScrollPane(asciiTable);
+        asciiTableScrollPane.setPreferredSize(new Dimension(350, 400));
+    }
+    
+    /**
+     * Fills the ASCII table with the decimal, binary, hexadecimal and symbol representation
+     * of printable ASCII characters
+     * 
+     * @param tableModel the filled ASCII table
+     */
+    private void fillAsciiTable(DefaultTableModel tableModel) {
+        for (char i = 32; i < 127; i++) {
+            tableModel.addRow(new Object[]{
+                Integer.toString(i), // Decimal representation
+                String.format("%8s", Integer.toBinaryString(i)).replaceAll(" ", "0"), // Binary representation
+                Integer.toHexString(i).toUpperCase(), // Hexadecimal representation
+                i == 32 ? "<SPACE>" : String.valueOf(i) // Symbol representation, with special handling for the space character
+            });
+        }
+    }
+    
+    /**
+     * Configures the appearance of the ASCII table 
+     */
+    private void configureAsciiTable() {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int columnIndex = 0; columnIndex < asciiTable.getColumnCount(); columnIndex++) {
+            asciiTable.getColumnModel().getColumn(columnIndex).setCellRenderer(centerRenderer);
+        }
+    }
+    
+    /**
+     * Sets the TutoringSession model for this view and updates the view based 
+     * on the model's data.
+     * 
+     * @param model the TutoringSession model to set
+     */
+    public void setModel(TutoringSession model) {
+        this.model = model;
+        
+        updateView();
+    }
+    
+    /**
+     * Updates the description, question, and hints from the model
+     * 
+     * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
+     */
+    private void updateView() {
+        if (model != null) {
+            // ****TO-DO*****
+            // Update the view's information from the model below are just some debugging
+            System.out.println("EncodeView.updateView() --> model.getUnit().getDescription(): " 
+                    + model.getUnit().getDescription());
+            System.out.println("EncodeView.updateView() --> model.currentTask().currentStep().getTitle(): "
+                    + model.currentTask().currentStep().getTitle());
+            
+        }   
+    }
+} 
