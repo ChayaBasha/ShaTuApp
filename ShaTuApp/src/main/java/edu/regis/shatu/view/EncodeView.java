@@ -201,7 +201,7 @@ public class EncodeView extends GPanel implements ActionListener {
             } else {
                 // Otherwise, inform the user that their entries were incorrect, and display the expected answers.
                 feedbackArea.setText(String.format("Incorrect. Please check "
-                        + "your entries. Expected: %s", String.join(" ", expectedAnswers)));
+                        + "your entries. Expected: \n%s", String.join(" ", expectedAnswers)));
             }
         }
         
@@ -505,7 +505,10 @@ public class EncodeView extends GPanel implements ActionListener {
      */
     private void setupResponseArea() {
         responseArea = new JTextArea(3, 20);
+        responseArea.setLineWrap(true); // Enable line wrapping
+        responseArea.setWrapStyleWord(true); // Wrap lines at word boundaries
         responseScrollPane = new JScrollPane(responseArea);
+        responseScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Enable vertical scrolling
     }
 
     /**
@@ -515,7 +518,10 @@ public class EncodeView extends GPanel implements ActionListener {
         feedbackArea = new JTextArea(3, 20);
         feedbackArea.setEditable(false);
         feedbackArea.setBackground(null);
+        feedbackArea.setLineWrap(true); // Enable line wrapping
+        feedbackArea.setWrapStyleWord(true); // Wrap lines at word boundaries
         feedbackScrollPane = new JScrollPane(feedbackArea);
+        feedbackScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); // Enable vertical scrolling
     }
 
     /**
@@ -626,7 +632,7 @@ public class EncodeView extends GPanel implements ActionListener {
     
     private void setupInstructionLabel() {
         instructionsLabel = new JLabel("Please separate your entries with spaces. "
-                + "Note: Represent the space character as &lt;SPACE&gt; "
+                + "Note: Represent the space symbol as <SPACE> "
                 + "in your answers.");
         instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
     }
@@ -706,8 +712,7 @@ public class EncodeView extends GPanel implements ActionListener {
             System.out.println("EncodeView.updateView() --> model.getUnit().getDescription(): " 
                     + model.getUnit().getDescription());
             System.out.println("EncodeView.updateView() --> model.currentTask().currentStep().getTitle(): "
-                    + model.currentTask().currentStep().getTitle());
-            
+                    + model.currentTask().currentStep().getTitle());            
         }   
     }
 } 
