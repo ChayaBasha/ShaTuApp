@@ -36,9 +36,9 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     private String answer;
     private JLabel exampleInputLabel;
     private JTextField answerField;
-    private JButton checkButton; // Add the check button
     private JButton hintButton;
-    private JButton nextQuestionButton;
+    private JButton submitButton;
+    private Component binaryLabelsLabel;
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -50,12 +50,10 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == checkButton) {
-            onCheckButton();
-        } else if (event.getSource() == hintButton) {
+        if (event.getSource() == hintButton) {
             onNextHint();
-        } else if (event.getSource() == nextQuestionButton) {
-            onNextQuestion();
+        } else if (event.getSource() == submitButton) {
+            onSubmitButton();
         }
     }
 
@@ -63,20 +61,30 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        exampleInputLabel = new JLabel("Perform Shift right an 32 bit   " + Integer.toBinaryString(EXAMPLE_INPUT) + "  number " + X_PLACES + " places");
+        StringBuilder sb = new StringBuilder(Integer.toBinaryString(EXAMPLE_INPUT));
+        sb.insert(6, " ");
+        sb.insert(12, " ");
+        sb.insert(18, " ");
+        String displayQuestion = sb.toString();
+        
+        sb = new StringBuilder();
+        sb.append("                          6|");
+        for (int i = 1; i < 3; i++) {
+            sb.append("\t      ").append(6 + 5 * i).append("|");
+        }
+        sb.append("\t                            32|");
+        binaryLabelsLabel = new JLabel(sb.toString());
+             
+        exampleInputLabel = new JLabel("Perform Shift right an 32 bit   " + displayQuestion + "  number " + X_PLACES + " places");
 
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
-
-        // Create and initialize the checkButton
-        checkButton = new JButton("Check");
-        checkButton.addActionListener(this); // Add an action listener for the check button
       
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this); // Add an action listener for the check button
         
-        nextQuestionButton = new JButton("Next Question");
-        nextQuestionButton.addActionListener(this);
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(this);
     }
 
     /**
@@ -88,28 +96,30 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
 
-        // Add exampleInputLabel centered
-        addc(exampleInputLabel, 0, 0, 2, 1, 0.0, 0.0,
+        // Add binaryLabelsLabel
+        addc(binaryLabelsLabel, 0, 0, 2, 1, 0.0, 0.0, 
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
-        // Add answerField to the layout, centered
-        addc(answerField, 0, 1, 1, 1, 1.0, 0.0,
+        // Add exampleInputLabel centered below binaryLabelsLabel
+        addc(exampleInputLabel, 0, 1, 2, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+
+        // Add answerField to the layout, centered below exampleInputLabel
+        addc(answerField, 0, 2, 2, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
 
-        addc(checkButton, 0, 2, 2, 1, 0.0, 0.0,
+        addc(hintButton, 0, 4, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
-        addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        
-        addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
+
+        addc(submitButton, 0, 5, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
+
 
     /**
      * Performs the right shift operation on the given input binary number for the specified number of places.
@@ -151,7 +161,7 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     /**
      * Verifies the user's answer by comparing it with the correct result of the right shift operation.
      */
-    private void verifyAnswer() {
+    private void verifyAnswer() {      
         String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
         // Get the text from the answerField when the checkButton is clicked
         String userAnswer = answerField.getText();
@@ -159,15 +169,30 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
         if (userAnswer.equals(correctAnswer)) {
             JOptionPane.showMessageDialog(this, "Correct");
         } else {
-            JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+            // Construct a formatted string to display the correct binary representation
+            StringBuilder sb = new StringBuilder(correctAnswer);
+            sb.insert(6, " ");
+            sb.insert(12, " ");
+            sb.insert(18, " ");
+            correctAnswer = sb.toString();
+        
+            sb = new StringBuilder();
+            sb.append("         6|");
+            for (int i = 1; i < 3; i++) {
+                sb.append("\t      ").append(6 + 5 * i).append("|");
+            }
+            sb.append("\t                           32|%n%32s");
+            String correctBinary = String.format(sb.toString(), correctAnswer);
+            // Display the incorrect message along with the correct binary representation
+            JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is:\n\n" + correctBinary);
         }
     }
     
     /**
      * Displays a message dialog indicating the start of the next question.
      */
-    private void onNextQuestion() {
-        JOptionPane.showMessageDialog(this, "Next Question");
+    private void onSubmitButton() {
+        verifyAnswer(); //For noww, just verify the answer when submit is clicked
     }
 
     /**
@@ -175,16 +200,5 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
      */
     private void onNextHint() {
         JOptionPane.showMessageDialog(this, "Hint");
-    }
-
-    /**
-     * Handles the click event of the check button, verifying the user's answer.
-     */
-    private void onCheckButton() {
-        if (answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please provide an answer");
-        } else {
-            verifyAnswer();
-        }
     }
 }
