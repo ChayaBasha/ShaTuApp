@@ -26,6 +26,7 @@ public class ActionFactory {
         NewUserAction.instance();
         SaveSessionAction.instance();
         SignInAction.instance();
+       // NewExampleAction.instance();
         
     }
 }

@@ -56,6 +56,8 @@ public class StepSelectorView extends GPanel {
         GuiController.instance().getStepView().selectPanel(selection);
     
         selectedStep = selection;
+        
+       
     }
     
     /**
