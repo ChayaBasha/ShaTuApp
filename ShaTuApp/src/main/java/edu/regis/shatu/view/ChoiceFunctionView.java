@@ -132,8 +132,8 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
                 GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
        
-        descriptionPanel.addc(truthTablePanel, 1, 2, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        descriptionPanel.addc(truthTablePanel, 1, 2, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
     }
     
@@ -284,12 +284,12 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
     private void setUpQRPanel(){
         qrPanel = new GPanel();
         
-        qrPanel.addc(responsePane, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        qrPanel.addc(responsePane, 0, 0, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
         
-        qrPanel.addc(feedbackPane, 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        qrPanel.addc(feedbackPane, 0, 1, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
 
         qrPanel.addc(buttonPanel, 0, 2, 1, 1, 1.0, 1.0,
@@ -334,7 +334,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
         
-        truthTablePanel.addc(chTruthTablePane, 0, 2, 1, 1, 0.0, 0.0,
+        truthTablePanel.addc(chTruthTablePane, 0, 2, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
     }
@@ -420,21 +420,21 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
      * 
      * @return the binary string representation of the answer
      */
-    private String formatResult(int answer) {
+    private String formatResult(long answer) {
         String finalResult = "";
         
         switch (problemSize) {
             case 4: 
-                finalResult = String.format("%4s", Integer.toBinaryString(answer)).replace(' ', '0');
+                finalResult = String.format("%4s", Long.toBinaryString(answer)).replace(' ', '0');
                 break;
             case 8:
-                finalResult = String.format("%8s", Integer.toBinaryString(answer)).replace(' ', '0');
+                finalResult = String.format("%8s", Long.toBinaryString(answer)).replace(' ', '0');
                 break;
             case 16:
-                finalResult = String.format("%16s", Integer.toBinaryString(answer)).replace(' ', '0');
+                finalResult = String.format("%16s", Long.toBinaryString(answer)).replace(' ', '0');
                 break;
             case 32:
-                finalResult = String.format("%32s", Integer.toBinaryString(answer)).replace(' ', '0');   
+                finalResult = String.format("%32s", Long.toBinaryString(answer)).replace(' ', '0');   
                 break;
             default:
                 break;
@@ -445,7 +445,10 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
     /**
      * Generates and displays three new input strings.
      */
-    private void generateNewQuestion() {       
+    private void generateNewQuestion() { 
+        responseTextArea.setText("");
+        feedbackTextArea.setText("");
+        
         stringX = generateInputString();
         stringY = generateInputString();
         stringZ = generateInputString();
@@ -468,16 +471,17 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         String tempX = x.replaceAll("\\s", "");
         String tempY = y.replaceAll("\\s", "");
         String tempZ = z.replaceAll("\\s", "");
-               
-        int intX = Integer.parseInt(tempX, 2);
-        int intY = Integer.parseInt(tempY, 2);
-        int intZ = Integer.parseInt(tempZ, 2);
+        
+        
+        long intX = Long.parseLong(tempX, 2);
+        long intY = Long.parseLong(tempY, 2);
+        long intZ = Long.parseLong(tempZ, 2);
 
-        int xy = intX & intY;
+        long xy = intX & intY;
 
-        int notX = ~intX & intZ;
+        long notX = ~intX & intZ;
 
-        int result = xy ^ notX;
+        long result = xy ^ notX;
 
         // Convert the result back to binary string
         String binaryResult = formatResult(result);
@@ -545,6 +549,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         if (correctAnswer.equals(userResponse)) {
             feedbackTextArea.setText("Correct!");
             nextButton.setEnabled(true);
+            checkButton.setEnabled(false);
         } else {
             feedbackTextArea.setText("Incorrect! Please check your entry and "
                     + "try again or use the hint feature for help. Correct answer: " + correctAnswer);
@@ -561,6 +566,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         generateNewQuestion();
         
         nextButton.setEnabled(false);
+        checkButton.setEnabled(true);
     }
 
     /**
