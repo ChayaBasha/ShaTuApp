@@ -16,7 +16,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.math.BigInteger;
+import java.util.Random;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * This class represents the GUI for the Majority (Maj) function exercise.
@@ -37,25 +38,22 @@ import java.math.BigInteger;
  * @author rickb
  */
 public class MajFunction extends GPanel implements ActionListener, KeyListener {
-    /**
-     * The ASCII character the student is being asked to convert.
-     */
-    private final int m = 8; // will be changed and dynamically updated
-
-    private final String binary1 = "101100";
-    private final String binary2 = "011011";
-    private final String binary3 = "110011";
-
-    private JTextField answerField;
-
-    private JLabel binaryStringLabel1;
-    private JLabel binaryStringLabel2;
-    private JLabel binaryStringLabel3;
-
-    private JLabel instructionLabel;
-    private JButton checkButton; // Add the check button
-    private JButton hintButton;
-    private JButton nextQuestionButton;
+    private String stringX, stringY, stringZ;
+    private int problemSize; 
+    private JTextArea descTextArea, feedbackTextArea, responseTextArea;
+    private JScrollPane feedbackPane, responsePane, majTruthTablePane;
+    private GPanel truthTablePanel, questionPanel, descriptionPanel, qrPanel;
+    private JPanel buttonPanel, radioButtonPanel; 
+    private JTable majTruthTable;
+    private JButton checkButton, nextButton, hintButton;
+    private ButtonGroup problemSizeGroup;
+    private JRadioButton fourRadioButton, eightRadioButton, sixteenRadioButton, 
+                         thirtytwoRadioButton;
+    private JLabel viewNameLabel, truthTableLabel, majFunctionLabel, 
+                   stringXLabel, stringYLabel, stringZLabel, answerLabel, 
+                   problemSizeLabel, instructionLabel;
+    
+    private static final Random random = new Random();
 
     /**
      * Initialize this view including creating and laying out its child components.
@@ -71,132 +69,452 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
             onCheckButton();
         } else if (event.getSource() == hintButton) {
             onNextHint();
-        } else if (event.getSource() == nextQuestionButton) {
+        } else if (event.getSource() == nextButton) {
             onNextQuestion();
         }
     }
-
+    
     /**
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        instructionLabel = new JLabel("Given three 𝑛-bit binary numbers, output the value of the Majority (Maj) function.");
-        binaryStringLabel1 = new JLabel("Binary number 1: " + binary1);
-        binaryStringLabel2 = new JLabel("Binary number 2: " + binary2);
-        binaryStringLabel3 = new JLabel("Binary number 3 " + binary3);
-
-        answerField = new JTextField(10);
-        answerField.addKeyListener(this);
-
-        // Create and initialize the checkButton
-        checkButton = new JButton("Check");
-        checkButton.addActionListener(this); // Add an action listener for the check button
-
-        hintButton = new JButton("Hint");
-        hintButton.addActionListener(this);
-
-        nextQuestionButton = new JButton("Next Question");
-        nextQuestionButton.addActionListener(this);
+        setUpDescription();
+        setUpRadioButtons();
+        setUpQuestionArea();
+        setUpResponseArea();
+        setUpFeedbackArea();
+        setUpButtons();
+        setUpTruthTable();
+        setUpDescriptionPanel();
+        setUpQRPanel();   
     }
 
     /**
      * Layout the child components in this view.
+    */ 
+    private void initializeLayout() { 
+        addc(descriptionPanel, 0, 0, 1, 1, 1.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+      
+        addc(answerLabel, 0, 1, 1, 1, 1.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+        
+        addc(qrPanel, 0, 2, 3, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+    }
+    
+    /**
+     * Sets up the description area
      */
-    private void initializeLayout() {
+    private void setUpDescription() {
+        viewNameLabel = new JLabel("The Majority Function");
+        viewNameLabel.setFont(new Font("", Font.BOLD, 20));
+        
+        descTextArea = new JTextArea();
+        descTextArea.setEditable(false);
+        descTextArea.setLineWrap(true);
+        descTextArea.setWrapStyleWord(true);
+        descTextArea.setOpaque(false);
+        descTextArea.append("""
+                            The Majority function takes three 32-bit words as input and outputs one 32-bit word. When comparing the three inputs,
+                            this function outputs the bit that shows up the most between x, y, and z."""); //Works for now. Describe better later    
+    }
+    
+    /**
+     * Creates the description panel
+     */
+    private void setUpDescriptionPanel() {
+        descriptionPanel = new GPanel();
 
-        GridBagConstraints centerConstraints = new GridBagConstraints();
-        centerConstraints.anchor = GridBagConstraints.CENTER;
-        centerConstraints.insets = new Insets(5, 5, 5, 5);
+        descriptionPanel.addc(viewNameLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
 
-        // Add instructionLabel centered
-        addc(instructionLabel, 0, 0, 1, 1, 0.0, 0.0,
+        descriptionPanel.addc(descTextArea, 0, 1, 3, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+
+        descriptionPanel.addc(questionPanel, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+       
+        descriptionPanel.addc(truthTablePanel, 1, 2, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+    }
+    
+    /**
+     * Sets up the radio buttons and action listener
+     */
+    private void setUpRadioButtons() {
+        fourRadioButton = new JRadioButton("4 bits");
+        eightRadioButton = new JRadioButton("8 bits");
+        sixteenRadioButton = new JRadioButton("16 bits");
+        thirtytwoRadioButton = new JRadioButton("32 bits");
+        
+        ActionListener selection = e -> {
+            JRadioButton source = (JRadioButton) e.getSource();
+            updateProblemSize(source);
+            generateNewQuestion();
+        };
+        
+        fourRadioButton.addActionListener(selection);
+        eightRadioButton.addActionListener(selection);
+        sixteenRadioButton.addActionListener(selection);
+        thirtytwoRadioButton.addActionListener(selection);
+        
+        problemSizeGroup = new ButtonGroup();
+        problemSizeGroup.add(fourRadioButton);
+        problemSizeGroup.add(eightRadioButton);
+        problemSizeGroup.add(sixteenRadioButton);
+        problemSizeGroup.add(thirtytwoRadioButton);
+        
+        fourRadioButton.setSelected(true); //Set default radio button to true
+        
+        radioButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        radioButtonPanel.add(fourRadioButton);
+        radioButtonPanel.add(eightRadioButton);
+        radioButtonPanel.add(sixteenRadioButton);
+        radioButtonPanel.add(thirtytwoRadioButton);    
+    }
+    
+    /**
+     * Updates the size of the problem to display.
+     * 
+     * @param source The radio button that triggered the even.
+     */
+    private void updateProblemSize(JRadioButton source){
+        if (source == fourRadioButton) {
+            problemSize = 4;
+        } else if (source == eightRadioButton) {
+            problemSize = 8;
+        } else if (source == sixteenRadioButton) {
+            problemSize = 16;
+        } else if (source == thirtytwoRadioButton){
+            problemSize = 32;
+        }
+    }
+    
+    /**
+     * Initializes the question components and adds them to the question panel. 
+     */
+    private void setUpQuestionArea() {
+        problemSize = 4;
+        stringX = generateInputString();
+        stringY = generateInputString();
+        stringZ = generateInputString();
+        
+        stringXLabel = new JLabel("x: " + stringX);
+        stringYLabel = new JLabel("y: " + stringY);
+        stringZLabel = new JLabel("z: " + stringZ);
+        
+        problemSizeLabel = new JLabel("Select Problem Size:");
+        instructionLabel = new JLabel("Solve the majority function using the three "
+                + "inputs given below:");
+        
+        questionPanel = new GPanel();
+        
+        questionPanel.addc(problemSizeLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        questionPanel.addc(radioButtonPanel, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
-        // Add binaryNumberOneLabel centered below instructionLabel
-        addc(binaryStringLabel1, 0, 1, 1, 1, 0.0, 0.0,
+        questionPanel.addc(instructionLabel, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        questionPanel.addc(stringXLabel, 0, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
-        // Add binaryNumberTwoLabel centered below binaryNumberOneLabel
-        addc(binaryStringLabel2, 0, 2, 1, 1, 0.0, 0.0,
+        
+        questionPanel.addc(stringYLabel, 0, 4, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
-        addc(binaryStringLabel3, 0, 3, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-
-        // Add answerField centered below binaryNumberTwoLabel
-        addc(answerField, 0, 4, 1, 1, 1.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-
-        // Add checkButton centered below answerField
-        addc(checkButton, 0, 5, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-
-        addc(hintButton, 0, 6, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-
-        addc(nextQuestionButton, 0, 7, 1, 1, 0.0, 0.0,
+        
+        questionPanel.addc(stringZLabel, 0, 5, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
-
+    
     /**
-     * Calculates the modulo of the sum of two binary numbers.
-     *
-     * @param binary1 The first binary number.
-     * @param binary2 The second binary number.
-     * @return The result after performing modulo 2^m on the sum of the two binary numbers.
+     * Initializes the response area
      */
-    public String calculateModulo(String binary1, String binary2) {
-        if (binary1 == null || binary1.isEmpty()) {
-            return "";
+    private void setUpResponseArea() {
+        answerLabel = new JLabel("Enter your answer below:");
+        responseTextArea = new JTextArea(3, 20);
+        responseTextArea.setLineWrap(true);
+        responseTextArea.setWrapStyleWord(true);
+        
+        responsePane = new JScrollPane(responseTextArea);
+        responsePane.setPreferredSize(new Dimension(800, 200));
+    }
+    
+     /**
+     * Initialized the feedback area
+     */
+    private void setUpFeedbackArea() {
+        feedbackTextArea = new JTextArea(3, 20);
+        feedbackTextArea.setEditable(false);
+        feedbackTextArea.setLineWrap(true);
+        feedbackTextArea.setWrapStyleWord(true);
+        feedbackTextArea.setBackground(null);
+        
+        feedbackPane = new JScrollPane(feedbackTextArea);
+        feedbackPane.setPreferredSize(new Dimension(800, 200));
+    }
+    
+    /**
+     * Sets up the Check, Next, and Hint buttons and their action listeners
+     */
+    private void setUpButtons() {
+        checkButton = new JButton("Check");
+        checkButton.addActionListener(this);
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
+        
+        nextButton = new JButton("Next");
+        nextButton.addActionListener(this);
+        nextButton.setEnabled(false);
+        
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(checkButton);
+        buttonPanel.add(nextButton);
+        buttonPanel.add(hintButton);   
+    }
+    
+    /**
+     * Creates a GPanel containing the response and feedback JScrollPanes and 
+     * the button panel. 
+     */
+    private void setUpQRPanel(){ //Rename function (frPanel?)
+        qrPanel = new GPanel();
+        
+        qrPanel.addc(responsePane, 0, 0, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+        
+        qrPanel.addc(feedbackPane, 0, 1, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+
+        qrPanel.addc(buttonPanel, 0, 2, 1, 1, 1.0, 1.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+    }
+    
+    /**
+     * Sets up the truth table associated with the Majority Function.
+     */
+    private void setUpTruthTable() {
+
+        truthTableLabel = new JLabel("Maj Function Truth Table");
+        truthTableLabel.setFont(new Font("", Font.BOLD, 14));
+        majFunctionLabel = new JLabel("𝑀𝑎𝑗(𝑥,𝑦,𝑧)=(𝑥∧𝑦)⨁(𝑥∧𝑧)⨁(𝑦∧𝑧)");
+        
+        Object[] columnNames = {"x", "y", "z", "(𝑥∧𝑦)", "(𝑥∧𝑧)", "(𝑦∧𝑧)", "(𝑥∧𝑦)⨁(𝑥∧𝑧)⨁(𝑦∧𝑧)"};
+        Object[][] data = {{0, 0, 0, 0, 0, 0, 0}, 
+                           {0, 0, 1, 0, 0, 0, 0}, 
+                           {0, 1, 0, 0, 0, 0, 0},
+                           {0, 1, 1, 0, 0, 1, 1}, 
+                           {1, 0, 0, 0, 0, 0, 0}, 
+                           {1, 0, 1, 0, 1, 0, 1}, 
+                           {1, 1, 0, 1, 0, 0, 1}, 
+                           {1, 1, 1, 1, 1, 1, 1}};
+        
+        majTruthTable = new JTable(data, columnNames);
+        configureChTruthTable();
+        
+        majTruthTablePane = new JScrollPane(majTruthTable);
+        majTruthTablePane.setPreferredSize(new Dimension(400, 151));
+        majTruthTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        majTruthTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        
+        truthTablePanel = new GPanel(); //Separate GPanel info to new function
+        
+        truthTablePanel.addc(truthTableLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        truthTablePanel.addc(majFunctionLabel, 0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        truthTablePanel.addc(majTruthTablePane, 0, 2, 1, 1, 1.0, 1.0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+    }
+    
+    /**
+     * Configures the appearance of the truth table.
+     */
+    private void configureChTruthTable() {
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int columnIndex = 0; columnIndex < majTruthTable.getColumnCount(); columnIndex++) {
+            majTruthTable.getColumnModel().getColumn(columnIndex).setCellRenderer(centerRenderer);
         }
-        if (binary2 == null || binary2.isEmpty()) {
-            return "";
+        majTruthTable.getColumnModel().getColumn(0).setPreferredWidth(25);
+        majTruthTable.getColumnModel().getColumn(1).setPreferredWidth(25);
+        majTruthTable.getColumnModel().getColumn(2).setPreferredWidth(25);
+        majTruthTable.getColumnModel().getColumn(6).setPreferredWidth(130);
+    }
+    
+     /**
+     * Generates an n-bit binary string (length 4, 8, 16, or 32) to be used as an input into the 
+     * Maj function. Every four bits are separated by a space to improve readability.
+     * 
+     * @return A string to be used as an input into the function.
+     */
+    private String generateInputString() { //Try to find a better way to do this?
+        String inputString;
+        String tempString;
+        StringBuilder inputStringBuilder = new StringBuilder();
+        int num;
+
+        switch (problemSize) {
+            case 4:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 8:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                
+                inputStringBuilder.append(" ");
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 16:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                
+                for (int i = 0; i < 3; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }   break;
+            case 32:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                
+                for (int i = 0; i < 7; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }   break;
+            default:
+                break;
         }
-
-        // Convert binary strings to BigIntegers
-        BigInteger num1 = new BigInteger(binary1, 2);
-        BigInteger num2 = new BigInteger(binary2, 2);
-
-        // Perform addition
-        BigInteger sum = num1.add(num2);
-
-        // Calculate the result modulo 2^256
-        BigInteger modulo = new BigInteger("2").pow(m);
-        BigInteger result = sum.mod(modulo);
-
-        // Convert the result back to a binary string
-        String resultBinary = result.toString(2);
-
-        // Ensure the binary string has 256 bits (pad with leading zeros if necessary)
-        while (resultBinary.length() < m) {
-            resultBinary = "0" + resultBinary;
+        
+        inputString = inputStringBuilder.toString();
+        
+        return inputString;
+    }
+    
+    /**
+     * Formats the result output by the choice function based on the size of the 
+     * problem.
+     * @param answer the output of the choice function
+     * 
+     * @return the binary string representation of the answer
+     */
+    private String formatResult(long answer) {
+        String finalResult = "";
+        
+        switch (problemSize) {
+            case 4: 
+                finalResult = String.format("%4s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 8:
+                finalResult = String.format("%8s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 16:
+                finalResult = String.format("%16s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 32:
+                finalResult = String.format("%32s", Long.toBinaryString(answer)).replace(' ', '0');   
+                break;
+            default:
+                break;
         }
+        return finalResult;
+    }
+    
+    /**
+     * Generates and displays three new input strings.
+     */
+    private void generateNewQuestion() {   
+        responseTextArea.setText("");
+        feedbackTextArea.setText("");
+        
+        stringX = generateInputString();
+        stringY = generateInputString();
+        stringZ = generateInputString();
+        
+        stringXLabel.setText("x: " + stringX);
+        stringYLabel.setText("y: " + stringY);
+        stringZLabel.setText("z: " + stringZ);
+    }
+    
+    /**
+     * Evaluates the maj function maj(x, y, z).
+     *
+     * @param x Binary string representation of x.
+     * @param y Binary string representation of y.
+     * @param z Binary string representation of z.
+     * @return Binary string result of maj(x, y, z).
+     */
+    private String majorityFunction(String x, String y, String z) {
+        // Convert the binary strings to integer values
+        String tempX = x.replaceAll("\\s", "");
+        String tempY = y.replaceAll("\\s", "");
+        String tempZ = z.replaceAll("\\s", "");
+               
+        long intX = Long.parseLong(tempX, 2);
+        long intY = Long.parseLong(tempY, 2);
+        long intZ = Long.parseLong(tempZ, 2);
 
-        System.out.println("Result : " + resultBinary);
+        long xy = intX & intY;
 
-        return resultBinary;
+        long xz = intX & intZ;
+        
+        long yz = intY & intZ;
+
+        long result = xy ^ xz ^ yz;
+
+        // Convert the result back to binary string
+        String binaryResult = formatResult(result);
+
+        return binaryResult;
     }
 
     /**
      * Verifies the user's answer against the correct result and shows a message dialog.
      */
     private void verifyAnswer() {
-        String correctAnswer = calculateModulo(binary1, binary2);
-        // Get the text from the answerField when the checkButton is clicked
-        String userAnswer = answerField.getText();
-
-        if (userAnswer.equals(correctAnswer)) {
-            JOptionPane.showMessageDialog(this, "Correct");
+        String correctAnswer = majorityFunction(stringX, stringY, stringZ);
+        String userResponse = responseTextArea.getText();
+        
+        userResponse = userResponse.replaceAll("\\s", "");
+        
+        if (correctAnswer.equals(userResponse)) {
+            feedbackTextArea.setText("Correct!");
+            nextButton.setEnabled(true);
+            checkButton.setEnabled(false);
         } else {
-            JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
+            feedbackTextArea.setText("Incorrect! Please check your entry and "
+                    + "try again or use the hint feature for help. Correct answer: " + correctAnswer);
         }
     }
 
@@ -206,8 +524,8 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && responseTextArea.getText().equals("")) {
+            feedbackTextArea.setText("Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
@@ -221,22 +539,29 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
      * Displays a message dialog indicating the start of the next question.
      */
     private void onNextQuestion() {
-        JOptionPane.showMessageDialog(this, "Next Question");
+        responseTextArea.setText("");
+        feedbackTextArea.setText("");
+        
+        generateNewQuestion();
+        
+        nextButton.setEnabled(false);
+        checkButton.setEnabled(true);
     }
 
     /**
      * Displays a message dialog indicating the provision of a hint.
-     */
+    */
     private void onNextHint() {
-        JOptionPane.showMessageDialog(this, "Hint");
+        feedbackTextArea.setText("Hint: Check the truth table above for the "
+                + "appropriate values.");
     }
 
     /**
      * Handles the click event of the check button, verifying the user's answer.
-     */
+    */
     private void onCheckButton() {
-        if (answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        if (responseTextArea.getText().equals("")) {
+            feedbackTextArea.setText("Please provide an answer");
         } else {
             verifyAnswer();
         }
