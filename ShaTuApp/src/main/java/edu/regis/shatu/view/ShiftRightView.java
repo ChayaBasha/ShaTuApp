@@ -61,63 +61,110 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        StringBuilder sb = new StringBuilder(Integer.toBinaryString(EXAMPLE_INPUT));
-        sb.insert(6, " ");
-        sb.insert(12, " ");
-        sb.insert(18, " ");
-        String displayQuestion = sb.toString();
-        
-        sb = new StringBuilder();
-        sb.append("                          6|");
-        for (int i = 1; i < 3; i++) {
-            sb.append("\t      ").append(6 + 5 * i).append("|");
-        }
-        sb.append("\t                            32|");
-        binaryLabelsLabel = new JLabel(sb.toString());
-             
-        exampleInputLabel = new JLabel("Perform Shift right an 32 bit   " + displayQuestion + "  number " + X_PLACES + " places");
+        // Convert the example input to a binary string and add spaces every 4 bits (nibble)
+        String binaryStringWithSpaces = formatBinaryString(Integer.toBinaryString(EXAMPLE_INPUT));
 
-        answerField = new JTextField(10);
+        // Update the exampleInputLabel with the new string
+        exampleInputLabel = new JLabel("Perform Shift right on a 32 bit   " 
+                + binaryStringWithSpaces + "  number " + X_PLACES + " places");
+
+        // Create a new label with correct spacing for the bit markers
+        binaryLabelsLabel = new JLabel("                                                           "
+                + "4|      8|    12|    16|    20|    24|    28|    32|");
+
+        // Initialize other components as before
+        answerField = new JTextField(20);
         answerField.addKeyListener(this);
-      
+
         hintButton = new JButton("Hint");
-        hintButton.addActionListener(this); // Add an action listener for the check button
-        
+        hintButton.addActionListener(this);
+
         submitButton = new JButton("Submit");
         submitButton.addActionListener(this);
+    }
+
+    private String formatBinaryString(String binary) {
+        StringBuilder sb = new StringBuilder(binary);
+        // Ensure the string has a length of 32 characters
+        while (sb.length() < 32) {
+            sb.insert(0, "0");
+        }
+        // Insert spaces every 4 characters from the end
+        for (int i = 4; i < sb.length(); i += 5) {
+            sb.insert(sb.length() - i, " ");
+        }
+        return sb.toString();
     }
 
     /**
      * Layout the child components in this view.
      */
     private void initializeLayout() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        GridBagConstraints centerConstraints = new GridBagConstraints();
-        centerConstraints.anchor = GridBagConstraints.CENTER;
-        centerConstraints.insets = new Insets(5, 5, 5, 5);
+        // Common settings
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
 
-        // Add binaryLabelsLabel
-        addc(binaryLabelsLabel, 0, 0, 2, 1, 0.0, 0.0, 
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        // Title label
+        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
+        JLabel titleLabel = new JLabel("Binary Right Shift Tutor");
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
+        add(titleLabel, gbc);
 
-        // Add exampleInputLabel centered below binaryLabelsLabel
-        addc(exampleInputLabel, 0, 1, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        // Description label
+        gbc.gridy++;
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
+        JLabel descriptionLabel = new JLabel("<html><p>Perform a binary right shift on the provided 32-bit number to learn how bitwise operations work in SHA-256 hash computations.</p></html>");
+        add(descriptionLabel, gbc);
 
-        // Add answerField to the layout, centered below exampleInputLabel
-        addc(answerField, 0, 2, 2, 1, 1.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
+        // Bit position markers label
+        gbc.gridy++;
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
+        add(binaryLabelsLabel, gbc);
 
-        addc(hintButton, 0, 4, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        // Input label
+        gbc.gridy++;
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
+        add(exampleInputLabel, gbc);
 
-        addc(submitButton, 0, 5, 2, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
+        // Input field
+        gbc.gridy++;
+        gbc.gridwidth = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.2; // Adjust weight as necessary to make the field smaller
+        answerField.setPreferredSize(new Dimension(120, answerField.getPreferredSize().height)); // Set the preferred width
+        add(answerField, gbc);
+
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        hintButton.setPreferredSize(new Dimension(80, 25)); // Set the preferred size for the buttons
+        submitButton.setPreferredSize(new Dimension(80, 25));
+        buttonPanel.add(hintButton);
+        buttonPanel.add(submitButton);
+        gbc.gridx++; gbc.weightx = 0.8; // Adjust weight to push buttons to the left
+        gbc.fill = GridBagConstraints.NONE; // Do not fill horizontally
+        add(buttonPanel, gbc);
+
+        // Filler panel to push everything up
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.weighty = 1; gbc.weightx = 1; // Assign more weight to push contents to the top
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.BOTH;
+        JPanel filler = new JPanel();
+        add(filler, gbc);
+    }
+
+    public void setModel(String bitString, int shiftAmount, boolean isShiftLeft) {
+        // Update the view with the provided information
+        updateView(bitString, shiftAmount, isShiftLeft);
+    }
+
+    private void updateView(String bitString, int shiftAmount, boolean isShiftLeft) {
+        // Update the exampleInputLabel to display the bitString and shiftAmount
+        exampleInputLabel.setText("Perform " + (isShiftLeft ? "left" : "right") + " shift on a 32-bit " 
+                + bitString + " number " + shiftAmount + " places");
     }
 
 
@@ -131,7 +178,7 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     public String shiftRightString(int x, int places) {
 
         // Perform the right shift operation
-        int result = x >> places;
+        int result = x >>> places;
 
         // Print the original and shifted binary numbers
         System.out.println("Original Binary: " + Integer.toBinaryString(x));
@@ -161,30 +208,23 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
     /**
      * Verifies the user's answer by comparing it with the correct result of the right shift operation.
      */
-    private void verifyAnswer() {      
+    private void verifyAnswer() {
         String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
+        String formattedBinary = formatBinaryString(correctAnswer);
+
+        // Bit position markers formatted to align with the binary string
+        String bitPositions = "  4|   8|  12|  16|  20|  24|  28|  32|";
+
         // Get the text from the answerField when the checkButton is clicked
         String userAnswer = answerField.getText();
 
-        if (userAnswer.equals(correctAnswer)) {
-            JOptionPane.showMessageDialog(this, "Correct");
+        // Construct a formatted string to display the correct binary representation
+        String message = "<html><pre>Bit positions: " + bitPositions + "<br/>Binary:        " + formattedBinary + "</pre></html>";
+
+        if (userAnswer.equals(correctAnswer.replaceAll(" ", ""))) {
+            JOptionPane.showMessageDialog(this, message, "Correct", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            // Construct a formatted string to display the correct binary representation
-            StringBuilder sb = new StringBuilder(correctAnswer);
-            sb.insert(6, " ");
-            sb.insert(12, " ");
-            sb.insert(18, " ");
-            correctAnswer = sb.toString();
-        
-            sb = new StringBuilder();
-            sb.append("         6|");
-            for (int i = 1; i < 3; i++) {
-                sb.append("\t      ").append(6 + 5 * i).append("|");
-            }
-            sb.append("\t                           32|%n%32s");
-            String correctBinary = String.format(sb.toString(), correctAnswer);
-            // Display the incorrect message along with the correct binary representation
-            JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is:\n\n" + correctBinary);
+            JOptionPane.showMessageDialog(this, message, "Incorrect. The correct answer is:", JOptionPane.ERROR_MESSAGE);
         }
     }
     
