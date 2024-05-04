@@ -12,16 +12,23 @@
  */
 package edu.regis.shatu.view;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 /**
  * ExclusiveOrView class represents a GUI view for performing Exclusive OR (XOR)
@@ -31,19 +38,22 @@ import javax.swing.JTextField;
  *
  * @author rickb
  */
-public class ExclusiveOrView extends GPanel implements ActionListener, KeyListener {
-
-    private final String BINARY_NUMBER_ONE = "0001";
-    private final String BINARY_NUMBER_TWO = "1111";
-    private JLabel binaryNumberOneLabel;
-    private JLabel binaryNumberTwoLabel;
-    private JLabel instructionLabel;
-    private JTextField answerField;
-    private JLabel answerLabel;
-    private JButton checkButton;
-    private JButton hintButton;
-    private JButton nextQuestionButton;
-
+public class ExclusiveOrView extends GPanel implements ActionListener, KeyListener {   
+    private String stringX, stringY;
+    private int problemSize; 
+    private JTextArea descTextArea, feedbackTextArea, responseTextArea;
+    private JScrollPane feedbackPane, responsePane;
+    private GPanel questionPanel, descriptionPanel, qrPanel;
+    private JPanel buttonPanel, radioButtonPanel;
+    private JButton checkButton, nextButton, hintButton;
+    private ButtonGroup problemSizeGroup;
+    private JRadioButton fourRadioButton, eightRadioButton, sixteenRadioButton, 
+                         thirtytwoRadioButton;
+    private JLabel viewNameLabel, stringXLabel, stringYLabel, answerLabel, 
+                   problemSizeLabel, instructionLabel;
+    
+    private static final Random random = new Random();
+    
     /**
      * Initialize this view including creating and laying out its child
      * components.
@@ -57,69 +67,326 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        instructionLabel = new JLabel("Perform Exclusive OR (XOR) on given binary numbers");
-
-        binaryNumberOneLabel = new JLabel(BINARY_NUMBER_ONE);
-        binaryNumberTwoLabel = new JLabel(BINARY_NUMBER_TWO);
-
-        answerLabel = new JLabel("Your answer: ");
-        answerField = new JTextField(10);
-        answerField.addKeyListener(this);
-
-        // Create and initialize the checkButton
-        checkButton = new JButton("Check");
-        checkButton.addActionListener(this);
-
-        hintButton = new JButton("Hint");
-        hintButton.addActionListener(this);
-
-        nextQuestionButton = new JButton("Next Question");
-        nextQuestionButton.addActionListener(this);
+        setUpDescription();
+        setUpRadioButtons();
+        setUpQuestionArea();
+        setUpResponseArea();
+        setUpFeedbackArea();
+        setUpButtons();
+        setUpDescriptionPanel();
+        setUpQRPanel();
     }
 
     /**
      * Layout the child components in this view.
      */
-    private void initializeLayout() {
-        GridBagConstraints centerConstraints = new GridBagConstraints();
-        centerConstraints.anchor = GridBagConstraints.CENTER;
-        centerConstraints.insets = new Insets(5, 5, 5, 5);
+    private void initializeLayout() {  
+        addc(descriptionPanel, 0, 0, 1, 1, 1.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+      
+        addc(answerLabel, 0, 1, 1, 1, 1.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+        
+        addc(qrPanel, 0, 2, 3, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5); 
+    }
+    
+    
+    
+     /**
+     * Sets up the description area
+     */
+    private void setUpDescription() {
+        viewNameLabel = new JLabel("The Exclusive OR");
+        viewNameLabel.setFont(new Font("", Font.BOLD, 20));
+        
+        descTextArea = new JTextArea();
+        descTextArea.setEditable(false);
+        descTextArea.setLineWrap(true);
+        descTextArea.setWrapStyleWord(true);
+        descTextArea.setOpaque(false);
+        descTextArea.append("The exclusive OR compares two n-length binary strings. When comparing the strings, if both bits are the same, the output is 0, else its 1."); 
+        
+        descTextArea.setPreferredSize(new Dimension(800, 50));
+    }
+    
+    /**
+     * Creates the description panel
+     */
+    private void setUpDescriptionPanel() {
+        descriptionPanel = new GPanel();
 
-        // Add instructionLabel centered
-        addc(instructionLabel, 0, 0, 1, 1, 0.0, 0.0,
+        descriptionPanel.addc(viewNameLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+
+        descriptionPanel.addc(descTextArea, 0, 1, 3, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+
+        descriptionPanel.addc(questionPanel, 0, 2, 1, 1, 1.0, 1.0,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+       
+    }
+    
+    /**
+     * Sets up the radio buttons and action listener
+     */
+    private void setUpRadioButtons() {
+        fourRadioButton = new JRadioButton("4 bits");
+        eightRadioButton = new JRadioButton("8 bits");
+        sixteenRadioButton = new JRadioButton("16 bits");
+        thirtytwoRadioButton = new JRadioButton("32 bits");
+        
+        ActionListener selection = e -> {
+            JRadioButton source = (JRadioButton) e.getSource();
+            updateProblemSize(source);
+            generateNewQuestion();
+        };
+        
+        fourRadioButton.addActionListener(selection);
+        eightRadioButton.addActionListener(selection);
+        sixteenRadioButton.addActionListener(selection);
+        thirtytwoRadioButton.addActionListener(selection);
+        
+        problemSizeGroup = new ButtonGroup();
+        problemSizeGroup.add(fourRadioButton);
+        problemSizeGroup.add(eightRadioButton);
+        problemSizeGroup.add(sixteenRadioButton);
+        problemSizeGroup.add(thirtytwoRadioButton);
+        
+        fourRadioButton.setSelected(true); //Set default radio button to true
+        
+        radioButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        radioButtonPanel.add(fourRadioButton);
+        radioButtonPanel.add(eightRadioButton);
+        radioButtonPanel.add(sixteenRadioButton);
+        radioButtonPanel.add(thirtytwoRadioButton);    
+    }
+    
+    /**
+     * Updates the size of the problem to display.
+     * 
+     * @param source The radio button that triggered the even.
+     */
+    private void updateProblemSize(JRadioButton source){
+        if (source == fourRadioButton) {
+            problemSize = 4;
+        } else if (source == eightRadioButton) {
+            problemSize = 8;
+        } else if (source == sixteenRadioButton) {
+            problemSize = 16;
+        } else if (source == thirtytwoRadioButton){
+            problemSize = 32;
+        }
+    }
+    
+    /**
+     * Initializes the question components and adds them to the question panel. 
+     */
+    private void setUpQuestionArea() {
+        problemSize = 4;
+        stringX = generateInputString();
+        stringY = generateInputString();
+        
+        stringXLabel = new JLabel("x: " + stringX);
+        stringYLabel = new JLabel("y: " + stringY);
+        
+        problemSizeLabel = new JLabel("Select Problem Size:");
+        instructionLabel = new JLabel("Perform an XOR using the two "
+                + "inputs given below:");
+        
+        questionPanel = new GPanel();
+        
+        questionPanel.addc(problemSizeLabel, 0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        questionPanel.addc(radioButtonPanel, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
-        // Add binaryNumberOneLabel centered below instructionLabel
-        addc(binaryNumberOneLabel, 0, 1, 1, 1, 0.0, 0.0,
+        questionPanel.addc(instructionLabel, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        questionPanel.addc(stringXLabel, 0, 3, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
-        // Add binaryNumberTwoLabel centered below binaryNumberOneLabel
-        addc(binaryNumberTwoLabel, 0, 2, 1, 1, 0.0, 0.0,
+        
+        questionPanel.addc(stringYLabel, 0, 4, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
-        // Add answerField centered below binaryNumberTwoLabel
-        addc(answerField, 0, 3, 1, 1, 1.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+    }
+    
+    /**
+     * Initializes the response area
+     */
+    private void setUpResponseArea() {
+        answerLabel = new JLabel("Enter your answer below:");
+        responseTextArea = new JTextArea(3, 20);
+        responseTextArea.setLineWrap(true);
+        responseTextArea.setWrapStyleWord(true);
+        
+        responsePane = new JScrollPane(responseTextArea);
+        responsePane.setPreferredSize(new Dimension(800, 200));
+    }
+    
+    /**
+     * Initialized the feedback area
+     */
+    private void setUpFeedbackArea() {
+        feedbackTextArea = new JTextArea(3, 20);
+        feedbackTextArea.setEditable(false);
+        feedbackTextArea.setLineWrap(true);
+        feedbackTextArea.setWrapStyleWord(true);
+        feedbackTextArea.setBackground(null);
+        
+        feedbackPane = new JScrollPane(feedbackTextArea);
+        feedbackPane.setPreferredSize(new Dimension(800, 200));
+    }
+    
+     /**
+     * Sets up the Check, Next, and Hint buttons and their action listeners
+     */
+    private void setUpButtons() {
+        checkButton = new JButton("Check");
+        checkButton.addActionListener(this);
+        
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
+        
+        nextButton = new JButton("Next");
+        nextButton.addActionListener(this);
+        nextButton.setEnabled(false);
+        
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(checkButton);
+        buttonPanel.add(nextButton);
+        buttonPanel.add(hintButton);   
+    }
+    
+     /**
+     * Creates a GPanel containing the response and feedback JScrollPanes and 
+     * the button panel. 
+     */
+    private void setUpQRPanel(){
+        qrPanel = new GPanel();
+        
+        qrPanel.addc(responsePane, 0, 0, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
+                5, 5, 5, 5);
+        
+        qrPanel.addc(feedbackPane, 0, 1, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
 
-        // Add checkButton centered below answerField
-        addc(checkButton, 0, 4, 1, 1, 0.0, 0.0,
+        qrPanel.addc(buttonPanel, 0, 2, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
+    }
+    
+    /**
+     * Generates an n-bit binary string (length 4, 8, 16, or 32) to be used as an input into the 
+     * Ch function. Every four bits are separated by a space to improve readability.
+     * 
+     * @return A string to be used as an input into the function.
+     */
+    private String generateInputString() {
+        String inputString;
+        String tempString;
+        StringBuilder inputStringBuilder = new StringBuilder();
+        int num;
 
-        // Add hintButton centered below checkButton
-        addc(hintButton, 0, 5, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-
-        // Add nextQuestionButton centered below hintButton
-        addc(nextQuestionButton, 0, 7, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-
+        switch (problemSize) {
+            case 4:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 8:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                
+                inputStringBuilder.append(" ");
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 16:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                
+                for (int i = 0; i < 3; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }   break;
+            case 32:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                
+                for (int i = 0; i < 7; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }   break;
+            default:
+                break;
+        }
+        
+        inputString = inputStringBuilder.toString();
+        
+        return inputString;
+    }
+    
+     /**
+     * Formats the result output by the choice function based on the size of the 
+     * problem.
+     * @param answer the output of the choice function
+     * 
+     * @return the binary string representation of the answer
+     */
+    private String formatResult(long answer) {
+        String finalResult = "";
+        
+        switch (problemSize) {
+            case 4: 
+                finalResult = String.format("%4s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 8:
+                finalResult = String.format("%8s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 16:
+                finalResult = String.format("%16s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 32:
+                finalResult = String.format("%32s", Long.toBinaryString(answer)).replace(' ', '0');   
+                break;
+            default:
+                break;
+        }
+        return finalResult;
+    }
+    
+    /**
+     * Generates and displays three new input strings.
+     */
+    private void generateNewQuestion() { 
+        responseTextArea.setText("");
+        feedbackTextArea.setText("");
+        
+        stringX = generateInputString();
+        stringY = generateInputString();
+        
+        stringXLabel.setText("x: " + stringX);
+        stringYLabel.setText("y: " + stringY);
     }
 
     /**
@@ -134,7 +401,8 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
      * @param binary2 The second binary string.
      * @return The result of XOR operation as a binary string.
      */
-    public static String performXOR(String binary1, String binary2) {
+    private String performXOR(String x, String y) {
+        /**
         // Ensure that both input strings have the same length
         int maxLength = Math.max(binary1.length(), binary2.length());
         binary1 = padWithZeroes(binary1, maxLength);
@@ -152,8 +420,23 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
                 result.append('0');
             }
         }
+        */
+        
+        String tempX = x.replaceAll("\\s", "");
+        String tempY = y.replaceAll("\\s", "");
 
-        return result.toString();
+        
+        
+        long intX = Long.parseLong(tempX, 2);
+        long intY = Long.parseLong(tempY, 2);
+
+
+        long result = intX ^ intY;
+
+        // Convert the result back to binary string
+        String binaryResult = formatResult(result);
+
+        return binaryResult;
     }
 
     /**
@@ -183,7 +466,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
             onCheckButton();
         } else if (event.getSource() == hintButton) {
             onNextHint();
-        } else if (event.getSource() == nextQuestionButton) {
+        } else if (event.getSource() == nextButton) {
             onNextQuestion();
         }
     }
@@ -205,7 +488,7 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && responseTextArea.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
@@ -226,11 +509,27 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
      * Verifies the user's answer against the correct answer.
      */
     private void verifyAnswer() {
+        /**
         String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
         if (correctAnswer.equals(answerField.getText())) {
             JOptionPane.showMessageDialog(this, "Correct!");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect, correct answer: " + correctAnswer);
+        }
+        */
+        
+        String correctAnswer = performXOR(stringX, stringY);
+        String userResponse = responseTextArea.getText();
+        
+        userResponse = userResponse.replaceAll("\\s", "");
+        
+        if (correctAnswer.equals(userResponse)) {
+            feedbackTextArea.setText("Correct!");
+            nextButton.setEnabled(true);
+            checkButton.setEnabled(false);
+        } else {
+            feedbackTextArea.setText("Incorrect! Please check your entry and "
+                    + "try again or use the hint feature for help. Correct answer: " + correctAnswer);
         }
     }
 
@@ -238,22 +537,29 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
      * Handles the action for the Next Question button.
      */
     private void onNextQuestion() {
-        JOptionPane.showMessageDialog(this, "Next Question");
+        responseTextArea.setText("");
+        feedbackTextArea.setText("");
+        
+        generateNewQuestion();
+        
+        nextButton.setEnabled(false);
+        checkButton.setEnabled(true);
     }
 
     /**
      * Handles the action for the Hint button.
      */
     private void onNextHint() {
-        JOptionPane.showMessageDialog(this, "Hint");
+        feedbackTextArea.setText("Hint: Check the truth table above for the "
+                + "appropriate values."); //Add different hint
     }
 
     /**
      * Handles the action for the Check button.
      */
     private void onCheckButton() {
-        if (answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        if (responseTextArea.getText().equals("")) {
+            feedbackTextArea.setText("Please provide an answer");
         } else {
             verifyAnswer();
         }
