@@ -22,7 +22,7 @@ public class RotateStep  {
     /**
      * The direction to rotate
      */
-    private enum Direction {RIGHT, LEFT};
+    public enum Direction {RIGHT, LEFT};
     
     private Direction direction;
     
@@ -32,9 +32,14 @@ public class RotateStep  {
     private int amount;
     
     /**
+     * The length of the bit string to be rotated
+     */
+    private int length;
+    
+    /**
      * The bits being rotated.
      */
-    private int data;
+    private String data;
     
     public RotateStep() {
         
@@ -60,12 +65,20 @@ public class RotateStep  {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+    
+    public int getLength() {
+       return length;
+    }
+    
+    public void setLength(int length) {
+       this.length = length;
+    }
 
-    public int getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(int data) {
+    public void setData(String data) {
         this.data = data;
     }
 }

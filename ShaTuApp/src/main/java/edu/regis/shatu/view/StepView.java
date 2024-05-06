@@ -12,6 +12,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.err.IllegalArgException;
+import edu.regis.shatu.view.act.NewExampleAction;
 import java.awt.CardLayout;
 import java.awt.Color;
 import javax.swing.BorderFactory;
@@ -27,6 +29,8 @@ public class StepView extends JPanel {
      * The name of the card (child view) currently displayed in this view.
      */
     private StepSelection selectedPanel;
+    
+    
     
     /**
      * The child ASCII child view (card) that can be displayed in this view 
@@ -79,17 +83,47 @@ public class StepView extends JPanel {
 
     
     /**
-     * Display the child view with the given name.
+     * Display the child view with the given name. Request a task from the 
+     * tutor for views that display a problem to be solved for the student
      * 
      * @param name a StepSelection
      */
-    public void selectPanel(StepSelection name) {
+    public void selectPanel(StepSelection name){
         CardLayout cl = (CardLayout) getLayout();
        
         cl.show(this, name.toString());
         
         selectedPanel = name;
+        
+        //Unfinished switch statement for views that need to get a task from 
+        //the tutor when selected
+        switch(selectedPanel){
+           case ROTATE_BITS:
+              NewExampleAction.instance();
+           default:
+        }
     }
+    
+    
+    /**
+     * Method invoked when a new task is requested of the tutor. If the current
+     * selected panel is a view that can make a request to the tutor, return 
+     * the view. Otherwise, throws an Illegal Argument Exception
+     * 
+     * @return a UserRequestView object 
+     * @throws IllegalArgException when the selected panel is not part of the 
+     * UserRequestView Class
+     */
+    public UserRequestView getUserRequestView() throws IllegalArgException{
+       switch(selectedPanel){
+          case ROTATE_BITS:
+             return rotateView;
+          default:
+             String msg = "Illegal Selected Panel " + selectedPanel;
+             throw new IllegalArgException(msg);
+       }
+    }
+       
     
     /**
      * Create the child GUI components appearing in this frame.

@@ -14,7 +14,11 @@ package edu.regis.shatu.view;
 
 import edu.regis.shatu.svc.SHA_256;
 import edu.regis.shatu.svc.SHA_256Listener;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
@@ -22,6 +26,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
@@ -35,13 +40,8 @@ public class PadView extends GPanel implements ActionListener, KeyListener, SHA_
      * The ASCII character the student is being asked to convert
      */
     private JLabel exampleCharacter;
-    
-    /**
-     * The input entered by the student
-     */
     private JTextField charInput;
-    
-    private JButton verifyBut;
+    private JButton verifyButton;
     
     /**
      * Initialize this view including creating and laying out its child components.
@@ -60,57 +60,34 @@ public class PadView extends GPanel implements ActionListener, KeyListener, SHA_
     }
     
     public static String convertStringToBinary(String input) {
-
         StringBuilder result = new StringBuilder();
-        char[] chars = input.toCharArray();
-        int numChars = chars.length;
-        int numBits = numChars * 8;
-        numBits = numBits + 1;
-        int totalBits = 448;
-        int neededBits = totalBits - numBits;
-        int neededEight = neededBits / 8;
-        for (char aChar : chars) {
-            result.append(
-                    String.format("%8s", Integer.toBinaryString(aChar))   
-                            .replaceAll(" ", "0")
-            );
-            result.append(' ');
-        }
-        result.append('1');
-        result.append('0');
-        result.append('0');
-        result.append('0');
-        result.append('0');
-        result.append('0');
-        result.append('0');
-        result.append('0');
-        result.append(' ');
-        for (int i = 0; i < neededEight; i++) {
-            result.append('0');
-            result.append('0');
-            result.append('0');
-            result.append('0');
-            result.append('0');
-            result.append('0');
-            result.append('0');
-            result.append('0');
-            result.append(' ');
-        }
-        return result.toString();
 
+        try {
+            // Parse the input string as an integer
+            int number = Integer.parseInt(input.trim());
+
+            // Convert the integer to a binary string
+            String binaryStr = Integer.toBinaryString(number);
+
+            // Pad the binary string to make it 32 bits long
+            String paddedBinary = String.format("%32s", binaryStr).replaceAll(" ", "0");
+
+            // Append the padded binary string to the result
+            result.append(paddedBinary);
+        } catch (NumberFormatException e) {
+            // Handle the case where the input is not a valid integer
+            System.err.println("Error: The input is not a valid integer.");
+            return "Invalid input";
+        }
+
+        return result.toString();
     }
-   
-    
+
     @Override
     public void actionPerformed(ActionEvent event) {
-       if (event.getSource() == verifyBut) {
-           String userInput = charInput.getText();
-           
-           String result = convertStringToBinary(userInput);
-           
-           JOptionPane.showMessageDialog(this, result);
-           
-       }
+        if (event.getSource() == verifyButton) {
+            verifyInput();
+        }
     }
     
     
@@ -123,21 +100,46 @@ public class PadView extends GPanel implements ActionListener, KeyListener, SHA_
     }
     
     @Override 
-    public void keyPressed(KeyEvent event){
-       if(event.getSource()== charInput && event.getKeyCode()== KeyEvent.VK_ENTER) {
-         String userInput = charInput.getText(); 
-          
-          
-           // ToDo: this is simply a test of the SHA-256 algorithm
-           SHA_256 alg = GuiController.instance().getSha256Alg();
-           System.out.println("Alg: " + alg);
-           alg.addListener(this);
-         
-           
-           String digest = alg.sha256("Regis Computer Science Rocks!");
-           System.out.println("Enter Digest: " + digest);
-       }
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyInput();
+        }
     }
+    
+    private void verifyInput() {
+        String userInput = charInput.getText();
+        String binaryString = convertStringToBinary(userInput);
+        String formattedBinary = formatBinaryString(binaryString); 
+
+        // Adjusting bit positions string to match the formatted binary string
+        String bitPositions = "  4|   8|  12|  16|  20|  24|  28|  32|";
+
+        // Construct the message with HTML for better control over formatting
+        String message = "<html><pre>Bit positions: " + bitPositions + "<br/>Binary:"
+                + "        " + formattedBinary + "</pre></html>";
+        JOptionPane.showMessageDialog(this, message, "Binary Representation"
+                , JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Formats the binary string to insert spaces every 4 bits for alignment with bit positions.
+     */
+    private String formatBinaryString(String binary) {
+        StringBuilder sb = new StringBuilder();
+        // Pad the binary string to ensure it's 32 bits long
+        binary = String.format("%32s", binary).replaceAll(" ", "0");
+
+        // Insert spaces every 4 characters from the end to align with bit markers
+        for (int i = 0; i < binary.length(); i++) {
+            if (i > 0 && i % 4 == 0) {
+                sb.append(" ");  // Add a space before the start of each group of 4 bits
+            }
+            sb.append(binary.charAt(i));
+        }
+        return sb.toString();
+    }
+
+
     
     @Override
     public void keyReleased(KeyEvent event) {
@@ -149,14 +151,13 @@ public class PadView extends GPanel implements ActionListener, KeyListener, SHA_
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        exampleCharacter = new JLabel("");
-        
+        exampleCharacter = new JLabel("Perform Padding on the ASCII character to binary:");
+
         charInput = new JTextField(20);
         charInput.addKeyListener(this);
-        
-        verifyBut = new JButton("Check");
-        verifyBut.setToolTipText("Click to verify input");
-        verifyBut.addActionListener(this);
+
+        verifyButton = new JButton("Verify");
+        verifyButton.addActionListener(this);
         
     }
     
@@ -164,35 +165,45 @@ public class PadView extends GPanel implements ActionListener, KeyListener, SHA_
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-        JLabel label = new JLabel("Enter Character: ");
-        label.setLabelFor(exampleCharacter);
-        addc(label, 0, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-     
-        addc(exampleCharacter, 1, 0, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        
-        
-        label = new JLabel("Type Here:");
-        label.setLabelFor(charInput);
-        addc(label, 0, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-      
-        addc(charInput, 1, 1, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        
-        addc(verifyBut, 0, 2, 2, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        
-        // Fills the remaining space
-        addc(new JLabel("Test"), 0, 3, 2, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-        
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        // Title label
+        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
+        JLabel titleLabel = new JLabel("Binary Padding Tutor");
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
+        add(titleLabel, gbc);
+
+        // Description label
+        gbc.gridy++;
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
+        JLabel descriptionLabel = new JLabel("<html><p>Convert the provided ASCII character into a binary format and pad to simulate SHA-256 input preparation.</p></html>");
+        add(descriptionLabel, gbc);
+
+        // Input label and field
+        gbc.gridy++;
+        gbc.gridwidth = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(new JLabel("Enter Character: "), gbc);
+        gbc.gridx = 1;
+        add(charInput, gbc);
+
+        // Verify button
+        gbc.gridy++;
+        gbc.gridx = 0; 
+        gbc.gridwidth = 1; // Use gridwidth = 1 for less width
+        gbc.fill = GridBagConstraints.NONE; // Remove the fill constraint to prevent horizontal stretching
+        verifyButton.setPreferredSize(new Dimension(100, 25)); // Optionally set a preferred size
+        add(verifyButton, gbc);
+
+        // Filler panel to push everything up
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.weighty = 1; gbc.weightx = 1;
+        gbc.gridwidth = 2; gbc.fill = GridBagConstraints.BOTH;
+        JPanel filler = new JPanel();
+        add(filler, gbc);        
     }
 }
