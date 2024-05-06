@@ -132,8 +132,8 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
                 GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
        
-        descriptionPanel.addc(truthTablePanel, 1, 2, 1, 1, 0.0, 0.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
+        descriptionPanel.addc(truthTablePanel, 1, 2, 1, 1, 1.0, 1.0,
+                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
     }
     
@@ -321,6 +321,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         
         chTruthTablePane = new JScrollPane(chTruthTable);
         chTruthTablePane.setPreferredSize(new Dimension(400, 151));
+       // chTruthTablePane.setSize(new Dimension(400, 151));
         chTruthTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         chTruthTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         
