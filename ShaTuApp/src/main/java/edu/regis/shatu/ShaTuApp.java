@@ -32,33 +32,28 @@ public class ShaTuApp {
      * Property file located on the CLASSPATH, which is used to configure the LOGGER.
      */
     private static final String LOGGER_PROPERTIES = "/Logging.properties";
-    // ./resources/logging.properties
+
     /**
      * Events of interest occurring in this class are logged to this logger.
      */
     private static final Logger LOGGER = Logger.getLogger(ShaTuApp.class.getName());
     
-     /**
-     * When deserializing a polymorphic Step object, GSon requires the subclass
-     * step type in order to create the correct subclass instance, this type
-     * adapter factory provides this information (see its use in SignInAction).
-     */
-   // private static final RuntimeTypeAdapterFactory<Step> STEP_ADAPTER_FACTORY =
-      //      RuntimeTypeAdapterFactory.of(Step.class, "myTypeName")
-               // .registerSubtype(EncodeAsciiStep.class, "EncodeAsciiStep")
-               // .registerSubtype(CompleteTaskStep.class, "CompleteTaskStep")
-               // .registerSubtype(CompleteStepStep.class, "CompleteStepStep")
-          //      .registerSubtype(RotateStep.class, "RotateStep");
-    //
     /**
-     * Convenience providing access to the Step Type Adapter Factory (see
-     * comments documenting the static STEP_ADAPTER_FACTORY field).
-     * 
-     * @return 
+     * Configure the LOGGER with the properties found in the LOGGER_PROPERTIES 
+     * file found on the CLASSPATH.
      */
-    //public static RuntimeTypeAdapterFactory<Step> typeAdapterFactory() {
-     //   return STEP_ADAPTER_FACTORY;
-   // }
+    static {
+        final InputStream strm = 
+            ShaTuApp.class.getResourceAsStream(LOGGER_PROPERTIES);
+        
+        try {
+            LogManager.getLogManager().readConfiguration(strm);
+        } catch (IOException e) {
+        
+            LOGGER.severe("Error loading ./logging.properties");
+            LOGGER.severe(e.getMessage());
+        }        
+    }
     
     /**
      * Main entry point for the ShaTut application, which will display the UI.
@@ -68,6 +63,7 @@ public class ShaTuApp {
     public static void main(String[] args) {
         LOGGER.info("ShaTuApp Initializing...:");
         
+        // Initialize the logging properties from the logging properties files
         try {
             final InputStream strm = ShaTuApp.class.getResourceAsStream(LOGGER_PROPERTIES);
         
@@ -80,17 +76,14 @@ public class ShaTuApp {
             LOGGER.severe(e.getMessage());
         }      
         
-        // Initializes the properties from ShaTu.properties and sets the locale.
+        // Initializes the application properties from, which also sets the locale.
         ResourceMgr.instance();
         
         LOGGER.info("ShaTu properties initialization completed.");
         
         System.out.println("Finished initializing");
-        //Damian
-        // ToDo: Remove this example of using the SHA-256 algorithm.
-        //  SHA_256 alg = new SHA_256();
-        //alg.doit("Regis Computer Science Rocks!");
         
+        // Create the server and then initialize the GUI client (see ntoes).
         try {
             LOGGER.info(" Starting ShaTu Server (Tutoring Service)...");
             // ToDo: Separate the initialization of client and server
@@ -99,8 +92,9 @@ public class ShaTuApp {
             
             // ToDo: This puts the main client UI thread to sleep to give the 
             // server a chance to finish starting. This won't be required once 
-            // we separate the server into its own application that is separate
-            // from the GUI client since the server should "always" be running.
+            // we separate the server into its own application that executes
+            // on a different host from the GUI client since the server should 
+            // "always" be running.
             Thread.sleep(4000);
                 
             LOGGER.info(" Server is running.");
@@ -118,11 +112,13 @@ public class ShaTuApp {
                 
             LOGGER.info("ShaTu Initialization successful.");
                 
-            } catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
                 Logger.getLogger(ShaTuApp.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException e) {
-            LOGGER.severe("Couldn't create Data directory in NetBeans Project.");
-            LOGGER.severe("Perhaps, try changing permissions.");
+       // } catch (SecurityException e) {
+                // ToDo: Check this, I don't think we're still doing this.
+                // Hence, this data directory creation error cannot occur.
+         //   LOGGER.severe("Couldn't create Data directory in NetBeans Project.");
+          //  LOGGER.severe("Perhaps, try changing permissions.");
         }
     }
 }

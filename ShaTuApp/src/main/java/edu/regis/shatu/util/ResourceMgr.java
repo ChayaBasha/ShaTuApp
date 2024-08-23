@@ -16,7 +16,6 @@ import edu.regis.shatu.err.MissingPropertyException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -24,10 +23,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A utility Decorator wrapping the application's properties and resource 
- * bundle associated with the current locale, which is specified in the 
- * DICE.properties file on the CLASSPATH (see PROPERTY_FILE_PATH).
+ * A Decorator wrapping the application's properties and resource bundle.
  * 
+ * The PROPERTY_FILE_PATH specifies the properties file to load from the
+ * CLASSPATH (default: ShaTu.properties in the /resources/ directory).
  * @author Rickb
  */
 public class ResourceMgr {
@@ -61,7 +60,6 @@ public class ResourceMgr {
     /**
      * Location of the UI text resources for a given locale (on CLASSPATH).
      */
-   // private static final String UI_RESOURCE_PATH = "edu.regis.shatu.resources.Msgs";
     private static final String UI_RESOURCE_PATH = "Msgs";
     
     /**
