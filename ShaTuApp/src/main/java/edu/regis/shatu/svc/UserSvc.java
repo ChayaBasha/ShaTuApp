@@ -63,6 +63,16 @@ public interface UserSvc {
      * @throws NonRecoverableException 
      */
     void delete(String userId) throws NonRecoverableException;
+    
+    /**
+     * Check if the StudentUser with the given user id exists in the database.
+     * (less expensive then using findById).
+     *
+     * @param userId unique id of the StudentUser to find.
+     * @return true, if the StudentUser exists in the DB, false otherwise
+     * @throws NonRecoverableException (see getCause().getErrorCode()).
+     */
+    boolean exists(String userId) throws NonRecoverableException;
 }
 
 

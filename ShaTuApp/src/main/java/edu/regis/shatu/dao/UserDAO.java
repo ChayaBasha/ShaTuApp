@@ -12,37 +12,24 @@
  */
 package edu.regis.shatu.dao;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
 import edu.regis.shatu.model.Account;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.svc.UserSvc;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * A Data Access Object implementing {@link UserSvc} behaviors.
  *
  * @author rickb
  */
-public class UserDAO implements UserSvc {
-    /**
-     * Data directory containing student user account files.
-     */
-    private static final String DATA_DIRECTORY = "src/main/java/resources/Data/";
-    
+public class UserDAO extends MySqlDAO implements UserSvc {
     /**
      * Initialize this DAO via the parent constructor.
      */
@@ -54,27 +41,34 @@ public class UserDAO implements UserSvc {
      * {@inheritDoc}
      */
     @Override
-    public void create(Account acct) throws IllegalArgException, NonRecoverableException {      
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-       
+    public void create(Account acct) throws IllegalArgException, NonRecoverableException {
+        final String sql = "INSERT INTO State (Email, Password) VALUES (?,?)";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
         String userId = acct.getUserId();
-        String fileName = fullyQualifedFileName(userId); 
-        File file = new File(fileName);
-        File absFile = new File(file.getAbsolutePath());
 
         try {
-            absFile.createNewFile();
-      
-            Path path = Paths.get(fileName);
-        
-            try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-                gson.toJson(acct, writer);                
-            } catch (IOException ex) {
-                throw new NonRecoverableException("Create User Accountt Writer Error", ex);
+            conn = DriverManager.getConnection(URL);
+
+            if (exists(userId, conn)) {
+                throw new IllegalArgException("User exists " + userId);
             }
-            
-        }   catch (IOException ex) {
-            throw new NonRecoverableException("Create User Accountt File Error", ex);
+
+            String[] keyCol = {"Id"};
+            stmt = conn.prepareStatement(sql, keyCol);
+
+            stmt.setString(1, userId);
+            stmt.setString(2, acct.getPassword());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new NonRecoverableException("UserDAO-ERR-1", e);
+
+        } finally {
+            close(conn, stmt);
         }
     }
 
@@ -83,8 +77,43 @@ public class UserDAO implements UserSvc {
      */
     @Override
     public void delete(String userId) throws NonRecoverableException {
-        //ToDo: add functionality
-       throw new UnsupportedOperationException("Not supported yet.");
+        final String sql = "DELETE FROM User WHERE Email = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, userId);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new NonRecoverableException("UserDAO-ERR-2" + e.toString(), e);
+        } finally {
+            close(conn, stmt);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean exists(String userId) throws NonRecoverableException {
+        Connection conn = null;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            return exists(userId, conn);
+
+        } catch (SQLException e) {
+            throw new NonRecoverableException("UserDAO-ERR-3" + e.toString(), e);
+        } finally {
+            close(conn);
+        }
     }
 
     /**
@@ -92,23 +121,33 @@ public class UserDAO implements UserSvc {
      */
     @Override
     public User retrieve(String userId) throws ObjNotFoundException, NonRecoverableException {
-        Gson gson = new Gson();
-       
-        String fileName = fullyQualifedFileName(userId);
-        
-        Path path = Paths.get(fileName);
-     
-        try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            JsonObject jsonObj = JsonParser.parseReader(reader).getAsJsonObject();
-            
-            return gson.fromJson(jsonObj, User.class);
+        final String sql = "SELECT Password FROM User WHERE Email = ?";
 
-        } catch (FileNotFoundException ex) {
-            // This not necessarily an error since the user may have a typo
-            throw new ObjNotFoundException(String.valueOf(userId));
-        } catch (IOException ex) {
-            String errMsg = "find user: " + userId;
-            throw new NonRecoverableException(errMsg, ex);
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DriverManager.getConnection(URL);
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, userId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User(userId);
+
+                user.setPassword(rs.getString(1));
+
+                return user;
+
+            } else {
+                throw new ObjNotFoundException("Student Id:" + userId);
+            }
+        } catch (SQLException e) {
+            throw new NonRecoverableException("UserDAO-ERR-5" + e.toString(), e);
+        } finally {
+            close(conn, stmt);
         }
     }
 
@@ -118,16 +157,59 @@ public class UserDAO implements UserSvc {
     @Override
     public void update(User user, String newPassword) throws ObjNotFoundException, NonRecoverableException {
         //ToDo: add functionality
-        throw new UnsupportedOperationException("Not supported yet."); 
+        //throw new UnsupportedOperationException("Not supported yet.");
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        String userId = user.getUserId();
+
+        try {
+            User foundUser = retrieve(userId);
+
+            final String sql = "UPDATE User SET Password = ? WHERE Email = ?";
+
+            conn = DriverManager.getConnection(URL);
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, user.getPassword());
+            stmt.setString(2, userId);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new NonRecoverableException("UserDAO-ERR-6" + e.toString(), e);
+        } finally {
+            close(conn, stmt);
+        }
     }
-    
+
     /**
-     * Return the fully qualified name of the user file for the given user.
-     * 
-     * @param userId the id of the user whose session file name is returned.
-     * @return a String specifying a fully qualified file name.
+     * Return whether the given user (id) exists in the database.
+     *
+     * @param userId
+     * @param conn an existing connection to the database, which is not closed
+     * by this method.
+     * @return true, if the user id exists in the database, otherwise false
+     * @throws NonRecoverableException (see ex.getCause().getErrorCode())
      */
-    private String fullyQualifedFileName(String userId) {
-        return DATA_DIRECTORY + "User_" + userId.replace('@', '_').replace('.', '_') + ".json";
+    private boolean exists(String userId, Connection conn) throws NonRecoverableException {
+        final String sql = "SELECT Email FROM User WHERE Email = ?";
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setString(1, userId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException ex) {
+            throw new NonRecoverableException("UserDAO-ERR-3" + ex.toString(), ex);
+        } finally {
+            close(stmt);
+        }
     }
 }

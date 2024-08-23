@@ -321,6 +321,7 @@ public class ChoiceFunctionView extends GPanel implements ActionListener, KeyLis
         
         chTruthTablePane = new JScrollPane(chTruthTable);
         chTruthTablePane.setPreferredSize(new Dimension(400, 151));
+       // chTruthTablePane.setSize(new Dimension(400, 151));
         chTruthTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         chTruthTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         

@@ -65,7 +65,7 @@ public class WorkingVarLabel extends JLabel implements MouseListener {
     /**
      * The background of this label when selected.
      */
-    private static final Color SELECTED_BACKGROUND = new Color(204, 255, 205);
+    private static final Color SELECTED_BACKGROUND = new Color(204, 0, 0);
     
     /**
      * The view that is displayed when this label is selected.
@@ -97,7 +97,7 @@ public class WorkingVarLabel extends JLabel implements MouseListener {
     }
     
     public void select() {
-        GuiController.instance().getStepSelectorView().displayStep(stepSelection);
+       // GuiController.instance().getStepSelectorView().displayStep(stepSelection);
         isSelected = true;
         setBackground(SELECTED_BACKGROUND);
     }
