@@ -163,7 +163,7 @@ public class SplashPanel extends GPanel {
      * Layout the child components used in this view.
      */
     private void layoutComponents() {
-        setBackground(Color.WHITE);
+        setBackground(new Color(241,196,0));
 
 	addc(createHeader(), 0,0, 2,1, 1.0,0.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.HORIZONTAL,
