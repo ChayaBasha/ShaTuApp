@@ -192,7 +192,7 @@ public class SplashPanel extends GPanel {
     
     private GPanel createHeader() {
 	GPanel panel = new GPanel();
-	panel.setBackground(new Color(223,242,245));
+	panel.setBackground(new Color(220,114,201));
 
 	JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
 	ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
