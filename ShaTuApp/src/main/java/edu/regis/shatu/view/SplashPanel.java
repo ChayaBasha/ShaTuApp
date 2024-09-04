@@ -163,7 +163,7 @@ public class SplashPanel extends GPanel {
      * Layout the child components used in this view.
      */
     private void layoutComponents() {
-        setBackground(new Color(241,196,0));
+        setBackground(new Color(0,255,255));
 
 	addc(createHeader(), 0,0, 2,1, 1.0,0.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.HORIZONTAL,
@@ -192,7 +192,7 @@ public class SplashPanel extends GPanel {
     
     private GPanel createHeader() {
 	GPanel panel = new GPanel();
-	panel.setBackground(new Color(223,242,245));
+	panel.setBackground(new Color(255,215,0));
 
 	JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
 	ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
