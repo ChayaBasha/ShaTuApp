@@ -199,16 +199,21 @@ public class EncodeView extends GPanel implements ActionListener {
             if (allCorrect) {
                 feedbackArea.setText("Correct!");
             } else {
-                // Otherwise, inform the user that their entries were incorrect, and display the expected answers.
-                feedbackArea.setText(String.format("Incorrect. Please check "
-                        + "your entries. Expected: \n%s", String.join(" ", expectedAnswers)));
+                // List of hints to provide
+                List<String> hints = expectedAnswers.stream()
+                      .map(answer -> answer.substring(0, 3) 
+                            + "...")
+                      .collect(Collectors.toList());
+                      
+                // Otherwise, inform the user that their entries were incorrect, and display hints                
+                feedbackArea.setText(String.format("Incorrect. Expected answers start with: \n%s\n\nTry again", 
+                String.join(" ", hints)));
+                // Disable the submit button to prevent re-submission, and enable the next question button.
+                submitButton.setEnabled(true);
+                hintButton.setEnabled(false);
+                nextButton.setEnabled(true);
             }
         }
-        
-        // Disable the submit button to prevent re-submission, and enable the next question button.
-        submitButton.setEnabled(false);
-        hintButton.setEnabled(false);
-        nextButton.setEnabled(true);
     }
 
 

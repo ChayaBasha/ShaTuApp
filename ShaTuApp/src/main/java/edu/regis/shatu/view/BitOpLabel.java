@@ -44,7 +44,7 @@ public class BitOpLabel extends JLabel implements MouseListener {
      * A simple black line surrounds this label when not highlighted.
      */
     private static final Border NORMAL_BORDER
-            = new CompoundBorder(BorderFactory.createLineBorder(Color.BLACK), EMPTY_BORDER);
+            = new CompoundBorder(BorderFactory.createLineBorder(Color.BLUE), EMPTY_BORDER);
 
     /**
      * A red line with thickness two surrounds this label when highlighted.
