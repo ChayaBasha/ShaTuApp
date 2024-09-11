@@ -41,7 +41,7 @@ import javax.swing.JRadioButton;
  *
  * @author rickb
  */
-public class RotateView extends UserRequestView<RotateStep> implements ActionListener, KeyListener {
+public class RotateView extends UserRequestView implements ActionListener, KeyListener {
 
     /**
      * The number of rotations used in the ROTR operation.

@@ -20,6 +20,7 @@ import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
 import edu.regis.shatu.model.Account;
+import edu.regis.shatu.model.ChoiceFunctionStep;
 import edu.regis.shatu.model.Course;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.User;
@@ -1045,9 +1046,169 @@ public class ShaTuTutor implements TutorSvc {
      * @return a TutorReply
      */
     private TutorReply newChoiceFunctionExample(TutoringSession session, String jsonData) {
-        TutorReply reply = new TutorReply(":Success");
+        System.out.println("newChoiceFunctionExample");
+        ChoiceFunctionStep substep = gson.fromJson(jsonData, ChoiceFunctionStep.class);
+        
+        int bitLength = substep.getBitLength();
+        
+        String operand1 = generateInputString(bitLength);
+        String operand2 = generateInputString(bitLength);
+        String operand3 = generateInputString(bitLength);
+        
+        substep.setOperand1(operand1);
+        substep.setOperand2(operand2);
+        substep.setOperand3(operand3);
+        
+        substep.setResult(choiceFunction(operand1, operand2, operand3, bitLength));
+        
+        Step step = new Step(1, 0, StepSubType.CHOICE_FUNCTION);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
 
+        step.setData(gson.toJson(substep));
+
+        // TaskState state = new TaskState();
+        // state.set
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.CHOICE_FUNCTION);
+        task.setDescription("Compute the result of the choice function on the three operands");
+        task.addStep(step);  
+      
+        
+        TutorReply reply = new TutorReply(":Success");
+        reply.setData(gson.toJson(task));
+        
+System.out.println("before reply return");
         return reply;
+    }
+    
+     /**
+     * Evaluates the choice function Ch(x, y, z).
+     *
+     * @param x Binary string representation of x.
+     * @param y Binary string representation of y.
+     * @param z Binary string representation of z.
+     * @return Binary string result of Ch(x, y, z).
+     */
+    private String choiceFunction(String x, String y, String z, int bitLength) {
+        // Convert the binary strings to integer values
+        String tempX = x.replaceAll("\\s", "");
+        String tempY = y.replaceAll("\\s", "");
+        String tempZ = z.replaceAll("\\s", "");
+
+        long intX = Long.parseLong(tempX, 2);
+        long intY = Long.parseLong(tempY, 2);
+        long intZ = Long.parseLong(tempZ, 2);
+
+        long xy = intX & intY;
+
+        long notX = ~intX & intZ;
+
+        long result = xy ^ notX;
+
+        // Convert the result back to binary string
+        String binaryResult = formatResult(result, bitLength);
+
+        return binaryResult;
+    }
+    
+    /**
+     * Formats the result output by the choice function based on the size of the
+     * problem.
+     *
+     * @param answer the output of the choice function
+     *
+     * @return the binary string representation of the answer
+     */
+    private String formatResult(long answer, int bitLength) {
+        String finalResult = "";
+
+        switch (bitLength) {
+            case 4:
+                finalResult = String.format("%4s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 8:
+                finalResult = String.format("%8s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 16:
+                finalResult = String.format("%16s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 32:
+                finalResult = String.format("%32s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            default:
+                break;
+        }
+        return finalResult;
+    }
+    
+     /**
+     * Generates an n-bit binary string (length 4, 8, 16, or 32) to be used as
+     * an input into the Ch function. Every four bits are separated by a space
+     * to improve readability.
+     *
+     * @return A string to be used as an input into the function.
+     */
+    private String generateInputString(int problemSize) {
+        Random random = new Random();
+        
+        String inputString;
+        String tempString;
+        StringBuilder inputStringBuilder = new StringBuilder();
+        int num;
+
+        switch (problemSize) {
+            case 4:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 8:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+
+                inputStringBuilder.append(" ");
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 16:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+
+                for (int i = 0; i < 3; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }
+                break;
+            case 32:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+
+                for (int i = 0; i < 7; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }
+                break;
+            default:
+                break;
+        }
+
+        inputString = inputStringBuilder.toString();
+
+        return inputString;
     }
 
     /**

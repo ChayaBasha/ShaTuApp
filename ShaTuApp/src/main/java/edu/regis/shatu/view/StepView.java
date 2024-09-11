@@ -95,8 +95,9 @@ public class StepView extends JPanel {
         
         selectedPanel = name;
         
-        //Unfinished switch statement for views that need to get a task from 
+        //ToDo: Unfinished switch statement for views that need to get a task from 
         //the tutor when selected
+        // DONT DO THIS. Should not ask the tutor everytime a view is displayed.
         switch(selectedPanel){
            case ROTATE_BITS:
               NewExampleAction.instance();
@@ -115,9 +116,13 @@ public class StepView extends JPanel {
      * UserRequestView Class
      */
     public UserRequestView getUserRequestView() throws IllegalArgException{
+        // ToDo: Need to add the view for each function 
        switch(selectedPanel){
+           case CHOICE_FUNCTION:
+               return choiceFunctionView;
           case ROTATE_BITS:
              return rotateView;
+             
           default:
              String msg = "Illegal Selected Panel " + selectedPanel;
              throw new IllegalArgException(msg);

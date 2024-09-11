@@ -87,40 +87,45 @@ public class NewExampleAction extends ShaTuGuiAction {
     private NewExampleAction() {
         super("New Example");
 
-        putValue(SHORT_DESCRIPTION, "New Example");
+        putValue(SHORT_DESCRIPTION, "Next Example");
 
-        putValue(MNEMONIC_KEY, KeyEvent.VK_S);
+        putValue(MNEMONIC_KEY, KeyEvent.VK_N);
         //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
-     * Handle the user's request for a new example by sending it to the DICE tutor.
+     * Handle the user's request for a new example by sending it to the tutor.
      *
      * If successful, the current view is updated with the contents of the new 
-     * task sent by the tutor
+     * example (and associated task) in the reply from the tutor.
      *
      * @param evt ignored
      */
     @Override
     public void actionPerformed(ActionEvent evt) {
+        System.out.println("actionPerformed");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        User user = SplashFrame.instance().getUser();
         
+        
+ System.out.println("Here1");
+        User user = SplashFrame.instance().getUser();
+         System.out.println("Here2");
         //Catches a possible IllegalArgumentException thrown by the 
         //getUserRequestView() method
         try{
+            System.out.println("Here3");
            //Get the view that originated the NewExampleRequest
            UserRequestView exView = GuiController.instance().getStepView().getUserRequestView();
-           
+            System.out.println("Get view: " + exView);
            //Call the overridden newRequest() method to generate an appropriate
            //request to the tutor based on the current view
            NewExampleRequest ex = exView.newRequest();
-           
+            System.out.println("after new request: " + ex);
            //Construct the request with the users data and NewExampleRequest
            //returned by the newRequest() method
            ClientRequest request = new ClientRequest(ServerRequestType.NEW_EXAMPLE);
            request.setUserId(user.getUserId());
+           request.setSessionId(MainFrame.instance().getModel().getSecurityToken());
            request.setData(gson.toJson(ex));
            
            //Send the request to the tutor and save the reply
@@ -136,15 +141,16 @@ public class NewExampleAction extends ShaTuGuiAction {
                 break;
 
             default:
+                System.out.println("got a reply");
                //If the status was not an error, we can update the model and the
                //view with the new task sent by the tutor
                exView.setModel(gson.fromJson(reply.getData(), Task.class)); 
                
-               exView.updateView();
+              // exView.updateView();
               
             }
         }catch(IllegalArgException e){
-           System.out.println("");
+           System.out.println("Illegal arg exception " + e);
             }
         
     }

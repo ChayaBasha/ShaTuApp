@@ -19,7 +19,7 @@ import edu.regis.shatu.model.aol.NewExampleRequest;
  *
  * @author Oskar Thiede
  */
-public abstract class UserRequestView<T> extends GPanel{
+public abstract class UserRequestView extends GPanel{
    
    protected Task model;
    
@@ -29,9 +29,11 @@ public abstract class UserRequestView<T> extends GPanel{
    public abstract void updateView();
    
    public void setModel(Task task){
+       System.out.println("UserRequest.setModel");
       this.model = task;
       
       updateView();
+       System.out.println("after update view in set model");
    }
    
 }
