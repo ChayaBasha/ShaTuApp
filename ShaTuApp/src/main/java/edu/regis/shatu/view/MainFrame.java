@@ -13,7 +13,6 @@
 package edu.regis.shatu.view;
 
 import edu.regis.shatu.model.TutoringSession;
-import edu.regis.shatu.view.act.ActionFactory;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
@@ -34,9 +33,7 @@ public class MainFrame extends JFrame implements WindowListener {
     private final static MainFrame SINGLETON;
     
     // Invoked when this class is loaded
-    static {
-        ActionFactory.createActions();
-        
+    static {     
         SINGLETON = new MainFrame();
     }
     
@@ -110,15 +107,9 @@ public class MainFrame extends JFrame implements WindowListener {
         // ToDo: Ask to save changes to existing model?
         
         this.model = model;
+        
+        view.setModel(model);
     }
-    
-   // public int getSessionId() {
-     //   return model.getId();
-   // }
-
-   // public void setSessionId(int sessionId) {
-     //   model.setId(sessionId);
-    //}
 
     @Override
     public void windowOpened(WindowEvent e) {

@@ -12,28 +12,86 @@
  */
 package edu.regis.shatu.view;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.Task;
+import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.NewExampleRequest;
+import java.util.Random;
 
 /**
- *
+ * A abstract view that supports various user gestures that results in a request 
+ * being made to the tutor.
+ * 
+ * The implementation of the abstract methods in this class allows the various
+ * Java actions, such NewExampleAction, to obtain the data to be used in 
+ * constructing the request being sent to the tutor.
+ * 
  * @author Oskar Thiede
  */
-public abstract class UserRequestView extends GPanel{
-   
-   protected Task model;
-   
-   
-   public abstract NewExampleRequest newRequest();
-   
-   public abstract void updateView();
-   
-   public void setModel(Task task){
-       System.out.println("UserRequest.setModel");
-      this.model = task;
-      
-      updateView();
-       System.out.println("after update view in set model");
-   }
-   
+public abstract class UserRequestView extends GPanel {
+    /**
+     * The current task and step in this tutoring session are displayed in this 
+     * view.
+     */
+    protected TutoringSession model;
+    
+    /**
+     * Convenience utility for converting between Java and JSon objects.
+     */
+    protected Gson gson;
+    
+    /**
+     * Convenience utility for generating pseudo-random numbers.
+     */
+    protected Random random;
+
+    /**
+     * Create and return a new example request associated with the tutoring
+     * topic presented to the student in this view. 
+     * 
+     * This new example request can be sent to the tutor, which will reply
+     * with a task containing the new example problem to be presented to the
+     * student.
+     * 
+     * @return NewExampleRequest
+     */
+    public abstract NewExampleRequest newRequest();
+
+    /**
+     * Create and return a new step completion request, which indicates the
+     * student is asking the tutor to check their work.
+     * 
+     * @return StepCompletion
+     */
+    public abstract StepCompletion stepCompletion();
+
+    public void setModel(TutoringSession model) {
+        gson = new GsonBuilder().setPrettyPrinting().create();
+        random = new Random();
+        
+        this.model = model;
+
+        updateView();
+    }
+    
+    /**
+     * Assign the given task as the current task in our tutoring session model
+     * and display this task and associated step(s) in the view.
+     * 
+     * @param task 
+     */
+    public void setCurrentTask(Task task) {
+       model.addCurrentTask(task);
+       
+       updateView();
+    }
+    
+    /**
+     * Display the current model in this view.
+     */
+    protected void updateView() {
+        throw new UnsupportedOperationException("Not supported yet. Override this is subclass view"); 
+    }
 }

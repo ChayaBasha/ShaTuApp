@@ -129,6 +129,10 @@ public class TutoringSession {
     public void addTask(Task task) {
         tasks.add(task);
     }
+    
+    public void addCurrentTask(Task task) {
+        tasks.add(0, task);
+    }
 
     public ArrayList<Task> getTasks() {
         return tasks;

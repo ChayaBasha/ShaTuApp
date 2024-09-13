@@ -10,6 +10,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,7 +28,7 @@ import java.awt.event.KeyListener;
  *
  * @author rickb
  */
-public class ShiftRightView extends GPanel implements ActionListener, KeyListener {
+public class ShiftRightView extends UserRequestView implements ActionListener, KeyListener {
     /**
      * The number of places for the right shift operation.
      */
@@ -240,5 +242,15 @@ public class ShiftRightView extends GPanel implements ActionListener, KeyListene
      */
     private void onNextHint() {
         JOptionPane.showMessageDialog(this, "Hint");
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

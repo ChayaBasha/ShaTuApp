@@ -13,10 +13,7 @@
 package edu.regis.shatu.view;
 
 import edu.regis.shatu.model.TutoringSession;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  * Displays a tutoring session (the top-level GUI view for the application).
@@ -67,7 +64,7 @@ public class TutoringSessionView extends GPanel {
     public void setModel(TutoringSession model) {
         this.model = model;
 
-        updateView();
+        stepView.setModel(model);
     }
 
     /**
@@ -93,12 +90,5 @@ public class TutoringSessionView extends GPanel {
         addc(stepView, 1, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
-    }
-
-    /**
-     * Display the current model in our child components.
-     */
-    private void updateView() {
-
     }
 }

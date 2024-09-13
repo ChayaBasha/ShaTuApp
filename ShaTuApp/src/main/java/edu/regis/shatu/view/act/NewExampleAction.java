@@ -16,19 +16,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.model.User;
-import edu.regis.shatu.model.TutoringSession;
-import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.Task;
-import static edu.regis.shatu.model.aol.ExampleType.ROTATE_BITS;
 import edu.regis.shatu.model.aol.NewExampleRequest;
-import edu.regis.shatu.model.aol.RotateStep;
 import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import edu.regis.shatu.svc.SvcFacade;
 import edu.regis.shatu.svc.TutorReply;
 import edu.regis.shatu.view.GuiController;
 import edu.regis.shatu.view.MainFrame;
-import edu.regis.shatu.view.RotateView;
 import edu.regis.shatu.view.SplashFrame;
 import edu.regis.shatu.view.UserRequestView;
 import java.awt.event.ActionEvent;
@@ -144,10 +139,7 @@ public class NewExampleAction extends ShaTuGuiAction {
                 System.out.println("got a reply");
                //If the status was not an error, we can update the model and the
                //view with the new task sent by the tutor
-               exView.setModel(gson.fromJson(reply.getData(), Task.class)); 
-               
-              // exView.updateView();
-              
+               exView.setCurrentTask(gson.fromJson(reply.getData(), Task.class)); 
             }
         }catch(IllegalArgException e){
            System.out.println("Illegal arg exception " + e);

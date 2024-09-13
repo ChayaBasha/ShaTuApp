@@ -12,6 +12,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -38,7 +40,7 @@ import javax.swing.JTextArea;
  *
  * @author rickb
  */
-public class ExclusiveOrView extends GPanel implements ActionListener, KeyListener {   
+public class ExclusiveOrView extends UserRequestView implements ActionListener, KeyListener {   
     private String stringX, stringY;
     private int problemSize; 
     private JTextArea descTextArea, feedbackTextArea, responseTextArea;
@@ -563,5 +565,15 @@ public class ExclusiveOrView extends GPanel implements ActionListener, KeyListen
         } else {
             verifyAnswer();
         }
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

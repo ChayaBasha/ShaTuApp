@@ -13,6 +13,7 @@
 package edu.regis.shatu.view;
 
 import edu.regis.shatu.err.IllegalArgException;
+import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.view.act.NewExampleAction;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -20,17 +21,18 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 /**
- * A view displaying a tutoring session.
+ * A view displaying a current task and step in the tutoring session, which
+ * typically allows a student to practice a specific aspect of the SHA-256
+ * algorithm, such as performing the XOR function.
  * 
  * @author rickb
  */
 public class StepView extends JPanel {       
     /**
      * The name of the card (child view) currently displayed in this view.
+     * Pass this value to getUserRequestView(...) to obtain the actual view.
      */
     private StepSelection selectedPanel;
-    
-    
     
     /**
      * The child ASCII child view (card) that can be displayed in this view 
@@ -55,15 +57,18 @@ public class StepView extends JPanel {
 
     private AddTwoBitView addTwoBitView;
     
-    private MajFunction majFunction;
+    private MajFunctionView majFunction;
     
-    private ShaZero shaZero;
+    private ShaZeroView shaZero;
     
-    private ShaOne shaOne;
+    private ShaOneView shaOne;
     
     private ChoiceFunctionView choiceFunctionView;
     
     private StepCompletionReplyView stepReplyView;
+    
+    private TutoringSession model;
+
     
     /**
      * Initialize and layout the child components (cards) displayed in this view.
@@ -81,6 +86,21 @@ public class StepView extends JPanel {
         selectPanel(StepSelection.ENCODE);   
     }
 
+    public TutoringSession getModel() {
+        return model;
+    }
+
+    public void setModel(TutoringSession model) {
+        this.model = model;
+        
+        try {
+            getUserRequestView().setModel(model);
+        } catch (IllegalArgException e) {
+            // If we get here, we're somehow displaying a view we don't know
+            // about, which is a clear coding error.
+            System.out.println("StepView.setModel " + e);
+        }
+    }
     
     /**
      * Display the child view with the given name. Request a task from the 
@@ -95,14 +115,22 @@ public class StepView extends JPanel {
         
         selectedPanel = name;
         
+        try {
+            getUserRequestView().setModel(model);
+        } catch (IllegalArgException e) {
+            // If we get here, we're somehow displaying a view we don't know
+            // about, which is a clear coding error.
+            System.out.println("StepView.setModel " + e);
+        }
+        
         //ToDo: Unfinished switch statement for views that need to get a task from 
         //the tutor when selected
         // DONT DO THIS. Should not ask the tutor everytime a view is displayed.
-        switch(selectedPanel){
-           case ROTATE_BITS:
-              NewExampleAction.instance();
-           default:
-        }
+        //switch(selectedPanel){
+        //   case ROTATE_BITS:
+        //      NewExampleAction.instance();
+        //   default:
+        //}
     }
     
     
@@ -117,17 +145,48 @@ public class StepView extends JPanel {
      */
     public UserRequestView getUserRequestView() throws IllegalArgException{
         // ToDo: Need to add the view for each function 
-       switch(selectedPanel){
-           case CHOICE_FUNCTION:
-               return choiceFunctionView;
-          case ROTATE_BITS:
-             return rotateView;
-             
-          default:
-             String msg = "Illegal Selected Panel " + selectedPanel;
-             throw new IllegalArgException(msg);
+        switch(selectedPanel){
+            case ADD1:
+                return add1View;
+            case ADD_TWO_BIT:
+                return addTwoBitView;
+            case CHOICE_FUNCTION: 
+                return choiceFunctionView;
+            case COMPRESS:
+                return compressionView;
+            case ENCODE:
+                return encodeView;
+            case INIT_VARS:
+                    return initVarView;
+            case MAJ_FUNCTION:
+                return majFunction;
+            case ROTATE_BITS:
+                return rotateView;
+            case PAD:
+                return padView;
+            case PREPARE:
+                return prepareScheduleView;
+            case SHA_ZERO:
+                return shaZero;
+            case SHA_ONE:
+                return shaOne;
+            case SHIFT_RIGHT:                
+                return shiftRightView;
+            case STEP_REPLY:
+                    return stepReplyView;
+            case XOR:
+                return exclusiveOrView;
+   
+           default:
+                String msg = "Illegal User RequestView in StepView selection " + selectedPanel;
+                throw new IllegalArgException(msg);
        }
     }
+    
+            
+  
+    
+ 
        
     
     /**
@@ -141,9 +200,9 @@ public class StepView extends JPanel {
         shiftRightView = new ShiftRightView();
         exclusiveOrView = new ExclusiveOrView();
         addTwoBitView = new AddTwoBitView();
-        majFunction = new MajFunction();
-        shaZero = new ShaZero();
-        shaOne = new ShaOne();
+        majFunction = new MajFunctionView();
+        shaZero = new ShaZeroView();
+        shaOne = new ShaOneView();
         add1View = new Add1View();
         padView = new PadView();
         rotateView = new RotateView();

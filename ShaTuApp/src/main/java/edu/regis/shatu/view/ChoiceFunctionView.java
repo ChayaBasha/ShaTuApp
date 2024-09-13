@@ -16,10 +16,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.ChoiceFunctionStep;
 import edu.regis.shatu.model.Step;
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import edu.regis.shatu.model.aol.RotateStep;
 import edu.regis.shatu.view.act.NewExampleAction;
+import edu.regis.shatu.view.act.StepCompletionAction;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -65,8 +67,6 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
             stringXLabel, stringYLabel, stringZLabel, answerLabel,
             problemSizeLabel, instructionLabel;
 
-    private static final Random random = new Random();
-
     /**
      * Initializes the ChoiceFunctionView by creating and laying out its child
      * components.
@@ -84,8 +84,6 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
      */
     @Override
     public NewExampleRequest newRequest() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         NewExampleRequest ex = new NewExampleRequest();
 
         //Set example type to the problem associated with the current view
@@ -94,32 +92,29 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
         ChoiceFunctionStep newStep = new ChoiceFunctionStep();
 
         newStep.setBitLength(problemSize);
-        
-        /*
-        Enumeration<AbstractButton> buttons = problemSizeGroup.getElements();
-        while (buttons.hasMoreElements()) {
-
-            AbstractButton button = buttons.nextElement();
-            if (button == fourRadioButton) {
-                newStep.setBitLength(4);
-                break;
-            } else if (button == eightRadioButton) {
-                newStep.setBitLength(8);
-                break;
-            } else if (button == sixteenRadioButton) {
-                newStep.setBitLength(16);
-                break;
-            } else { // thrityTwo
-                newStep.setBitLength(32);
-            }
-        }
-        */
 
         //Set the data of the NewExampleRequest to the new RotateStep containing
         //the desired conditions
         ex.setData(gson.toJson(newStep));
 
         return ex;
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        Step currentStep = model.currentTask().currentStep();
+
+        ChoiceFunctionStep example = gson.fromJson(currentStep.getData(), ChoiceFunctionStep.class);
+
+        String userResponse = responseTextArea.getText().replaceAll("\\s", "");
+
+        example.setResult(userResponse);
+
+        StepCompletion step = new StepCompletion(currentStep, gson.toJson(example));
+        
+        step.setStep(currentStep);
+
+        return step;
     }
 
     /**
@@ -250,7 +245,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
      * Initializes the question components and adds them to the question panel.
      */
     private void setUpQuestionArea() {
-        
+
         problemSize = 4;
         stringX = "foo"; // generateInputString();
         stringY = "var"; // generateInputString();
@@ -319,7 +314,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
      * Sets up the Check, Next, and Hint buttons and their action listeners
      */
     private void setUpButtons() {
-        checkButton = new JButton("Check");
+        checkButton = new JButton(StepCompletionAction.instance());
         checkButton.addActionListener(this);
 
         hintButton = new JButton("Hint");
@@ -474,8 +469,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
 
         return inputString;
     }
-    */
-
+     */
     /**
      * Formats the result output by the choice function based on the size of the
      * problem.
@@ -506,8 +500,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
         }
         return finalResult;
     }
-    */
-
+     */
     /**
      * Generates and displays three new input strings.
      */
@@ -524,8 +517,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
         stringYLabel.setText("y: " + stringY);
         stringZLabel.setText("z: " + stringZ);
     }
-    */
-
+     */
     /**
      * Evaluates the choice function Ch(x, y, z).
      *
@@ -556,8 +548,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
 
         return binaryResult;
     }
-    */
-
+     */
     /**
      * Handles the actionPerformed event for buttons in the view.
      *
@@ -624,7 +615,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
             feedbackTextArea.setText("Incorrect! Please check your entry and "
                     + "try again or use the hint feature for help. Correct answer: " + correctAnswer);
         }
-        */
+         */
     }
 
     /**
@@ -639,7 +630,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
 
         nextButton.setEnabled(false);
         checkButton.setEnabled(true);
-        */
+         */
     }
 
     /**
@@ -662,19 +653,17 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
     }
 
     @Override
-    public void updateView() {
-        System.out.println("Updating view");
+    protected void updateView() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
-        Step step = model.getCurrentStep();
-        
+
+        Step step = model.currentTask().getCurrentStep();
+
         ChoiceFunctionStep example = gson.fromJson(step.getData(), ChoiceFunctionStep.class);
-        
+
         stringXLabel.setText("x: " + example.getOperand1());
         stringYLabel.setText("y: " + example.getOperand2());
         stringZLabel.setText("z: " + example.getOperand3());
-        
-      
-        
+
     }
+
 }

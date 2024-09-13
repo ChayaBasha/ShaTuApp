@@ -29,7 +29,6 @@ import edu.regis.shatu.model.aol.BitOpStep;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
 import edu.regis.shatu.model.Hint;
 import edu.regis.shatu.model.KnowledgeComponent;
-import edu.regis.shatu.model.aol.ScaffoldLevel;
 import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.StepCompletionReply;
@@ -45,7 +44,6 @@ import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.StudentModel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
@@ -92,6 +90,7 @@ public class ShaTuTutor implements TutorSvc {
      * Initialize the tutor singleton (a NoOp).
      */
     public ShaTuTutor() {
+        gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     /**
@@ -168,7 +167,7 @@ public class ShaTuTutor implements TutorSvc {
      * status is "ERR".
      */
     public TutorReply createAccount(String jsonAcct) throws NonRecoverableException {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+       // gson = new GsonBuilder().setPrettyPrinting().create();
 
         Account acct = gson.fromJson(jsonAcct, Account.class);
 
@@ -214,9 +213,7 @@ public class ShaTuTutor implements TutorSvc {
      */
     public TutorReply signIn(String jsonUser) {
         System.out.println("Received sign in: " + jsonUser);
-        gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+        //gson = new GsonBuilder().setPrettyPrinting().create();
 
         User user = gson.fromJson(jsonUser, User.class
         );
@@ -274,6 +271,7 @@ public class ShaTuTutor implements TutorSvc {
      * @return 
      */
     public TutorReply completedStep(String jsonObj) {
+        System.out.println("completedStep");
         StepCompletion completion = gson.fromJson(jsonObj, StepCompletion.class);
         
         Step step = completion.getStep();
@@ -433,7 +431,61 @@ public class ShaTuTutor implements TutorSvc {
     }
                 
     public TutorReply completeChoiceStep(StepCompletion completion) {
-        TutorReply reply = new TutorReply(":StepCompletionReply");
+        System.out.println("Tutor completeChoiceStep");
+        
+        ChoiceFunctionStep example = gson.fromJson(completion.getData(), ChoiceFunctionStep.class);
+        String operand1 = example.getOperand1();
+         String operand2 = example.getOperand2();
+        
+          String operand3 = example.getOperand3();
+        int bitLength = example.getBitLength();
+        String result = example.getResult();
+       // System.out.println("Result: " + example.getResult());
+        
+        String expectedResult = choiceFunction(operand1, operand2, operand3, bitLength);
+        //System.out.println("Expected result: " + expectedResult);
+  
+        StepCompletionReply stepReply = new StepCompletionReply();
+        
+        if (expectedResult.equals(result)) {
+            stepReply.setIsCorrect(true);
+            stepReply.setIsRepeatStep(false);
+            stepReply.setIsNewStep(true);
+             
+            // ToDo: Use the student model to figure out whether we want
+            // to give the student another practice problem of the same
+            // type or move on to an entirely different problem.
+            stepReply.setIsNewTask(true);
+            
+            // ToDo: currently only one step in a task, so there isn't a next one???
+            stepReply.setIsNextStep(false);
+            
+        } else {
+            stepReply.setIsCorrect(false);
+            stepReply.setIsRepeatStep(true);
+            stepReply.setIsNewStep(false);
+            stepReply.setIsNewTask(false);
+            stepReply.setIsNextStep(false);
+        }
+     
+        Step step = new Step(1, 0, StepSubType.STEP_COMPLETION_REPLY);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+        step.setData(gson.toJson(stepReply));
+        
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.STEP_COMPLETION_REPLY);
+        task.setDescription("Choose your next action");
+        task.addStep(step); 
+        
+        TutorReply reply = new TutorReply(":Success");
+    
+        reply.setData(gson.toJson(task));
         
         return reply;                
     }
@@ -449,7 +501,7 @@ public class ShaTuTutor implements TutorSvc {
      * @return TutorReply
      */
     public TutorReply newExample(String json) {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        //gson = new GsonBuilder().setPrettyPrinting().create();
 
         NewExampleRequest request = gson.fromJson(json, NewExampleRequest.class);
 
@@ -494,7 +546,7 @@ public class ShaTuTutor implements TutorSvc {
                 return newChoiceFunctionExample(session, request.getData());
 
             default:
-                return createError("Unknown example request: " + request.getExampleType(), null);
+                return createError("Unknown new example request: " + request.getExampleType(), null);
         }
     }
 
@@ -1071,8 +1123,6 @@ public class ShaTuTutor implements TutorSvc {
 
         step.setData(gson.toJson(substep));
 
-        // TaskState state = new TaskState();
-        // state.set
         Task task = new Task();
         task.setKind(TaskKind.PROBLEM);
         task.setType(ExampleType.CHOICE_FUNCTION);

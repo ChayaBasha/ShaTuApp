@@ -10,25 +10,28 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 /**
- * ShaOne class represents the GUI view for performing the SHA Σ₁ function, involving a right shift operation.
+ * ShaZero class represents the GUI view for performing the SHA Σ₀ function, involving rotation and right shift operations.
  * It extends GPanel and implements ActionListener and KeyListener interfaces.
  * <p>
- * The class provides a user interface for performing right shifts on binary numbers and checking the results.
+ * The class provides a user interface for performing rotations and right shifts on binary numbers and checking the results.
  * Inline comments have been added for better understanding of the code.
  *
  * @author rickb
  */
-public class ShaOne extends GPanel implements ActionListener, KeyListener {
+public class ShaZeroView extends UserRequestView implements ActionListener, KeyListener {
     /**
-     * The number of places to perform the right shift operation.
+     * The number of places for the right shift operation.
      */
     private final int X_PLACES = 10; // will be changed and dynamically updated
     private final int EXAMPLE_INPUT = 0b11011010101010101010101010101010;
@@ -36,14 +39,14 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
     private String answer;
     private JLabel exampleInputLabel;
     private JTextField answerField;
-    private JButton checkButton; // Add the check button
+    private JButton checkButton;
     private JButton hintButton;
     private JButton nextQuestionButton;
 
     /**
      * Initialize this view including creating and laying out its child components.
      */
-    public ShaOne() {
+    public ShaZeroView() {
         initializeComponents();
         initializeLayout();
     }
@@ -64,14 +67,14 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
      */
     private void initializeComponents() {
 
-        exampleInputLabel = new JLabel("Given an 𝑛 bit binary number, output the value of the SHA Σ₁ function");
+        exampleInputLabel = new JLabel("Given an 𝑛 bit binary number, output the value of the SHA 𝛴₀  function");
 
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
-        checkButton.addActionListener(this);
+        checkButton.addActionListener(this); // Add an action listener for the check button
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this); // Add an action listener for the check button
@@ -113,27 +116,25 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
     }
 
     /**
-     * Performs a right shift operation on a binary number for the specified number of places.
+     * Calculates the SHA Σ₀ function involving rotation and right shift operations.
      *
-     * @param x      The input binary number.
-     * @param places The number of places for the right shift.
-     * @return The binary result after the right shift operation.
+     * @param input The input binary number.
+     * @return The result after performing the SHA Σ₀ function.
      */
-    public String shiftRightString(int x, int places) {
-
-        // Perform the right shift operation
-        int result = x >> places;
-
-        // Print the original and shifted binary numbers
-        System.out.println("Original Binary: " + Integer.toBinaryString(x));
-        System.out.println("Shifted Binary:  " + Integer.toBinaryString(result));
-
-        return Integer.toBinaryString(result);
-
+    private String calculateSigma(int input) {
+        RotateView rotate = new RotateView();
+        ShiftRightView shiftRight = new ShiftRightView();
+        
+        String answer = rotate.rotateString(input+"", X_PLACES); // on each step it will be updated accordingly
+        answer = rotate.rotateString(answer, X_PLACES + 10);// on each step it will be updated accordingly
+        answer = shiftRight.shiftRightString(Integer.parseInt(answer),X_PLACES); // on each step it will be updated accordingly 
+        
+        return answer;
     }
-    
+
     @Override
     public void keyTyped(KeyEvent e) {
+        
     }
 
     @Override
@@ -150,10 +151,10 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
     }
 
     /**
-     * Verifies the user's answer by comparing it with the correct result of the right shift operation.
+     * Verifies the user's answer by comparing it with the correct result of the SHA Σ₀ function.
      */
     private void verifyAnswer() {
-        String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
+        String correctAnswer = calculateSigma(EXAMPLE_INPUT);
         // Get the text from the answerField when the checkButton is clicked
         String userAnswer = answerField.getText();
 
@@ -187,5 +188,15 @@ public class ShaOne extends GPanel implements ActionListener, KeyListener {
         } else {
             verifyAnswer();
         }
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
