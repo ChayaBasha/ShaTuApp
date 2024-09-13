@@ -20,7 +20,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -39,6 +38,11 @@ public class SplashFrame extends JFrame {
      * Name of the new user panel in this frame's primary card layout panel.
      */
     public static final String NEW_USER = "NewUserPanel";
+    
+     /**
+     * Dashboard Reference Name for CardLayout.
+     */
+    public static final String DASHBOARD = "DashboardPanel";
     
     /**
      * Allowed consecutive illegal passwords before the user is locked out.
@@ -75,7 +79,7 @@ public class SplashFrame extends JFrame {
     private JPanel cards;
     
     /**
-     * The name of the currently selected panel, SPLASH or NEW_USER.
+     * The name of the currently selected panel, SPLASH, NEW_USERf, or DASHBOARD.
      */
     private String selectedPanel;
     
@@ -84,6 +88,12 @@ public class SplashFrame extends JFrame {
      * and a link to the create new student account panel.
      */
     private SplashPanel splashPanel;
+    
+    /**
+     * The panel that allows users to select a type of service
+     * (teach, practice, quiz) upon sign in
+     */
+    private DashboardPanel dashboardPanel;
     
     /**
      * A panel which allows the user to create a new student account with 
@@ -98,7 +108,7 @@ public class SplashFrame extends JFrame {
     protected int signInAttempts = 0;
     
    /**
-     * Create and layout the child components in this Spalsh JFrame.
+     * Create and layout the child components in this Splash JFrame.
      */
     private SplashFrame() {
         super("ShaTu");
@@ -144,7 +154,7 @@ public class SplashFrame extends JFrame {
      * Display to the user the result of an invalid password in a sign in.
      * 
      * Handles an invalid password response from a SignInAction keeping track
-     * of the number of user attempts thus far.     * 
+     * of the number of user attempts thus far.
      */
     public void invalidPass() {
         if (signInAttempts < MAX_SIGNIN_ATTEMPTS) {
@@ -177,6 +187,13 @@ public class SplashFrame extends JFrame {
     }
     
     /**
+     * Sets the current card panel to Dashboard.
+     */
+    public void selectDashboard() {
+        selectPanel(DASHBOARD);
+    }
+    
+    /**
      * Display the New User panel, which allows the user to create a new
      * student account with associated sign-in information.
      */
@@ -185,7 +202,7 @@ public class SplashFrame extends JFrame {
     }
     
     /**
-     * Reset the text fields in the new account panel to the empty string
+     * Reset the text fields in the new account panel to the empty string.
      */
     public void clearNewAccountPanel() {
         newAccountPanel.clearFields();
@@ -205,7 +222,7 @@ public class SplashFrame extends JFrame {
     /**
      * Display the card panel with the associated name.
      * 
-     * @param name SPLASH or NEW_USER
+     * @param name SPLASH, NEW_USER, or DASHBOARD
      */
     private void selectPanel(String name) {
         CardLayout cl = (CardLayout) (cards.getLayout());
@@ -220,7 +237,7 @@ public class SplashFrame extends JFrame {
             newAccountPanel.updateFocus();
         }
     }
-    
+   
     /**
      * Create the child GUI components appearing in this frame.
      */
@@ -229,8 +246,10 @@ public class SplashFrame extends JFrame {
         
         splashPanel = new SplashPanel();
         newAccountPanel = new NewAccountPanel();
+        dashboardPanel = new DashboardPanel();
         
         cards.add(splashPanel, SPLASH);
         cards.add(newAccountPanel, NEW_USER);
+        cards.add(dashboardPanel, DASHBOARD);
     }
 }
