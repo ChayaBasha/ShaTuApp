@@ -12,19 +12,19 @@
  */
 package edu.regis.shatu.view;
 
-import java.awt.Color;
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 /**
  *
  * @author rickb
  */
-public class PrepareScheduleView extends GPanel implements ActionListener {
+public class PrepareScheduleView extends UserRequestView implements ActionListener {
 
     
     private JButton testBut;
@@ -63,5 +63,15 @@ public class PrepareScheduleView extends GPanel implements ActionListener {
         addc(new JLabel(""), 0, 1, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

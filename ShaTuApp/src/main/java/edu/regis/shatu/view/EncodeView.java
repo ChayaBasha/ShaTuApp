@@ -12,7 +12,9 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -45,7 +47,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener {
+public class EncodeView extends UserRequestView implements ActionListener {
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
@@ -78,6 +80,16 @@ public class EncodeView extends GPanel implements ActionListener {
         initializeLayout();
         updateToRadioButtonsEnabledState();
         prepareNextQuestion();
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     /**
@@ -710,7 +722,7 @@ public class EncodeView extends GPanel implements ActionListener {
      * 
      * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
      */
-    private void updateView() {
+    protected void updateView() {
         if (model != null) {
             // ****TO-DO*****
             // Update the view's information from the model below are just some debugging

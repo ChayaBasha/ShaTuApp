@@ -111,7 +111,7 @@ public class StepCompletionReply {
         this.isNewStep = isNewStep;
     }
 
-    public boolean isIsNextStep() {
+    public boolean isNextStep() {
         return isNextStep;
     }
     

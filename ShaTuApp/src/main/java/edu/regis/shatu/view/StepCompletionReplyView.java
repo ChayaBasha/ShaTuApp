@@ -12,6 +12,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -26,7 +28,7 @@ import javax.swing.JTextArea;
  * 
  * @author rickb
  */
-public class StepCompletionReplyView extends GPanel implements ActionListener {
+public class StepCompletionReplyView extends UserRequestView implements ActionListener {
     /**
      * Message displayed to the student.
      */
@@ -184,4 +186,14 @@ public class StepCompletionReplyView extends GPanel implements ActionListener {
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     } 
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
