@@ -20,14 +20,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -155,6 +152,20 @@ public class SplashPanel extends GPanel {
 
 	signInBut = new JButton(SignInAction.instance());
 	signInBut.setEnabled(false);
+        signInBut.addActionListener(e -> {
+            // Fetch the userId from the text field
+            String userIdInput = userId.getText();
+
+            if (!userIdInput.isEmpty()) {
+                // Encrypt the password for validation (if needed)
+                String encryptedPass = SHA_256.instance().sha256(new String(password.getPassword()));
+
+                // Pass the userId to SplashFrame and initialize the Dashboard
+                SplashFrame.instance().initializeDashboard(userIdInput);
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter your User ID", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
         
         createAcctBut = new JButton(NewUserAction.instance());
     }

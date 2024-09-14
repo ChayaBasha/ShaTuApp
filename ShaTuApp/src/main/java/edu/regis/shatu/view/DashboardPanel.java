@@ -17,7 +17,12 @@ package edu.regis.shatu.view;
  * @author Ryley M
  */
 public class DashboardPanel extends javax.swing.JPanel {
+    private String userID;
 
+    public DashboardPanel(String userID) {
+        this.userID = userID;
+        initComponents();
+    }
     /**
      * Creates new form DashboardPanel
      */
@@ -34,16 +39,17 @@ public class DashboardPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        welcomeLabel = new javax.swing.JLabel();
         teachMeButton = new javax.swing.JButton();
         practiceButton = new javax.swing.JButton();
         quizeMeButton = new javax.swing.JButton();
         backToDashboardButton = new javax.swing.JButton();
         logOutButton = new javax.swing.JButton();
 
-        jLabel1.setText("Welcome!");
-        jLabel1.setToolTipText("");
-        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        welcomeLabel.setText("Welcome!");
+        welcomeLabel.setToolTipText("");
+        welcomeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        welcomeLabel.setText("Welcome, " + userID + "!");
 
         teachMeButton.setText("Teach Me");
 
@@ -70,7 +76,7 @@ public class DashboardPanel extends javax.swing.JPanel {
                         .addComponent(backToDashboardButton)))
                 .addGap(68, 68, 68)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(welcomeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(practiceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -83,7 +89,7 @@ public class DashboardPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(welcomeLabel)
                     .addComponent(backToDashboardButton)
                     .addComponent(logOutButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
@@ -98,10 +104,10 @@ public class DashboardPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backToDashboardButton;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JButton logOutButton;
     private javax.swing.JButton practiceButton;
     private javax.swing.JButton quizeMeButton;
     private javax.swing.JButton teachMeButton;
+    private javax.swing.JLabel welcomeLabel;
     // End of variables declaration//GEN-END:variables
 }

@@ -237,7 +237,14 @@ public class SplashFrame extends JFrame {
             newAccountPanel.updateFocus();
         }
     }
-   
+    
+    public void initializeDashboard(String userId) {
+        dashboardPanel = new DashboardPanel(userId);  // Pass the userId to DashboardPanel
+        cards.add(dashboardPanel, DASHBOARD);  // Add DashboardPanel to the card layout
+        selectPanel(DASHBOARD);  // Switch to the DashboardPanel
+    }
+
+
     /**
      * Create the child GUI components appearing in this frame.
      */
@@ -246,7 +253,9 @@ public class SplashFrame extends JFrame {
         
         splashPanel = new SplashPanel();
         newAccountPanel = new NewAccountPanel();
-        dashboardPanel = new DashboardPanel();
+        
+        String userID = splashPanel.getModel().getUserId();
+        dashboardPanel = new DashboardPanel(userID);
         
         cards.add(splashPanel, SPLASH);
         cards.add(newAccountPanel, NEW_USER);
