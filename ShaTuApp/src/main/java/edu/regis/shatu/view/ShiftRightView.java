@@ -10,7 +10,10 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.BitShiftStep;
+import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +38,7 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     private final int X_PLACES = 10; // will be changed and dynamically updated
     private final int EXAMPLE_INPUT = 0b11011010101010101010101010101010;
 
+    private int bitLength = 32;
     private String answer;
     private JLabel exampleInputLabel;
     private JTextField answerField;
@@ -246,11 +250,36 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
 
     @Override
     public NewExampleRequest newRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        NewExampleRequest ex = new NewExampleRequest();
+
+        //Set example type to the problem associated with the current view
+        ex.setExampleType(ExampleType.SHIFT_BITS);
+        
+        BitShiftStep newStep = new BitShiftStep();
+        
+        newStep.setBitLength(bitLength);
+        newStep.setShiftLength(X_PLACES);
+        newStep.setShiftRight(true);
+        
+        ex.setData(gson.toJson(newStep));
+        
+        return ex;
     }
 
     @Override
     public StepCompletion stepCompletion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Step currentStep = model.currentTask().currentStep();
+
+        BitShiftStep example = gson.fromJson(currentStep.getData(), BitShiftStep.class);
+
+        String userResponse = answerField.getText().replaceAll("\\s", "");
+
+        example.setResult(userResponse);
+
+        StepCompletion step = new StepCompletion(currentStep, gson.toJson(example));
+        
+        step.setStep(currentStep);
+
+        return step;
     }
 }
