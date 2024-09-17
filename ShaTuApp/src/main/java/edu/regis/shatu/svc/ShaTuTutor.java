@@ -424,7 +424,6 @@ public class ShaTuTutor implements TutorSvc {
                                                  shiftLength, 
                                                  shiftRight, 
                                                  bitLength);
-        System.out.println(expectedResult);
         
         StepCompletionReply stepReply = new StepCompletionReply();
 
@@ -1230,7 +1229,7 @@ System.out.println("before reply return");
     }
     
     /**
-     * Performs a bitwise shift (left or right) on a binary string operand.
+     * Performs a bit shift (left or right) on a binary string operand.
      * 
      * @param operand      The binary string to be shifted.
      * @param shiftLength  The number of positions to shift the bits.

@@ -13,7 +13,6 @@ package edu.regis.shatu.view;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.BitShiftStep;
-import edu.regis.shatu.model.ChoiceFunctionStep;
 import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.ExampleType;
@@ -40,7 +39,7 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     
     private String operand;
     private int shiftLength;
-    private boolean shiftRight = true;
+    private final boolean shiftRight = true;
     private int bitLength;
     
     private JTextArea descTextArea, feedbackTextArea, responseTextArea;
@@ -71,6 +70,8 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == hintButton) {
             onNextHint();
+        } else if (event.getSource() == checkButton) {
+            onCheckButton();
         }
     }
     
@@ -84,19 +85,11 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     }
     
     /**
-     * Handles the action for the New Example button.
-     */
-    private void onNextQuestion() {
-    }
-    
-    /**
      * Handles the action for the Check button.
      */
     private void onCheckButton() {
         if (responseTextArea.getText().equals("")) {
             feedbackTextArea.setText("Please provide an answer");
-        } else {
-            verifyAnswer();
         }
     }
 
@@ -112,19 +105,6 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         setUpButtons();
         setUpDescriptionPanel();
         setUpQRPanel();
-    }
-
-    private String formatBinaryString(String binary) {
-        StringBuilder sb = new StringBuilder(binary);
-        // Ensure the string has a length of 32 characters
-        while (sb.length() < 32) {
-            sb.insert(0, "0");
-        }
-        // Insert spaces every 4 characters from the end
-        for (int i = 4; i < sb.length(); i += 5) {
-            sb.insert(sb.length() - i, " ");
-        }
-        return sb.toString();
     }
 
     /**
@@ -333,6 +313,9 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
                 5, 5, 5, 5);
     }
 
+    /**
+     * Updates the view when data changes
+     */
     @Override
     protected void updateView() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -341,9 +324,11 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
 
         BitShiftStep example = gson.fromJson(step.getData(), BitShiftStep.class);
 
-        operandLabel.setText(example.getOperand());
+        operand = example.getOperand();
+        shiftLength = example.getShiftLength();
+        operandLabel.setText(operand);
         instructionLabel.setText("Logical right shift the input given below by "
-              + example.getShiftLength() + " bits:");
+              + shiftLength + " bits:");
     }
 
 
@@ -376,7 +361,6 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         if (e.getKeyCode() == KeyEvent.VK_ENTER && responseTextArea.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            verifyAnswer();
         }
     }
 
@@ -385,37 +369,11 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     }
 
     /**
-     * Verifies the user's answer by comparing it with the correct result of the right shift operation.
+     * Create and return the server request this view makes when a user selects
+     * that they want to practice a new bit shift example.
+     *
+     * @return
      */
-    private void verifyAnswer() {
-        /*
-        String correctAnswer = shiftRightString(EXAMPLE_INPUT, X_PLACES);
-        String formattedBinary = formatBinaryString(correctAnswer);
-
-        // Bit position markers formatted to align with the binary string
-        String bitPositions = "  4|   8|  12|  16|  20|  24|  28|  32|";
-
-        // Get the text from the answerField when the checkButton is clicked
-        String userAnswer = answerField.getText();
-
-        // Construct a formatted string to display the correct binary representation
-        String message = "<html><pre>Bit positions: " + bitPositions + "<br/>Binary:        " + formattedBinary + "</pre></html>";
-
-        if (userAnswer.equals(correctAnswer.replaceAll(" ", ""))) {
-            JOptionPane.showMessageDialog(this, message, "Correct", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, message, "Incorrect. The correct answer is:", JOptionPane.ERROR_MESSAGE);
-        }
-        */
-    }
-    
-    /**
-     * Displays a message dialog indicating the start of the next question.
-     */
-    private void onSubmitButton() {
-        verifyAnswer(); //For noww, just verify the answer when submit is clicked
-    }
-
     @Override
     public NewExampleRequest newRequest() {
         NewExampleRequest ex = new NewExampleRequest();
@@ -426,7 +384,7 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         BitShiftStep newStep = new BitShiftStep();
         
         newStep.setBitLength(bitLength);
-        newStep.setShiftRight(true);
+        newStep.setShiftRight(shiftRight);
         
         ex.setData(gson.toJson(newStep));
         
