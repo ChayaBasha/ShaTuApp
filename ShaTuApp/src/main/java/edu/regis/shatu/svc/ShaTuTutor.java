@@ -424,6 +424,7 @@ public class ShaTuTutor implements TutorSvc {
                                                  shiftLength, 
                                                  shiftRight, 
                                                  bitLength);
+        System.out.println(expectedResult);
         
         StepCompletionReply stepReply = new StepCompletionReply();
 
@@ -977,6 +978,8 @@ public class ShaTuTutor implements TutorSvc {
         boolean shiftRight = substep.isShiftRight();
 
         substep.setOperand(operand);
+        substep.setShiftLength(shiftLength);
+        substep.setShiftRight(shiftRight);
 
         substep.setResult(bitShiftFunction(operand, shiftLength, shiftRight, bitLength));
 
@@ -1243,9 +1246,9 @@ System.out.println("before reply return");
         // Perform the shift
         long shiftedOperand;
         if (shiftRight) {
-            shiftedOperand = intOperand >> shiftLength;  // Logical shift right
+            shiftedOperand = intOperand >>> shiftLength;
         } else {
-            shiftedOperand = intOperand << shiftLength;  // Shift left
+            shiftedOperand = intOperand << shiftLength;
         }
 
         // Convert the result back to binary string

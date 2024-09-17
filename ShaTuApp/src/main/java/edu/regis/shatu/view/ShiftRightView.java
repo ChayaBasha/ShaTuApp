@@ -62,6 +62,11 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         initializeLayout();
     }
 
+    /**
+     * Handles the actionPerformed event for buttons in the view.
+     *
+     * @param event The ActionEvent that occurred.
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == hintButton) {
@@ -76,7 +81,12 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         feedbackTextArea.setText(String.format(
             "Hint: Put %d 0s on the left and remove %d bits from the right", 
             shiftLength, shiftLength));
-
+    }
+    
+    /**
+     * Handles the action for the New Example button.
+     */
+    private void onNextQuestion() {
     }
     
     /**
@@ -235,7 +245,7 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         operandLabel = new JLabel(operand);
 
         problemSizeLabel = new JLabel("Select Problem Size:");
-        instructionLabel = new JLabel("Right shift the input given below by "
+        instructionLabel = new JLabel("Logical right shift the input given below by "
               + shiftLength + " bits:");
 
         questionPanel = new GPanel();
@@ -323,12 +333,8 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
                 5, 5, 5, 5);
     }
 
-    public void setModel(String bitString, int shiftAmount, boolean isShiftLeft) {
-        // Update the view with the provided information
-        updateView(bitString, shiftAmount, isShiftLeft);
-    }
-
-    private void updateView(String bitString, int shiftAmount, boolean isShiftLeft) {
+    @Override
+    protected void updateView() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Step step = model.currentTask().getCurrentStep();
@@ -336,7 +342,7 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         BitShiftStep example = gson.fromJson(step.getData(), BitShiftStep.class);
 
         operandLabel.setText(example.getOperand());
-        instructionLabel.setText("Right shift the input given below by "
+        instructionLabel.setText("Logical right shift the input given below by "
               + example.getShiftLength() + " bits:");
     }
 
@@ -420,7 +426,6 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         BitShiftStep newStep = new BitShiftStep();
         
         newStep.setBitLength(bitLength);
-        newStep.setShiftLength(shiftLength);
         newStep.setShiftRight(true);
         
         ex.setData(gson.toJson(newStep));
