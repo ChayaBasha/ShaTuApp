@@ -35,7 +35,7 @@ public class EncodeAsciiStep  {
     private boolean multiStep;
     
     public EncodeAsciiStep() {
-       
+    this.multiStep = false;  // Set default to single-step encoding
     }
 
     public EncodeAsciiExample getExample() {
@@ -53,4 +53,31 @@ public class EncodeAsciiStep  {
     public void setMultiStep(boolean multiStep) {
         this.multiStep = multiStep;
     }
+    
+    public void encode() {
+        String inputString = example.getExampleString();
+
+        // Convert each character to its ASCII value
+        int[] asciiValues = new int[inputString.length()];
+
+        for (int i = 0; i < inputString.length(); i++) {
+            asciiValues[i] = (int) inputString.charAt(i);
+        }
+
+        // Set the encoding in the example object
+        example.setAsciiEncoding(asciiValues);
+
+        // If multi-step is true, encode character by character
+        if (multiStep) {
+            System.out.println("Encoding each character one by one:");
+            for (int i = 0; i < asciiValues.length; i++) {
+                System.out.println(inputString.charAt(i) + " -> " + asciiValues[i]);
+            }
+        } else {
+            // Encode the entire string in one step
+            System.out.println("Encoding the entire string at once:");
+            System.out.println(inputString + " -> " + java.util.Arrays.toString(asciiValues));
+        }
+    }
 }
+

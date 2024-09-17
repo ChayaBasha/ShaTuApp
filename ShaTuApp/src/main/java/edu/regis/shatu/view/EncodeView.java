@@ -13,6 +13,8 @@
 package edu.regis.shatu.view;
 
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.aol.EncodeAsciiExample;
+import edu.regis.shatu.model.aol.EncodeAsciiStep;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -33,6 +35,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -60,6 +63,8 @@ public class EncodeView extends GPanel implements ActionListener {
     private JRadioButton toDecimalRadioButton, toBinaryRadioButton, toHexRadioButton, toSymbolRadioButton;
     private ButtonGroup fromFormatButtonGroup, toFormatButtonGroup;
     private List<Integer> questionData;
+    private JComboBox<String> exampleDropdown; 
+
     
     // For random character generation
     private static final Random random = new Random();
@@ -101,8 +106,23 @@ public class EncodeView extends GPanel implements ActionListener {
             prepareNextQuestion();
         } else if (event.getSource() == hintButton) {
             showHint();
+        } else if  (event.getSource() == exampleDropdown) {
+            String selectedExample = (String) exampleDropdown.getSelectedItem();
+            processExampleSelection(selectedExample);
         }
     }
+
+    private void processExampleSelection(String selectedExample) {
+    // Create a new EncodeAsciiExample instance with the selected string
+    EncodeAsciiExample example = new EncodeAsciiExample(selectedExample);
+
+    // Create an instance of EncodeAsciiStep and set the example
+    EncodeAsciiStep asciiStep = new EncodeAsciiStep();
+    asciiStep.setExample(example);  // Set the example in the step
+
+    // Call the encode method to perform ASCII conversion
+    asciiStep.encode();  // This will print out the ASCII conversion or perform further actions
+}
       
     /**
      * Initializes all GUI components, setting up their properties and configurations.
@@ -117,6 +137,7 @@ public class EncodeView extends GPanel implements ActionListener {
         setupFeedbackArea();
         setupButtons();
         setupAsciiTable();
+        setupExampleDropdown();
     }
 
     /**
@@ -124,44 +145,62 @@ public class EncodeView extends GPanel implements ActionListener {
      * constraints.
      */
     private void initializeLayout() {
-        
-        JPanel buttonPanel = createButtonPanel();  
-        JPanel messageLengthPanel = createMessageLengthPanel();
-        JPanel convertFromPanel = createConvertFromRadioPanel();
-        JPanel convertToPanel = createConvertToRadioPanel();
+    JPanel buttonPanel = createButtonPanel();  
+    JPanel messageLengthPanel = createMessageLengthPanel();
+    JPanel convertFromPanel = createConvertFromRadioPanel();
+    JPanel convertToPanel = createConvertToRadioPanel();
 
-        // Add components to the layout
-        addc(descriptionTextPane, 0, 0, 3, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-        addc(messageLengthPanel, 0, 1, 1, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(convertFromPanel, 1, 1, 1, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(convertToPanel, 2, 1, 1, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 5, 5, 5, 5); 
-        addc(questionLabel, 0, 2, 3, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-         addc(instructionsLabel, 0, 3, 3, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-        addc(responseScrollPane, 0, 4, 3, 1, 
-                1.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
-        addc(feedbackScrollPane, 0, 5, 3, 1, 
-                1.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
-        addc(buttonPanel, 0, 6, 3, 1, 
-                1.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 10, 0, 0, 0);
-        addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
-                7, 3.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
-    }
+    // Add components to the layout
+    addc(descriptionTextPane, 0, 0, 3, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+
+    // Create and configure examplePanel
+    JPanel examplePanel = new JPanel();
+    examplePanel.add(new JLabel("Select Simple text to ASCII Example: "));
+    examplePanel.add(exampleDropdown);  // Use the exampleDropdown component
+
+    // Add examplePanel to layout
+    addc(examplePanel, 0, 1, 3, 1,  
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 20);
+
+    addc(messageLengthPanel, 0, 2, 1, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 5, 5, 5, 5);
+    addc(convertFromPanel, 1, 2, 1, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 5, 5, 5, 5);
+    addc(convertToPanel, 2, 2, 1, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 5, 5, 5, 5); 
+
+    addc(questionLabel, 0, 3, 3, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    addc(instructionsLabel, 0, 4, 3, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    addc(responseScrollPane, 0, 5, 3, 1, 
+            1.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.BOTH, 5, 5, 5, 5);
+    addc(feedbackScrollPane, 0, 6, 3, 1, 
+            1.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.BOTH, 5, 5, 5, 5);
+    addc(buttonPanel, 0, 7, 3, 1, 
+            1.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 10, 0, 0, 0);
+    addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
+            8, 3.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.BOTH, 5, 5, 5, 5);
+}
+
+
+    
+    private void setupExampleDropdown() {
+    exampleDropdown = new JComboBox<>(new String[]{"Hello", "ADCABC", "ascii"});
+    exampleDropdown.addActionListener(this); // add action listener for dropdown
+}
 
     /**
      * Handles the submission of the user's input, comparing it to the expected 
