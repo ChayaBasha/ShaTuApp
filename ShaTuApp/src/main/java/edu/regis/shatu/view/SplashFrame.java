@@ -40,10 +40,16 @@ public class SplashFrame extends JFrame {
     public static final String NEW_USER = "NewUserPanel";
     
      /**
-     * Dashboard Reference Name for CardLayout.
+     * Dashboard Reference Name for CardLayout;
+     * linked to splashPanel sign in.
      */
     public static final String DASHBOARD = "DashboardPanel";
     
+    /**
+     * Tutor View Reference Name for CardLayout;
+     * linked to by dashboard's practice button.
+     */
+    public static final String TUTOR = "TutoringSessionView";
     /**
      * Allowed consecutive illegal passwords before the user is locked out.
      */
@@ -91,9 +97,15 @@ public class SplashFrame extends JFrame {
     
     /**
      * The panel that allows users to select a type of service
-     * (teach, practice, quiz) upon sign in
+     * (teach, practice, quiz) upon sign in.
      */
     private DashboardPanel dashboardPanel;
+    
+    /**
+     * The panel which displays the ShaTuApp tutoring view;
+     * Used for practicing skills.
+     */
+    private TutoringSessionView tutoringSessionView;
     
     /**
      * A panel which allows the user to create a new student account with 
@@ -238,12 +250,25 @@ public class SplashFrame extends JFrame {
         }
     }
     
+    /**
+     * Initializes a personalized dashboard screen for each user after sign in.
+     * @param userId 
+     */
     public void initializeDashboard(String userId) {
-        dashboardPanel = new DashboardPanel(userId);  // Pass the userId to DashboardPanel
-        cards.add(dashboardPanel, DASHBOARD);  // Add DashboardPanel to the card layout
-        selectPanel(DASHBOARD);  // Switch to the DashboardPanel
+        dashboardPanel = new DashboardPanel(userId);
+        cards.add(dashboardPanel, DASHBOARD);
+        selectPanel(DASHBOARD);
     }
-
+    
+     /**
+     * Selects a personalized practice screen for each user upon selecting
+     * the dashboard's practice button.
+     */
+    public void selectTutoringSessionView() {
+        tutoringSessionView = new TutoringSessionView();
+        cards.add(tutoringSessionView, TUTOR);
+        selectPanel(TUTOR);
+    }
 
     /**
      * Create the child GUI components appearing in this frame.
@@ -253,12 +278,8 @@ public class SplashFrame extends JFrame {
         
         splashPanel = new SplashPanel();
         newAccountPanel = new NewAccountPanel();
-        
-        String userID = splashPanel.getModel().getUserId();
-        dashboardPanel = new DashboardPanel(userID);
-        
+                        
         cards.add(splashPanel, SPLASH);
         cards.add(newAccountPanel, NEW_USER);
-        cards.add(dashboardPanel, DASHBOARD);
     }
 }

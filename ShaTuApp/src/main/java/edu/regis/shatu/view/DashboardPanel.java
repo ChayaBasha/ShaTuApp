@@ -88,6 +88,11 @@ public class DashboardPanel extends javax.swing.JPanel {
 
         practiceButton1.setText("Practice");
         practiceButton1.setActionCommand("practice");
+        practiceButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                practiceButton1ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -157,6 +162,10 @@ public class DashboardPanel extends javax.swing.JPanel {
 
         add(contentPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void practiceButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_practiceButton1ActionPerformed
+     SplashFrame.instance().selectTutoringSessionView();
+    }//GEN-LAST:event_practiceButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
