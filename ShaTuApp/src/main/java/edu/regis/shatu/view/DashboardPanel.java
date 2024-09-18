@@ -38,76 +38,138 @@ public class DashboardPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        headerPanel = new javax.swing.JPanel();
         welcomeLabel = new javax.swing.JLabel();
-        teachMeButton = new javax.swing.JButton();
-        practiceButton = new javax.swing.JButton();
-        quizeMeButton = new javax.swing.JButton();
-        backToDashboardButton = new javax.swing.JButton();
         logOutButton = new javax.swing.JButton();
+        backToDashboardButton = new javax.swing.JButton();
+        contentPanel = new javax.swing.JPanel();
+        teachMeButton1 = new javax.swing.JButton();
+        practiceButton1 = new javax.swing.JButton();
+        quizeMeButton1 = new javax.swing.JButton();
+        teachMeProgressBar1 = new javax.swing.JProgressBar();
+        practiceProgressBar1 = new javax.swing.JProgressBar();
+        quizMeProgressBar1 = new javax.swing.JProgressBar();
 
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setLayout(new java.awt.BorderLayout());
+
+        headerPanel.setLayout(new java.awt.BorderLayout());
+
+        welcomeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         welcomeLabel.setText("Welcome!");
         welcomeLabel.setToolTipText("");
         welcomeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         welcomeLabel.setText("Welcome, " + userID + "!");
-
-        teachMeButton.setText("Teach Me");
-
-        practiceButton.setText("Practice");
-        practiceButton.setActionCommand("practice");
-
-        quizeMeButton.setText("Quiz Me");
-
-        backToDashboardButton.setText("Back To Dashboard");
+        headerPanel.add(welcomeLabel, java.awt.BorderLayout.CENTER);
 
         logOutButton.setText("Log Out");
+        logOutButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        headerPanel.add(logOutButton, java.awt.BorderLayout.LINE_END);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(teachMeButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(backToDashboardButton)))
-                .addGap(68, 68, 68)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(welcomeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(practiceButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(logOutButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(quizeMeButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(welcomeLabel)
-                    .addComponent(backToDashboardButton)
-                    .addComponent(logOutButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(teachMeButton)
-                    .addComponent(practiceButton)
-                    .addComponent(quizeMeButton))
-                .addGap(44, 44, 44))
-        );
+        backToDashboardButton.setText("Back To Dashboard");
+        backToDashboardButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        headerPanel.add(backToDashboardButton, java.awt.BorderLayout.LINE_START);
+
+        add(headerPanel, java.awt.BorderLayout.NORTH);
+
+        contentPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        contentPanel.setLayout(new java.awt.GridBagLayout());
+
+        teachMeButton1.setText("Teach Me");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(18, 6, 6, 0);
+        contentPanel.add(teachMeButton1, gridBagConstraints);
+
+        practiceButton1.setText("Practice");
+        practiceButton1.setActionCommand("practice");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        gridBagConstraints.insets = new java.awt.Insets(18, 18, 6, 0);
+        contentPanel.add(practiceButton1, gridBagConstraints);
+
+        quizeMeButton1.setText("Quiz Me");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
+        gridBagConstraints.insets = new java.awt.Insets(18, 18, 6, 0);
+        contentPanel.add(quizeMeButton1, gridBagConstraints);
+
+        teachMeProgressBar1.setString("100%");
+        teachMeProgressBar1.setStringPainted(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 121;
+        gridBagConstraints.ipady = 65;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(61, 6, 0, 0);
+        contentPanel.add(teachMeProgressBar1, gridBagConstraints);
+
+        practiceProgressBar1.setString("50%");
+        practiceProgressBar1.setStringPainted(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 121;
+        gridBagConstraints.ipady = 65;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(61, 18, 0, 0);
+        contentPanel.add(practiceProgressBar1, gridBagConstraints);
+
+        quizMeProgressBar1.setStringPainted(true);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 121;
+        gridBagConstraints.ipady = 65;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(61, 18, 0, 6);
+        contentPanel.add(quizMeProgressBar1, gridBagConstraints);
+
+        add(contentPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backToDashboardButton;
+    private javax.swing.JPanel contentPanel;
+    private javax.swing.JPanel headerPanel;
     private javax.swing.JButton logOutButton;
-    private javax.swing.JButton practiceButton;
-    private javax.swing.JButton quizeMeButton;
-    private javax.swing.JButton teachMeButton;
+    private javax.swing.JButton practiceButton1;
+    private javax.swing.JProgressBar practiceProgressBar1;
+    private javax.swing.JProgressBar quizMeProgressBar1;
+    private javax.swing.JButton quizeMeButton1;
+    private javax.swing.JButton teachMeButton1;
+    private javax.swing.JProgressBar teachMeProgressBar1;
     private javax.swing.JLabel welcomeLabel;
     // End of variables declaration//GEN-END:variables
 }
