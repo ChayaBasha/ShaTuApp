@@ -20,6 +20,8 @@ import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
 import edu.regis.shatu.model.Account;
+import edu.regis.shatu.model.BitShiftStep;
+import edu.regis.shatu.model.ChoiceFunctionStep;
 import edu.regis.shatu.model.Course;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.User;
@@ -28,7 +30,6 @@ import edu.regis.shatu.model.aol.BitOpStep;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
 import edu.regis.shatu.model.Hint;
 import edu.regis.shatu.model.KnowledgeComponent;
-import edu.regis.shatu.model.aol.ScaffoldLevel;
 import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.StepCompletionReply;
@@ -44,7 +45,6 @@ import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.StudentModel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
@@ -91,6 +91,7 @@ public class ShaTuTutor implements TutorSvc {
      * Initialize the tutor singleton (a NoOp).
      */
     public ShaTuTutor() {
+        gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     /**
@@ -167,7 +168,7 @@ public class ShaTuTutor implements TutorSvc {
      * status is "ERR".
      */
     public TutorReply createAccount(String jsonAcct) throws NonRecoverableException {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+       // gson = new GsonBuilder().setPrettyPrinting().create();
 
         Account acct = gson.fromJson(jsonAcct, Account.class);
 
@@ -213,9 +214,7 @@ public class ShaTuTutor implements TutorSvc {
      */
     public TutorReply signIn(String jsonUser) {
         System.out.println("Received sign in: " + jsonUser);
-        gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+        //gson = new GsonBuilder().setPrettyPrinting().create();
 
         User user = gson.fromJson(jsonUser, User.class
         );
@@ -273,6 +272,7 @@ public class ShaTuTutor implements TutorSvc {
      * @return 
      */
     public TutorReply completedStep(String jsonObj) {
+        System.out.println("completedStep");
         StepCompletion completion = gson.fromJson(jsonObj, StepCompletion.class);
         
         Step step = completion.getStep();
@@ -410,7 +410,62 @@ public class ShaTuTutor implements TutorSvc {
     }
 
     public TutorReply completeShiftBitsStep(StepCompletion completion) {
-        TutorReply reply = new TutorReply(":StepCompletionReply");
+        System.out.println("Tutor completeShiftBitsStep");
+        
+        BitShiftStep example = gson.fromJson(completion.getData(), BitShiftStep.class);
+        String operand = example.getOperand();
+        int shiftLength = example.getShiftLength();
+        boolean shiftRight = example.isShiftRight();
+        int bitLength = example.getBitLength();
+        String result = example.getResult();
+        
+        
+        String expectedResult = bitShiftFunction(operand, 
+                                                 shiftLength, 
+                                                 shiftRight, 
+                                                 bitLength);
+        
+        StepCompletionReply stepReply = new StepCompletionReply();
+
+        if (expectedResult.equals(result)) {
+            stepReply.setIsCorrect(true);
+            stepReply.setIsRepeatStep(false);
+            stepReply.setIsNewStep(true);
+
+            // ToDo: Use the student model to figure out whether we want
+            // to give the student another practice problem of the same
+            // type or move on to an entirely different problem.
+            stepReply.setIsNewTask(true);
+
+            // ToDo: currently only one step in a task, so there isn't a next one???
+            stepReply.setIsNextStep(false);
+
+        } else {
+            stepReply.setIsCorrect(false);
+            stepReply.setIsRepeatStep(true);
+            stepReply.setIsNewStep(false);
+            stepReply.setIsNewTask(false);
+            stepReply.setIsNextStep(false);
+        }
+
+        Step step = new Step(1, 0, StepSubType.STEP_COMPLETION_REPLY);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+        step.setData(gson.toJson(stepReply));
+
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.STEP_COMPLETION_REPLY);
+        task.setDescription("Choose your next action");
+        task.addStep(step); 
+
+        TutorReply reply = new TutorReply(":Success");
+
+        reply.setData(gson.toJson(task));
         
         return reply;
     }
@@ -432,7 +487,61 @@ public class ShaTuTutor implements TutorSvc {
     }
                 
     public TutorReply completeChoiceStep(StepCompletion completion) {
-        TutorReply reply = new TutorReply(":StepCompletionReply");
+        System.out.println("Tutor completeChoiceStep");
+        
+        ChoiceFunctionStep example = gson.fromJson(completion.getData(), ChoiceFunctionStep.class);
+        String operand1 = example.getOperand1();
+         String operand2 = example.getOperand2();
+        
+          String operand3 = example.getOperand3();
+        int bitLength = example.getBitLength();
+        String result = example.getResult();
+       // System.out.println("Result: " + example.getResult());
+        
+        String expectedResult = choiceFunction(operand1, operand2, operand3, bitLength);
+        //System.out.println("Expected result: " + expectedResult);
+  
+        StepCompletionReply stepReply = new StepCompletionReply();
+        
+        if (expectedResult.equals(result)) {
+            stepReply.setIsCorrect(true);
+            stepReply.setIsRepeatStep(false);
+            stepReply.setIsNewStep(true);
+             
+            // ToDo: Use the student model to figure out whether we want
+            // to give the student another practice problem of the same
+            // type or move on to an entirely different problem.
+            stepReply.setIsNewTask(true);
+            
+            // ToDo: currently only one step in a task, so there isn't a next one???
+            stepReply.setIsNextStep(false);
+            
+        } else {
+            stepReply.setIsCorrect(false);
+            stepReply.setIsRepeatStep(true);
+            stepReply.setIsNewStep(false);
+            stepReply.setIsNewTask(false);
+            stepReply.setIsNextStep(false);
+        }
+     
+        Step step = new Step(1, 0, StepSubType.STEP_COMPLETION_REPLY);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+        step.setData(gson.toJson(stepReply));
+        
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.STEP_COMPLETION_REPLY);
+        task.setDescription("Choose your next action");
+        task.addStep(step); 
+        
+        TutorReply reply = new TutorReply(":Success");
+    
+        reply.setData(gson.toJson(task));
         
         return reply;                
     }
@@ -448,7 +557,7 @@ public class ShaTuTutor implements TutorSvc {
      * @return TutorReply
      */
     public TutorReply newExample(String json) {
-        gson = new GsonBuilder().setPrettyPrinting().create();
+        //gson = new GsonBuilder().setPrettyPrinting().create();
 
         NewExampleRequest request = gson.fromJson(json, NewExampleRequest.class);
 
@@ -493,7 +602,7 @@ public class ShaTuTutor implements TutorSvc {
                 return newChoiceFunctionExample(session, request.getData());
 
             default:
-                return createError("Unknown example request: " + request.getExampleType(), null);
+                return createError("Unknown new example request: " + request.getExampleType(), null);
         }
     }
 
@@ -858,7 +967,42 @@ public class ShaTuTutor implements TutorSvc {
      * @return a TutorReply
      */
     private TutorReply newShiftBitsExample(TutoringSession session, String jsonData) {
+        System.out.println("newShiftBitsExample");
+        BitShiftStep substep = gson.fromJson(jsonData, BitShiftStep.class);
+        
+        int bitLength = substep.getBitLength();
+
+        String operand = generateInputString(bitLength);
+        int shiftLength = new Random().nextInt(bitLength);
+        boolean shiftRight = substep.isShiftRight();
+
+        substep.setOperand(operand);
+        substep.setShiftLength(shiftLength);
+        substep.setShiftRight(shiftRight);
+
+        substep.setResult(bitShiftFunction(operand, shiftLength, shiftRight, bitLength));
+
+        Step step = new Step(1, 0, StepSubType.SHIFT_BITS);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+
+        step.setData(gson.toJson(substep));
+
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.SHIFT_BITS);
+        task.setDescription("Compute the result of the bitshift on the operand");
+        task.addStep(step);  
+
+
         TutorReply reply = new TutorReply(":Success");
+        reply.setData(gson.toJson(task));
+
+        System.out.println("before reply return");
 
         return reply;
     }
@@ -1045,9 +1189,195 @@ public class ShaTuTutor implements TutorSvc {
      * @return a TutorReply
      */
     private TutorReply newChoiceFunctionExample(TutoringSession session, String jsonData) {
-        TutorReply reply = new TutorReply(":Success");
+        System.out.println("newChoiceFunctionExample");
+        ChoiceFunctionStep substep = gson.fromJson(jsonData, ChoiceFunctionStep.class);
+        
+        int bitLength = substep.getBitLength();
+        
+        String operand1 = generateInputString(bitLength);
+        String operand2 = generateInputString(bitLength);
+        String operand3 = generateInputString(bitLength);
+        
+        substep.setOperand1(operand1);
+        substep.setOperand2(operand2);
+        substep.setOperand3(operand3);
+        
+        substep.setResult(choiceFunction(operand1, operand2, operand3, bitLength));
+        
+        Step step = new Step(1, 0, StepSubType.CHOICE_FUNCTION);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
 
+        step.setData(gson.toJson(substep));
+
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.CHOICE_FUNCTION);
+        task.setDescription("Compute the result of the choice function on the three operands");
+        task.addStep(step);  
+      
+        
+        TutorReply reply = new TutorReply(":Success");
+        reply.setData(gson.toJson(task));
+        
+System.out.println("before reply return");
         return reply;
+    }
+    
+    /**
+     * Performs a bit shift (left or right) on a binary string operand.
+     * 
+     * @param operand      The binary string to be shifted.
+     * @param shiftLength  The number of positions to shift the bits.
+     * @param bitLength    The length of the resulting binary string. 
+     * @param shiftRight   If true, performs a right shift; if false, performs a left shift.
+     * @return             The binary string result after shifting.
+     */
+    private String bitShiftFunction(String operand, int shiftLength, boolean shiftRight, int bitLength) {
+        // Convert the binary string to a long integer
+        String tempOperand = operand.replaceAll("\\s", "");
+        long intOperand = Long.parseLong(tempOperand, 2);
+
+        // Perform the shift
+        long shiftedOperand;
+        if (shiftRight) {
+            shiftedOperand = intOperand >>> shiftLength;
+        } else {
+            shiftedOperand = intOperand << shiftLength;
+        }
+
+        // Convert the result back to binary string
+        String binaryResult = formatResult(shiftedOperand, bitLength);
+
+        return binaryResult;
+    }
+    
+     /**
+     * Evaluates the choice function Ch(x, y, z).
+     *
+     * @param x Binary string representation of x.
+     * @param y Binary string representation of y.
+     * @param z Binary string representation of z.
+     * @return Binary string result of Ch(x, y, z).
+     */
+    private String choiceFunction(String x, String y, String z, int bitLength) {
+        // Convert the binary strings to integer values
+        String tempX = x.replaceAll("\\s", "");
+        String tempY = y.replaceAll("\\s", "");
+        String tempZ = z.replaceAll("\\s", "");
+
+        long intX = Long.parseLong(tempX, 2);
+        long intY = Long.parseLong(tempY, 2);
+        long intZ = Long.parseLong(tempZ, 2);
+
+        long xy = intX & intY;
+
+        long notX = ~intX & intZ;
+
+        long result = xy ^ notX;
+
+        // Convert the result back to binary string
+        String binaryResult = formatResult(result, bitLength);
+
+        return binaryResult;
+    }
+    
+    /**
+     * Formats the result output by the choice function based on the size of the
+     * problem.
+     *
+     * @param answer the output of the choice function
+     *
+     * @return the binary string representation of the answer
+     */
+    private String formatResult(long answer, int bitLength) {
+        String finalResult = "";
+
+        switch (bitLength) {
+            case 4:
+                finalResult = String.format("%4s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 8:
+                finalResult = String.format("%8s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 16:
+                finalResult = String.format("%16s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            case 32:
+                finalResult = String.format("%32s", Long.toBinaryString(answer)).replace(' ', '0');
+                break;
+            default:
+                break;
+        }
+        return finalResult;
+    }
+    
+     /**
+     * Generates an n-bit binary string (length 4, 8, 16, or 32) to be used as
+     * an input into the Ch function. Every four bits are separated by a space
+     * to improve readability.
+     *
+     * @return A string to be used as an input into the function.
+     */
+    private String generateInputString(int problemSize) {
+        Random random = new Random();
+        
+        String inputString;
+        String tempString;
+        StringBuilder inputStringBuilder = new StringBuilder();
+        int num;
+
+        switch (problemSize) {
+            case 4:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 8:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+
+                inputStringBuilder.append(" ");
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+                break;
+            case 16:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+
+                for (int i = 0; i < 3; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }
+                break;
+            case 32:
+                num = random.nextInt();
+                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                inputStringBuilder.append(tempString);
+
+                for (int i = 0; i < 7; i++) {
+                    inputStringBuilder.append(" ");
+                    num = random.nextInt();
+                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
+                    inputStringBuilder.append(tempString);
+                }
+                break;
+            default:
+                break;
+        }
+
+        inputString = inputStringBuilder.toString();
+
+        return inputString;
     }
 
     /**

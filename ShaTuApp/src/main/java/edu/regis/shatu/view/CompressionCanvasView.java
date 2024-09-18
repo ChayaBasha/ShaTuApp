@@ -12,10 +12,11 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import javax.swing.JPanel;
 
 /**
  * Displays a single round of the SHA-256 compression algorithm.
@@ -24,7 +25,7 @@ import javax.swing.JPanel;
  *
  * @author rickb
  */
-public class CompressionCanvasView extends JPanel {
+public class CompressionCanvasView extends UserRequestView {
     /**
      * There eight working variables 'a' through 'h'.
      */
@@ -293,5 +294,15 @@ public class CompressionCanvasView extends JPanel {
         g.drawLine(x1, y1, x2, y2);
         g.drawPolygon(xpoints, ypoints, 3); // Rickb
        // g.fillPolygon(xpoints, ypoints, 3);
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

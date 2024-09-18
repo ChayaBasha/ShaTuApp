@@ -12,7 +12,9 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -45,7 +47,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener {
+public class EncodeView extends UserRequestView implements ActionListener {
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
@@ -78,6 +80,16 @@ public class EncodeView extends GPanel implements ActionListener {
         initializeLayout();
         updateToRadioButtonsEnabledState();
         prepareNextQuestion();
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     /**
@@ -199,16 +211,21 @@ public class EncodeView extends GPanel implements ActionListener {
             if (allCorrect) {
                 feedbackArea.setText("Correct!");
             } else {
-                // Otherwise, inform the user that their entries were incorrect, and display the expected answers.
-                feedbackArea.setText(String.format("Incorrect. Please check "
-                        + "your entries. Expected: \n%s", String.join(" ", expectedAnswers)));
+                // List of hints to provide
+                List<String> hints = expectedAnswers.stream()
+                      .map(answer -> answer.substring(0, 3) 
+                            + "...")
+                      .collect(Collectors.toList());
+                      
+                // Otherwise, inform the user that their entries were incorrect, and display hints                
+                feedbackArea.setText(String.format("Incorrect. Expected answers start with: \n%s\n\nTry again", 
+                String.join(" ", hints)));
+                // Disable the submit button to prevent re-submission, and enable the next question button.
+                submitButton.setEnabled(true);
+                hintButton.setEnabled(false);
+                nextButton.setEnabled(true);
             }
         }
-        
-        // Disable the submit button to prevent re-submission, and enable the next question button.
-        submitButton.setEnabled(false);
-        hintButton.setEnabled(false);
-        nextButton.setEnabled(true);
     }
 
 
@@ -705,7 +722,7 @@ public class EncodeView extends GPanel implements ActionListener {
      * 
      * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
      */
-    private void updateView() {
+    protected void updateView() {
         if (model != null) {
             // ****TO-DO*****
             // Update the view's information from the model below are just some debugging

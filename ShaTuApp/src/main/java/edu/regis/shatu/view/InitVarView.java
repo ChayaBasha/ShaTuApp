@@ -12,6 +12,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +23,7 @@ import javax.swing.JLabel;
  *
  * @author rickb
  */
-public class InitVarView extends GPanel implements ActionListener {
+public class InitVarView extends UserRequestView implements ActionListener {
        /**
      * The ASCII character the student is being asked to convert
      */
@@ -62,6 +64,16 @@ public class InitVarView extends GPanel implements ActionListener {
         addc(test, 1, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }

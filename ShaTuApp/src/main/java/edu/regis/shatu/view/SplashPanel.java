@@ -174,7 +174,7 @@ public class SplashPanel extends GPanel {
      * Layout the child components used in this view.
      */
     private void layoutComponents() {
-        setBackground(new Color(243, 195, 0));
+        setBackground(new Color(0, 43, 73));
 
 	addc(createHeader(), 0,0, 2,1, 1.0,0.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.HORIZONTAL,
@@ -193,6 +193,7 @@ public class SplashPanel extends GPanel {
             5,5,5,5);
         
         JLabel copyright = new JLabel("(C) 2019-2024 Johanna and Richard Blumenthal. All Rights Reserved");
+        copyright.setForeground(new Color(241,196,0));
         copyright.setFont(new Font("Dialog", Font.PLAIN, 10));
         addc(copyright, 0,3, 2,1, 1.0,1.0,
 		GridBagConstraints.NORTH,  GridBagConstraints.CENTER,
@@ -203,11 +204,11 @@ public class SplashPanel extends GPanel {
     
     private GPanel createHeader() {
 	GPanel panel = new GPanel();
-	panel.setBackground(new Color(223,242,245));
+	panel.setBackground(new Color(241,196,0));
 
-	JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences");
+	JLabel ccis = new JLabel("Regis University Department of Computer and Cyber Sciences Product");
 	ccis.setFont(new Font("Dialog", Font.PLAIN, 20));
-	ccis.setForeground(Color.BLUE);
+	ccis.setForeground(new Color(0, 43, 73));
 	
 	panel.addc(ccis , 0,0, 1,1, 1.0,1.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.HORIZONTAL,
@@ -230,7 +231,7 @@ public class SplashPanel extends GPanel {
     
      private GPanel createLogin() {
 	GPanel panel = new GPanel();
-	panel.setBackground(new Color(223,242,245));
+	panel.setBackground(new Color(241,196,0));
 
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
 
@@ -271,14 +272,14 @@ public class SplashPanel extends GPanel {
     
     private GPanel createOverview() {
 	GPanel panel = new GPanel();
-	panel.setBackground(Color.WHITE);
+	panel.setBackground(new Color(241,196,0));
 
 	panel.setSize(300, 400);
 	panel.setPreferredSize(new Dimension(300,400));
 
 	JLabel logo = new JLabel("ShaTu: SHA-256 Tutor");
 	logo.setFont(new Font("Dialog", Font.PLAIN, 20));
-	logo.setForeground(Color.MAGENTA);
+	logo.setForeground(new Color(0, 43, 73));
 
 	panel.addc(logo, 0,0, 1,1, 0.0,0.0,
 		   GridBagConstraints.NORTHWEST,  GridBagConstraints.NONE,
@@ -302,6 +303,7 @@ public class SplashPanel extends GPanel {
         descr.append("based.\n\n");
         descr.append("Please sign in or use 'New User' to create a student account.");
         descr.append("\n\n");
+        descr.setBackground(new Color(241,196,0));
         
 	panel.addc(descr, 0,2, 1,1, 1.0,1.0,
 		   GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,

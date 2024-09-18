@@ -17,11 +17,13 @@ import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.AddOneStep;
 import edu.regis.shatu.model.Hint;
 import edu.regis.shatu.model.Step;
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.Task;
 import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import java.util.ArrayList;
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,12 +47,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-public class Add1View extends GPanel implements ActionListener {
-    /**
-     * The tutoring session displayed in this view.
-     */
-    private TutoringSession model;
-    
+public class Add1View extends UserRequestView implements ActionListener {
     /**
      * The part of the tutoring session model that is displayed in this view.
      */
@@ -496,5 +493,15 @@ public class Add1View extends GPanel implements ActionListener {
         stepDataModel = gson.fromJson(data, AddOneStep.class);
         
         source.setText(stepDataModel.getSource());
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

@@ -75,6 +75,8 @@ public enum StepSubType {
     
     CHOICE_FUNCTION("Choice Function"),
     
+    STEP_COMPLETION_REPLY("Step Completion Reply"),
+    
     /**
      * The initial default value in a NewExampleRequest
      */
