@@ -95,7 +95,7 @@ public class SplashFrame extends JFrame {
      * The number of consecutive illegal passwords attempted by the current
      * user attempting to login (see MAX_SIGNIN_ATTEMPTS).
      */
-    protected int signInAttempts = 0;
+    protected int signInAttempts = 1;
     
    /**
      * Create and layout the child components in this Spalsh JFrame.
@@ -147,7 +147,7 @@ public class SplashFrame extends JFrame {
      * of the number of user attempts thus far.     * 
      */
     public void invalidPass() {
-        if (signInAttempts < MAX_SIGNIN_ATTEMPTS) {
+        if (signInAttempts <= MAX_SIGNIN_ATTEMPTS) {
            
             String msg = "Invalid Password attempt " + 
                          String.valueOf(signInAttempts) + " of " + 
