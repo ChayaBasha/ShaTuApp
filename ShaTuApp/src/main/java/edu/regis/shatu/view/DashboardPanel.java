@@ -66,6 +66,11 @@ public class DashboardPanel extends javax.swing.JPanel {
 
         logOutButton.setText("Log Out");
         logOutButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        logOutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logOutButtonMouseClicked(evt);
+            }
+        });
         headerPanel.add(logOutButton, java.awt.BorderLayout.LINE_END);
 
         backToDashboardButton.setText("Back To Dashboard");
@@ -166,6 +171,10 @@ public class DashboardPanel extends javax.swing.JPanel {
     private void practiceButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_practiceButton1ActionPerformed
      SplashFrame.instance().selectTutoringSessionView();
     }//GEN-LAST:event_practiceButton1ActionPerformed
+
+    private void logOutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOutButtonMouseClicked
+     SplashFrame.instance().selectSplash();
+    }//GEN-LAST:event_logOutButtonMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
