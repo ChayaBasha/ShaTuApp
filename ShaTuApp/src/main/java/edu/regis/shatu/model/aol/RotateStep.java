@@ -19,27 +19,11 @@ package edu.regis.shatu.model.aol;
  * @author rickb
  */
 public class RotateStep  {
-    /**
-     * The direction to rotate
-     */
     public enum Direction {RIGHT, LEFT};
-    
     private Direction direction;
-    
-    /**
-     * The number of bits to rotate in the given direction.
-     */
-    private int amount;
-    
-    /**
-     * The length of the bit string to be rotated
-     */
-    private int length;
-    
-    /**
-     * The bits being rotated.
-     */
-    private String data;
+    private int amount; //The number of bits to rotate in the given direction.
+    private int length; //The length of the bit string to be rotated
+    private String data; // rotated bits
     
     public RotateStep() {
         

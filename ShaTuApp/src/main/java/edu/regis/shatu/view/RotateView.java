@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
-import static edu.regis.shatu.model.aol.ExampleType.ROTATE_BITS;
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import edu.regis.shatu.model.aol.RotateStep;
 import edu.regis.shatu.view.act.NewExampleAction;
@@ -66,8 +66,11 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
     private JRadioButton longProblem;
     private JRadioButton rightRotate;
     private JRadioButton leftRotate;
+    private JRadioButton rotate7Bits;
+    private JRadioButton rotate16Bits;
     private ButtonGroup lengthType;
     private ButtonGroup rotationType;
+    private ButtonGroup rotateAmount;
     private RotateStep currentStep;
 
     /**
@@ -78,35 +81,68 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         initializeLayout();
     }
 
+    /**
+     * Generates a NewExampleRequest to be sent to the tutor based on the 
+     * conditions selected by the user when newRequest() is called.
+     * @return The NewExampleRequest object to be sent to the tutor
+     */
     @Override
-    public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == checkButton) {
-            onCheckButton();
-        } else if (event.getSource() == hintButton) {
-            onNextHint();
-        } else if (event.getSource() == nextQuestionButton) {
-            onNextQuestion();
-        } 
+    public NewExampleRequest newRequest(){
+       NewExampleRequest ex = new NewExampleRequest();
+       
+       //Set example type to the problem associated with the current view
+       ex.setExampleType(ExampleType.ROTATE_BITS);
+       
+       //Create a new RotateStep object that will communicate the desired
+       //conditions (direction of rotation and length of problem) to the tutor
+       RotateStep newStep = new RotateStep();
+       
+       if(shortProblem.isSelected()) {
+          newStep.setLength(16);
+       }
+       else {
+          newStep.setLength(32);
+       }
+       
+       if(rightRotate.isSelected()) {
+          newStep.setDirection(RotateStep.Direction.RIGHT);
+       }
+       else {
+          newStep.setDirection(RotateStep.Direction.LEFT);
+       }
+       
+       if(rotate7Bits.isSelected()) {
+           newStep.setAmount(7);
+       }
+       else {
+           newStep.setAmount(16);
+       }
+       //Set the data of the NewExampleRequest to the new RotateStep containing
+       //the desired conditions
+       ex.setData(gson.toJson(newStep));
+       
+       return ex;
     }
-
+    
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Please provide an answer");
-        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            verifyAnswer();
-        }
+    public StepCompletion stepCompletion() {
+        Step currentStep = model.currentTask().currentStep();
+        
+        RotateStep example = gson.fromJson(currentStep.getData(), RotateStep.class);
+        
+        String userResponse = answerField.getText().replaceAll("\\s", "");
+        
+        example.setData(userResponse);
+        
+        StepCompletion step = new StepCompletion(currentStep, gson.toJson(example));
+        step.setStep(currentStep);
+        return step;
     }
     
     /**
      * Creates and initializes the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        
         //Prompt and Problem labels should be populated by the result of 
         //a tutor reply for a new example. Done by pressing the New Example
         //button and on selection of the Panel
@@ -141,6 +177,11 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         
         leftRotate = new JRadioButton("Left Rotation");
         
+        rotate7Bits = new JRadioButton("Rotate 7 bits");
+        rotate7Bits.setSelected(true);
+        
+        rotate16Bits = new JRadioButton("Rotate 16 bits");
+        
         lengthType = new ButtonGroup();
         lengthType.add(shortProblem);
         lengthType.add(longProblem);
@@ -149,15 +190,18 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         rotationType.add(rightRotate);
         rotationType.add(leftRotate);
         
+        rotateAmount = new ButtonGroup();
+        rotateAmount.add(rotate7Bits);
+        rotateAmount.add(rotate16Bits);
+        
     }
-
+    
     /**
      * Lays out the child components in this view using GridBagConstraints.
      */
     private void initializeLayout() {
 
         GridBagConstraints c = new GridBagConstraints();
-        
         
 
         // Add exampleInputLabel centered
@@ -206,9 +250,44 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         addc(leftRotate, 2, 7, 1, 1, 0.0, 0.0, 
               GridBagConstraints.WEST, GridBagConstraints.NONE, 
               5, 5, 5, 5);
-                
+        
+        addc(rotate7Bits, 3, 6, 1, 1, 0.0, 0.0, 
+              GridBagConstraints.WEST, GridBagConstraints.NONE, 
+              5, 5, 5, 5);
+      
+        addc(rotate16Bits, 3, 7, 1, 1, 0.0, 0.0, 
+              GridBagConstraints.WEST, GridBagConstraints.NONE, 
+              5, 5, 5, 5);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource() == checkButton) {
+            onCheckButton();
+        } else if (event.getSource() == hintButton) {
+            onNextHint();
+        } else if (event.getSource() == nextQuestionButton) {
+            onNextQuestion();
+        } 
     }
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+    
     /**
      * Performs rotation (ROR or ROL) on the given input string for the 
      * specified number of positions.
@@ -218,6 +297,7 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
      * @return The rotated string.
      */
     protected String rotateString(String input, int positions) {
+        this.currentStep.setDirection(RotateStep.Direction.RIGHT);
         if (input == null || input.isEmpty()) {
             return input;
         }
@@ -243,15 +323,12 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         return answer;
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-
     /**
      * Verifies the user's answer by comparing it with the correct rotated string.
      */
     private void verifyAnswer() {
+        this.problemString = "0000000001111111";
+        this.numRotations = 7;
         String correctAnswer = rotateString(problemString, numRotations);
         // Get the text from the answerField when the checkButton is clicked
         String userAnswer = answerField.getText();
@@ -261,77 +338,6 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
         }
-    }
-
-    /**
-     * Generates a NewExampleRequest to be sent to the tutor based on the 
-     * conditions selected by the user when newRequest() is called.
-     * @return The NewExampleRequest object to be sent to the tutor
-     */
-    @Override
-    public NewExampleRequest newRequest(){
-       Gson gson = new GsonBuilder().setPrettyPrinting().create();
-       
-       NewExampleRequest ex = new NewExampleRequest();
-       
-       //Set example type to the problem associated with the current view
-       ex.setExampleType(ROTATE_BITS);
-       
-       //Create a new RotateStep object that will communicate the desired
-       //conditions (direction of rotation and length of problem) to the tutor
-       RotateStep newStep = new RotateStep();
-       
-       if(shortProblem.isSelected()) {
-          newStep.setLength(16);
-       }
-       else {
-          newStep.setLength(32);
-       }
-       
-       if(rightRotate.isSelected()) {
-          newStep.setDirection(RotateStep.Direction.RIGHT);
-       }
-       else {
-          newStep.setDirection(RotateStep.Direction.LEFT);
-       }
-       
-       //Set the data of the NewExampleRequest to the new RotateStep containing
-       //the desired conditions
-       ex.setData(gson.toJson(newStep));
-       
-       return ex;
-       
-    }
-    
-        @Override
-    public StepCompletion stepCompletion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
-    /**
-     * Update the view with the contents of a new step sent by the tutor
-     */
-    @Override
-    protected void updateView(){
-       Gson gson = new GsonBuilder().setPrettyPrinting().create();
-       
-       //Get the current step from the model
-       Step step = model.currentTask().currentStep();
-               
-       //Get the data from the model as a RotateStep object
-       RotateStep newStep = gson.fromJson(step.getData(), RotateStep.class);
-       
-       //Conditionals to determine the problem displayed by the view
-       if(newStep.getDirection() == RotateStep.Direction.RIGHT){
-          prompt.setText("Perform ROR(" + newStep.getAmount() + ") on the following String:");
-       }
-       else {
-          prompt.setText("Perform ROL(" + newStep.getAmount() + ") on the following String:");
-       }
-       
-       //Update the problem JLabel with the new bit String to be rotated
-       problem.setText(formatProblemString(newStep.getData()));
-       
     }
     
     /**
@@ -360,9 +366,39 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         }
     }
     
+     /**
+     * Update the view with the contents of a new step sent by the tutor
+     */
+    @Override
+    protected void updateView(){
+       Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    
-   
+       Step step = model.currentTask().getCurrentStep();
+               
+       //Get the data from the model as a RotateStep object
+       // ***** MODEL IS NOT PROVIDING ANY DATA ******
+       // RotateStep example = gson.fromJson(step.getData(), RotateStep.class);
+       // ***** SKIPPING GSON MODEL FOR NOW, HARDCODING FROM VIEW *****
+       // Also changed variable from 'newStep' to 'example' to match ChoiceFunctionView.java
+       //   It's misleading to create a new one after 'public NewExampleRequest newRequest'
+       RotateStep example = new RotateStep();
+       example.setDirection(RotateStep.Direction.RIGHT);
+       example.setAmount();
+       example.setLength(16);
+       example.setData("0000000001111111");
+       //Conditionals to determine the problem displayed by the view
+       if(example.getDirection() == RotateStep.Direction.RIGHT){
+          prompt.setText("Perform ROR(" + example.getAmount() + ") on the following String:");
+       }
+       else {
+          prompt.setText("Perform ROL(" + example.getAmount() + ") on the following String:");
+       }
+       
+       //Update the problem JLabel with the new bit String to be rotated
+       problem.setText(formatProblemString(example.getData()));
+       
+    }
+
     /**
      * UI formatting to separate the problem string by nibble
      * @param problemString the unspaced problem string to be solved
