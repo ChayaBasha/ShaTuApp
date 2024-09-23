@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.Step;
 import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import edu.regis.shatu.svc.SvcFacade;
@@ -84,42 +85,47 @@ public class SignInAction extends ShaTuGuiAction {
     /**
      * Handle the user's request to sign-in by sending it to the DICE tutor.
      *
-     * If successful, the MainFrame with the Courtroom View is displayed.
+     * If successful, the MaingFrame with the Courtroom View is displayed.
      *
      * @param evt ignored
      */
     @Override
-public void actionPerformed(ActionEvent evt) {
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public void actionPerformed(ActionEvent evt) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    User user = SplashFrame.instance().getUser();
+        User user = SplashFrame.instance().getUser();
 
-    ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
-    request.setData(gson.toJson(user));
+        ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
+        request.setData(gson.toJson(user));
 
-    TutorReply reply = SvcFacade.instance().tutorRequest(request);
+        TutorReply reply = SvcFacade.instance().tutorRequest(request);
 
-    switch (reply.getStatus()) {
-        case "Authenticated":
-            TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
+        switch (reply.getStatus()) {
+            case "Authenticated":
+                MainFrame frame = MainFrame.instance();
 
-            SplashFrame.instance().setVisible(true); // Keep SplashFrame visible
+                TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
 
-            SplashFrame.instance().selectDashboard(); // Switch to the DashboardPanel
+                SplashFrame.instance().setVisible(false);
 
-            break;
+                frame.setVisible(true);
 
-        case "InvalidPassword":
-            SplashFrame.instance().invalidPass();
-            break;
+                frame.setModel(session);
 
-        case "UnknownUser":
-            SplashFrame.instance().unknownUser();
-            break;
+                break;
 
-        default:
-            // If we get here, there is a coding error in the tutor svc
-            System.out.println("Coding error  status: " + reply.getStatus());
+            case "InvalidPassword":
+                SplashFrame.instance().invalidPass();
+                break;
+
+            case "UnknownUser":
+                SplashFrame.instance().unknownUser();
+                break;
+
+            default:
+                // If we get here, there is a coding error in the tutor svc
+                //frame.displayError("Ooops, an unexpected error occurred: SI_1");
+                System.out.println("Coding error  status: " + reply.getStatus());
         }
     }
 }
