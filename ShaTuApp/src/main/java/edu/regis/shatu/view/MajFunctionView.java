@@ -47,7 +47,7 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
     private GPanel truthTablePanel, questionPanel, descriptionPanel, qrPanel;
     private JPanel buttonPanel, radioButtonPanel; 
     private JTable majTruthTable;
-    private JButton checkButton, nextButton, hintButton;
+    private JButton checkButton, newExampleButton, hintButton;
     private ButtonGroup problemSizeGroup;
     private JRadioButton fourRadioButton, eightRadioButton, sixteenRadioButton, 
                          thirtytwoRadioButton;
@@ -71,7 +71,7 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
             onCheckButton();
         } else if (event.getSource() == hintButton) {
             onNextHint();
-        } else if (event.getSource() == nextButton) {
+        } else if (event.getSource() == newExampleButton) {
             onNextQuestion();
         }
     }
@@ -269,22 +269,23 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
     }
     
     /**
-     * Sets up the Check, Next, and Hint buttons and their action listeners
+     * Sets up the Check, New Example, and Hint buttons and their action listeners
      */
     private void setUpButtons() {
+        
+        
         checkButton = new JButton("Check");
         checkButton.addActionListener(this);
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
         
-        nextButton = new JButton("Next");
-        nextButton.addActionListener(this);
-        nextButton.setEnabled(false);
+        newExampleButton = new JButton("New Example");
+        newExampleButton.addActionListener(this);
         
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(checkButton);
-        buttonPanel.add(nextButton);
+        buttonPanel.add(newExampleButton);
         buttonPanel.add(hintButton);   
     }
     
@@ -512,7 +513,7 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         
         if (correctAnswer.equals(userResponse)) {
             feedbackTextArea.setText("Correct!");
-            nextButton.setEnabled(true);
+            newExampleButton.setEnabled(true);
             checkButton.setEnabled(false);
         } else {
             feedbackTextArea.setText("Incorrect! Please check your entry and "
@@ -541,12 +542,13 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
      * Displays a message dialog indicating the start of the next question.
      */
     private void onNextQuestion() {
-        responseTextArea.setText("");
-        feedbackTextArea.setText("");
         
         generateNewQuestion();
         
-        nextButton.setEnabled(false);
+        responseTextArea.setText("");
+        feedbackTextArea.setText("New Example Generated");
+        
+        newExampleButton.setEnabled(true);
         checkButton.setEnabled(true);
     }
 
@@ -568,7 +570,14 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
             verifyAnswer();
         }
     }
-
+/**
+     * Create and return the server request this view makes when a user selects
+     * that they want to practice a new choice function example.
+     *
+     * @return
+     */
+    
+    
     @Override
     public NewExampleRequest newRequest() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
