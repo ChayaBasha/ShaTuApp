@@ -51,7 +51,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener {
+public class EncodeView extends GPanel implements ActionListener, EncodeAsciiStep.OutputListener {
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
@@ -218,19 +218,21 @@ public class EncodeView extends GPanel implements ActionListener {
     exampleInputField = new JTextField(20);  // Creates a text field with a preferred width
 }
     
-    private void handleStepThroughAscii() {
-    String userInput = exampleInputField.getText();  // Get current user input from the text field
-
-    // Check if asciiStep is null or if the userInput has changed since the last encoding.
-    if (asciiStep == null || !userInput.equals(lastInput)) {
-        lastInput = userInput; // Update lastInput to the current userInput
-        EncodeAsciiExample example = new EncodeAsciiExample(userInput);
-        asciiStep = new EncodeAsciiStep();  // Initialize or reinitialize asciiStep
-        asciiStep.setExample(example);
-        asciiStep.setMultiStep(true);  // Set to step-by-step mode
+    @Override
+    public void appendText(String text) {
+        responseArea.append(text + "\n");  // Append new text with a newline for readability
     }
-
-    asciiStep.encode();  // This will step through the ASCII conversion process
+    private void handleStepThroughAscii() {
+        String userInput = exampleInputField.getText();
+    if (asciiStep == null || !userInput.equals(lastInput)) {
+        lastInput = userInput;
+        EncodeAsciiExample example = new EncodeAsciiExample(userInput);
+        asciiStep = new EncodeAsciiStep();
+        asciiStep.setExample(example);
+        asciiStep.setMultiStep(true);
+    }
+    String result = asciiStep.encode();
+    responseArea.setText(result);  // Set the returned output to the response area
 }
     private void handleCompleteAsciiConversion() {
     String userInput = exampleInputField.getText();  // Get user input from text field
@@ -238,7 +240,8 @@ public class EncodeView extends GPanel implements ActionListener {
     EncodeAsciiStep asciiStep = new EncodeAsciiStep();
     asciiStep.setExample(example);
     asciiStep.setMultiStep(false);  // Set to complete mode
-    asciiStep.encode();  // This will complete the ASCII conversion process at once
+    String result = asciiStep.encode();  // This will complete the ASCII conversion process at once
+    responseArea.setText(result);
 }
 
     /**

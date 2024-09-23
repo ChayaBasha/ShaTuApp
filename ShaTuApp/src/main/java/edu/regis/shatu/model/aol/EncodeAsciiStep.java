@@ -33,6 +33,7 @@ public class EncodeAsciiStep  {
      * step.
      */
     private boolean multiStep;
+    private OutputListener outputListener;
     
     public EncodeAsciiStep() {
     this.multiStep = false;  // Set default to single-step encoding
@@ -59,7 +60,8 @@ public class EncodeAsciiStep  {
     void appendText(String text);
     }
     
-    public void encode() {
+        public String encode() {
+        StringBuilder output = new StringBuilder();
         String inputString = example.getExampleString();
         int[] asciiValues = new int[inputString.length()];
 
@@ -68,21 +70,21 @@ public class EncodeAsciiStep  {
         }
         example.setAsciiEncoding(asciiValues);
 
-        // If multi-step is true, encode character by character
-         if (multiStep) {
+        if (multiStep) {
             if (currentIndex < asciiValues.length) {
-                System.out.println("Encoding each character one by one:");
-                System.out.println(inputString.charAt(currentIndex) + " -> " + asciiValues[currentIndex]);
+                output.append("Encoding each character one by one:\n");
+                output.append(inputString.charAt(currentIndex) + " -> " + asciiValues[currentIndex] + "\n");
                 currentIndex++;
-                System.out.println("current index: " + currentIndex);
+                output.append("Current index: " + currentIndex + "\n");
             } else {
-                System.out.println("Completed stepping through all characters.");
+                output.append("Completed stepping through all characters.\n");
                 currentIndex = 0;
             }
         } else {
-            System.out.println("Encoding the entire string at once:");
-            System.out.println(inputString + " -> " + java.util.Arrays.toString(asciiValues));
+            output.append("Encoding the entire string at once:\n");
+            output.append(inputString + " -> " + java.util.Arrays.toString(asciiValues) + "\n");
         }
+        return output.toString();
     }
 }
 
