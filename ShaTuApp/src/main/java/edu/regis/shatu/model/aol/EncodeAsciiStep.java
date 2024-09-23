@@ -23,7 +23,7 @@ public class EncodeAsciiStep  {
      * The example that is associated with this encoding step.
      */
     private EncodeAsciiExample example;
-    
+    private int currentIndex = 0;
     /**
      * Whether the encoding of the string in the example should be performed
      * as one or multiple steps.
@@ -44,6 +44,7 @@ public class EncodeAsciiStep  {
 
     public void setExample(EncodeAsciiExample example) {
         this.example = example;
+        this.currentIndex = 0;
     }
 
     public boolean isMultiStep() {
@@ -54,27 +55,31 @@ public class EncodeAsciiStep  {
         this.multiStep = multiStep;
     }
     
+    public interface OutputListener {
+    void appendText(String text);
+    }
+    
     public void encode() {
         String inputString = example.getExampleString();
-
-        // Convert each character to its ASCII value
         int[] asciiValues = new int[inputString.length()];
 
         for (int i = 0; i < inputString.length(); i++) {
             asciiValues[i] = (int) inputString.charAt(i);
         }
-
-        // Set the encoding in the example object
         example.setAsciiEncoding(asciiValues);
 
         // If multi-step is true, encode character by character
-        if (multiStep) {
-            System.out.println("Encoding each character one by one:");
-            for (int i = 0; i < asciiValues.length; i++) {
-                System.out.println(inputString.charAt(i) + " -> " + asciiValues[i]);
+         if (multiStep) {
+            if (currentIndex < asciiValues.length) {
+                System.out.println("Encoding each character one by one:");
+                System.out.println(inputString.charAt(currentIndex) + " -> " + asciiValues[currentIndex]);
+                currentIndex++;
+                System.out.println("current index: " + currentIndex);
+            } else {
+                System.out.println("Completed stepping through all characters.");
+                currentIndex = 0;
             }
         } else {
-            // Encode the entire string in one step
             System.out.println("Encoding the entire string at once:");
             System.out.println(inputString + " -> " + java.util.Arrays.toString(asciiValues));
         }

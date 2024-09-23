@@ -15,6 +15,7 @@ package edu.regis.shatu.view;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.EncodeAsciiExample;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
+import edu.regis.shatu.model.aol.EncodeAsciiStep.OutputListener;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -39,6 +40,8 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 
 /**
  * This class represents a view for encoding messages into ASCII bytes.
@@ -63,7 +66,11 @@ public class EncodeView extends GPanel implements ActionListener {
     private JRadioButton toDecimalRadioButton, toBinaryRadioButton, toHexRadioButton, toSymbolRadioButton;
     private ButtonGroup fromFormatButtonGroup, toFormatButtonGroup;
     private List<Integer> questionData;
-    private JComboBox<String> exampleDropdown; 
+    private JTextField exampleInputField;
+    private JButton stepThroughButton;
+    private JButton completeOutputButton;
+    private EncodeAsciiStep asciiStep;
+    private String lastInput = "";
 
     
     // For random character generation
@@ -72,7 +79,6 @@ public class EncodeView extends GPanel implements ActionListener {
     // Conversion From and To types initialized
     private ConversionType conversionFrom = ConversionType.SYMBOL;
     private ConversionType conversionTo = ConversionType.BINARY; 
-
     
     /**
      * Constructor initializes the view by setting up components and layout.
@@ -106,9 +112,10 @@ public class EncodeView extends GPanel implements ActionListener {
             prepareNextQuestion();
         } else if (event.getSource() == hintButton) {
             showHint();
-        } else if  (event.getSource() == exampleDropdown) {
-            String selectedExample = (String) exampleDropdown.getSelectedItem();
-            processExampleSelection(selectedExample);
+        } else if  (event.getSource() == stepThroughButton) {
+            handleStepThroughAscii();
+        } else if (event.getSource() == completeOutputButton){
+            handleCompleteAsciiConversion();
         }
     }
 
@@ -137,7 +144,11 @@ public class EncodeView extends GPanel implements ActionListener {
         setupFeedbackArea();
         setupButtons();
         setupAsciiTable();
-        setupExampleDropdown();
+        setupExampleInputField();
+        stepThroughButton = new JButton("Step Through ASCII Conversion");
+        completeOutputButton = new JButton("Complete ASCII Conversion");
+        stepThroughButton.addActionListener(this);
+        completeOutputButton.addActionListener(this);
     }
 
     /**
@@ -158,13 +169,19 @@ public class EncodeView extends GPanel implements ActionListener {
     // Create and configure examplePanel
     JPanel examplePanel = new JPanel();
     examplePanel.add(new JLabel("Select Simple text to ASCII Example: "));
-    examplePanel.add(exampleDropdown);  // Use the exampleDropdown component
+    examplePanel.add(exampleInputField);  // Use the exampleDropdown component
 
-    // Add examplePanel to layout
+    // example panel and buttons
     addc(examplePanel, 0, 1, 3, 1,  
          1.0, 0.0, GridBagConstraints.CENTER, 
          GridBagConstraints.HORIZONTAL, 5, 5, 5, 20);
-
+    addc(stepThroughButton, 0, 8, 1, 1, 
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    addc(completeOutputButton, 1, 8, 1, 1, 
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    
     addc(messageLengthPanel, 0, 2, 1, 1, 
             1.0, 0.0, GridBagConstraints.CENTER, 
             GridBagConstraints.NONE, 5, 5, 5, 5);
@@ -197,9 +214,31 @@ public class EncodeView extends GPanel implements ActionListener {
 
 
     
-    private void setupExampleDropdown() {
-    exampleDropdown = new JComboBox<>(new String[]{"Hello", "ADCABC", "ascii"});
-    exampleDropdown.addActionListener(this); // add action listener for dropdown
+    private void setupExampleInputField() {
+    exampleInputField = new JTextField(20);  // Creates a text field with a preferred width
+}
+    
+    private void handleStepThroughAscii() {
+    String userInput = exampleInputField.getText();  // Get current user input from the text field
+
+    // Check if asciiStep is null or if the userInput has changed since the last encoding.
+    if (asciiStep == null || !userInput.equals(lastInput)) {
+        lastInput = userInput; // Update lastInput to the current userInput
+        EncodeAsciiExample example = new EncodeAsciiExample(userInput);
+        asciiStep = new EncodeAsciiStep();  // Initialize or reinitialize asciiStep
+        asciiStep.setExample(example);
+        asciiStep.setMultiStep(true);  // Set to step-by-step mode
+    }
+
+    asciiStep.encode();  // This will step through the ASCII conversion process
+}
+    private void handleCompleteAsciiConversion() {
+    String userInput = exampleInputField.getText();  // Get user input from text field
+    EncodeAsciiExample example = new EncodeAsciiExample(userInput);
+    EncodeAsciiStep asciiStep = new EncodeAsciiStep();
+    asciiStep.setExample(example);
+    asciiStep.setMultiStep(false);  // Set to complete mode
+    asciiStep.encode();  // This will complete the ASCII conversion process at once
 }
 
     /**
