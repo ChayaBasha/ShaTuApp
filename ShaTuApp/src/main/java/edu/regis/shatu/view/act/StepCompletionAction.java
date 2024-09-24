@@ -149,26 +149,45 @@ public class StepCompletionAction extends ShaTuGuiAction {
                         
                         if (stepReply.isCorrect()) {
                             if (stepReply.isNewStep()) {
-                                String prompt = "Congratulations, the anser you submitted is correct." +
-                                        "As I believe you've mastered this outcome, I suggest moving on to a different task." +
+                                String prompt = "Congratulations, the anser you submitted is correct. " +
+                                        "As I believe you've mastered this outcome, I suggest moving on to a different task. " +
                                         "However, if you'd like you can try this same or a similar problem again.";
-                                String[] options = {selection1, selection2, selection3};
+                                String[] options = {selection1, selection3};
                                 int choice = JOptionPane.showOptionDialog(MainFrame.instance(),
-                                        "Tutor Reply", prompt, 0, 3, null, options, options[0]);
+                                        prompt, "Tutor Reply", 0, 3, null, options, options[0]);
                                 
-                                if (choice == 0) {
-                                    System.out.println("Next Task");
-                                } else if (choice == 1) {
-                                    System.out.println("try again");
-                                } else {
-                                    System.out.println("try similar problem");
+                                switch (choice)
+                                {
+                                    case 0 -> {
+                                        System.out.println("Next Task");
+                                    }
+                                    default -> {
+                                        System.out.println("try similar problem");
+                                        NewExampleAction.instance().actionPerformed(null);
+                                    }
                                 }
                             }
+                        } else {
+                            String prompt = "Unfortunately, your answer was incorrect. Please try agian.";
+                            String[] options = {selection2, selection3, selection4};
+                            int choice = JOptionPane.showOptionDialog(MainFrame.instance(),
+                                    prompt, "Tutor Reply", 0, 3, null, options, options[0]);
+
+                            switch (choice)
+                            {
+                                case 0 -> System.out.println("try again");
+                                case 1 -> {
+                                    System.out.println("try similar problem");
+                                    NewExampleAction.instance().actionPerformed(null);
+                                }
+                                default -> System.out.println("show answer");
+                            }
                         }
+                        
                     }
                 }
                 
-                exView.setCurrentTask(task);  
+                //exView.setCurrentTask(task);  
             }
         }catch(IllegalArgException e){
            System.out.println("Illegal arg exception " + e);
