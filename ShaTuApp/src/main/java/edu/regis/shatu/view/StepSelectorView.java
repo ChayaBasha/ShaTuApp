@@ -54,7 +54,7 @@ public class StepSelectorView extends GPanel {
             selectedStep.getLabel().deselect();
         
         GuiController.instance().getStepView().selectPanel(selection);
-    
+        System.out.println("Main View changing to " + selection);
         selectedStep = selection;
         
        

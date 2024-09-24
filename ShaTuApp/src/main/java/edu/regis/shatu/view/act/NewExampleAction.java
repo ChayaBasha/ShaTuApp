@@ -104,7 +104,7 @@ public class NewExampleAction extends ShaTuGuiAction {
         
  System.out.println("Here1");
         User user = SplashFrame.instance().getUser();
-         System.out.println("Here2");
+         System.out.println("got user "+ user);
         //Catches a possible IllegalArgumentException thrown by the 
         //getUserRequestView() method
         try{

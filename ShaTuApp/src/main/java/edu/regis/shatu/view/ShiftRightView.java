@@ -220,7 +220,7 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     private void setUpQuestionArea() {
 
         bitLength = 4;
-        operand = "foo"; // generateInputString();
+        operand = "click new example"; // generateInputString();
 
         operandLabel = new JLabel(operand);
 

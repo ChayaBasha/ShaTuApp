@@ -105,11 +105,15 @@ public class SignInAction extends ShaTuGuiAction {
                 MainFrame frame = MainFrame.instance();
 
                 TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
+                
+             
 
                 SplashFrame.instance().setVisible(false);
+                
+               
 
                 frame.setVisible(true);
-
+                
                 frame.setModel(session);
 
                 break;
