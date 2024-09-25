@@ -313,7 +313,7 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         BitOpStep example = gson.fromJson(step.getData(), BitOpStep.class);
         
         binary1 = example.getExample().getOperand1();
-        binary2 = example.getExample().getOperand1();
+        binary2 = example.getExample().getOperand2();
 
         stringLabel1.setText("binary number1: " + binary1);
         stringLabel2.setText("binary number2: " + binary2);
