@@ -20,6 +20,7 @@ import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.err.NonRecoverableException;
 import edu.regis.shatu.err.ObjNotFoundException;
 import edu.regis.shatu.model.Account;
+import edu.regis.shatu.model.BitShiftStep;
 import edu.regis.shatu.model.ChoiceFunctionStep;
 import edu.regis.shatu.model.Course;
 import edu.regis.shatu.model.TutoringSession;
@@ -409,7 +410,62 @@ public class ShaTuTutor implements TutorSvc {
     }
 
     public TutorReply completeShiftBitsStep(StepCompletion completion) {
-        TutorReply reply = new TutorReply(":StepCompletionReply");
+        System.out.println("Tutor completeShiftBitsStep");
+        
+        BitShiftStep example = gson.fromJson(completion.getData(), BitShiftStep.class);
+        String operand = example.getOperand();
+        int shiftLength = example.getShiftLength();
+        boolean shiftRight = example.isShiftRight();
+        int bitLength = example.getBitLength();
+        String result = example.getResult();
+        
+        
+        String expectedResult = bitShiftFunction(operand, 
+                                                 shiftLength, 
+                                                 shiftRight, 
+                                                 bitLength);
+        
+        StepCompletionReply stepReply = new StepCompletionReply();
+
+        if (expectedResult.equals(result)) {
+            stepReply.setIsCorrect(true);
+            stepReply.setIsRepeatStep(false);
+            stepReply.setIsNewStep(true);
+
+            // ToDo: Use the student model to figure out whether we want
+            // to give the student another practice problem of the same
+            // type or move on to an entirely different problem.
+            stepReply.setIsNewTask(true);
+
+            // ToDo: currently only one step in a task, so there isn't a next one???
+            stepReply.setIsNextStep(false);
+
+        } else {
+            stepReply.setIsCorrect(false);
+            stepReply.setIsRepeatStep(true);
+            stepReply.setIsNewStep(false);
+            stepReply.setIsNewTask(false);
+            stepReply.setIsNextStep(false);
+        }
+
+        Step step = new Step(1, 0, StepSubType.STEP_COMPLETION_REPLY);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+        step.setData(gson.toJson(stepReply));
+
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.STEP_COMPLETION_REPLY);
+        task.setDescription("Choose your next action");
+        task.addStep(step); 
+
+        TutorReply reply = new TutorReply(":Success");
+
+        reply.setData(gson.toJson(task));
         
         return reply;
     }
@@ -911,7 +967,42 @@ public class ShaTuTutor implements TutorSvc {
      * @return a TutorReply
      */
     private TutorReply newShiftBitsExample(TutoringSession session, String jsonData) {
+        System.out.println("newShiftBitsExample");
+        BitShiftStep substep = gson.fromJson(jsonData, BitShiftStep.class);
+        
+        int bitLength = substep.getBitLength();
+
+        String operand = generateInputString(bitLength);
+        int shiftLength = new Random().nextInt(bitLength);
+        boolean shiftRight = substep.isShiftRight();
+
+        substep.setOperand(operand);
+        substep.setShiftLength(shiftLength);
+        substep.setShiftRight(shiftRight);
+
+        substep.setResult(bitShiftFunction(operand, shiftLength, shiftRight, bitLength));
+
+        Step step = new Step(1, 0, StepSubType.SHIFT_BITS);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+
+        step.setData(gson.toJson(substep));
+
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.SHIFT_BITS);
+        task.setDescription("Compute the result of the bitshift on the operand");
+        task.addStep(step);  
+
+
         TutorReply reply = new TutorReply(":Success");
+        reply.setData(gson.toJson(task));
+
+        System.out.println("before reply return");
 
         return reply;
     }
@@ -1135,6 +1226,34 @@ public class ShaTuTutor implements TutorSvc {
         
 System.out.println("before reply return");
         return reply;
+    }
+    
+    /**
+     * Performs a bit shift (left or right) on a binary string operand.
+     * 
+     * @param operand      The binary string to be shifted.
+     * @param shiftLength  The number of positions to shift the bits.
+     * @param bitLength    The length of the resulting binary string. 
+     * @param shiftRight   If true, performs a right shift; if false, performs a left shift.
+     * @return             The binary string result after shifting.
+     */
+    private String bitShiftFunction(String operand, int shiftLength, boolean shiftRight, int bitLength) {
+        // Convert the binary string to a long integer
+        String tempOperand = operand.replaceAll("\\s", "");
+        long intOperand = Long.parseLong(tempOperand, 2);
+
+        // Perform the shift
+        long shiftedOperand;
+        if (shiftRight) {
+            shiftedOperand = intOperand >>> shiftLength;
+        } else {
+            shiftedOperand = intOperand << shiftLength;
+        }
+
+        // Convert the result back to binary string
+        String binaryResult = formatResult(shiftedOperand, bitLength);
+
+        return binaryResult;
     }
     
      /**
