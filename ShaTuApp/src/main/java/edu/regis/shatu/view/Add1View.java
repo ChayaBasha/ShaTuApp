@@ -109,7 +109,6 @@ public class Add1View extends UserRequestView implements ActionListener {
         }
     }
     
-
     /**
      * Initializes all GUI components, setting up their properties and configurations.
      */

@@ -141,7 +141,6 @@ public class HintTextField extends JTextField {
 		if (!Character.isLetter(str.charAt(i)) &&
 		    (str.charAt(i) != '-'))
 		    return false;
-
 	    return true;
 	}
         
@@ -157,7 +156,6 @@ public class HintTextField extends JTextField {
                     (ch != '.'))
 		    return false;
             }
-
 	    return true;
         }
 
@@ -202,13 +200,10 @@ public class HintTextField extends JTextField {
 
 			setForeground(hintColor);
 			isFirstEdit = true;
-
 			setCaretPosition(0);
-
 		    } else {
 			super.replace(fb,offs,len,str,s);
 		    }
-
 		} else {
 		    if (isLetterOrHyphen(str) ||
                         (isEmailAddr && isEmailChar(str)))
@@ -216,8 +211,6 @@ public class HintTextField extends JTextField {
 		}
 	    }
 	}
-
-	
 
 	public void remove(DocumentFilter.FilterBypass fb, int offs, int len) 
 	    throws BadLocationException
@@ -254,5 +247,4 @@ public class HintTextField extends JTextField {
 		);
 	}
     }
-
 }

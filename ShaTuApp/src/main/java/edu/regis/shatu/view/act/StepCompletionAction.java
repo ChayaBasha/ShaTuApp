@@ -83,11 +83,8 @@ public class StepCompletionAction extends ShaTuGuiAction {
      */
     private StepCompletionAction() {
         super("Check");
-
         putValue(SHORT_DESCRIPTION, "Check Example");
-
         putValue(MNEMONIC_KEY, KeyEvent.VK_C);
-        //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
@@ -101,52 +98,40 @@ public class StepCompletionAction extends ShaTuGuiAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
         User user = SplashFrame.instance().getUser();
-     
         //Catches a possible IllegalArgumentException thrown by the 
         //getUserRequestView() method
         try{
-
             //Get the current view that initiated the StepCompletionRequest
             UserRequestView exView = GuiController.instance().getStepView().getUserRequestView();
-   
             //Call the overridden newRequest() method to generate an appropriate
             //request to the tutor based on the current view
             StepCompletion ex = exView.stepCompletion();
-            
             //Construct the request with the users data and NewExampleRequest
             //returned by the newRequest() method
             ClientRequest request = new ClientRequest(ServerRequestType.COMPLETED_STEP);
             request.setUserId(user.getUserId());
             request.setSessionId(MainFrame.instance().getModel().getSecurityToken());
             request.setData(gson.toJson(ex));
-           
            //Send the request to the tutor and save the reply
            TutorReply reply = SvcFacade.instance().tutorRequest(request);
 
-           
         switch (reply.getStatus()) {
             case "ERR":
                 // If we get here, there is a coding error in the tutor svc
                 //frame.displayError("Ooops, an unexpected error occurred: SI_1");
                 System.out.println("Coding error  status: " + reply.getStatus());
-
                 break;
-
             default:               
                 Task task = gson.fromJson(reply.getData(), Task.class);
-                
                 if (task.getType() == ExampleType.STEP_COMPLETION_REPLY) {
                     String selection1 = "Move on to Next Task";
                     String selection2 = "Try Same Problem Again";
                     String selection3 = "Try a Similar Problem";
                     String selection4 = "Show the correct Answer";
-                    
                     Step step = task.getCurrentStep();
                     if (step.getSubType() == StepSubType.STEP_COMPLETION_REPLY) {
                         StepCompletionReply stepReply = gson.fromJson(step.getData(), StepCompletionReply.class);
-                        
                         if (stepReply.isCorrect()) {
                             if (stepReply.isNewStep()) {
                                 String prompt = "Congratulations, the anser you submitted is correct." +
@@ -155,19 +140,15 @@ public class StepCompletionAction extends ShaTuGuiAction {
                                 String[] options = {selection1, selection2, selection3};
                                 int choice = JOptionPane.showOptionDialog(MainFrame.instance(),
                                         "Tutor Reply", prompt, 0, 3, null, options, options[0]);
-                                
-                                if (choice == 0) {
-                                    System.out.println("Next Task");
-                                } else if (choice == 1) {
-                                    System.out.println("try again");
-                                } else {
-                                    System.out.println("try similar problem");
+                                switch (choice) {
+                                    case 0 -> System.out.println("Next Task");
+                                    case 1 -> System.out.println("try again");
+                                    default -> System.out.println("try similar problem");
                                 }
                             }
                         }
                     }
                 }
-                
                 exView.setCurrentTask(task);  
             }
         }catch(IllegalArgException e){

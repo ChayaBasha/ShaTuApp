@@ -24,30 +24,13 @@ public enum BloomLevel {
      * The student is expected to know,
      */
      KNOWLEDGE("Knowledge"),
-
-     /**
-      *  
-      */
      COMPREHENSION("Comprehension"),
-
      /**
       *  Student is expected to apply the associated concept.
       */
      APPLICATION("Application"),
-
-     /**
-      * 
-      */
      ANALYSIS("Analysis"),
-
-     /**
-      * 
-      */
      SYNTHESIS("Synthesis"),
-
-     /**
-      * 
-      */
      EVALUATION("Evaluation");
      
     /**

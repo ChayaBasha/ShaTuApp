@@ -95,8 +95,6 @@ public class SHA_256 {
     private final int[] h = new int[8];
     private final int[] temp = new int[8];
  
-
-    
     /**
      * Initialize this algorithm with an empty set of SHA-256 listeners.
      */
@@ -104,10 +102,6 @@ public class SHA_256 {
         listeners = new ArrayList<>();
     }
 
-    /**
-     * 
-     * @return 
-     */
     public boolean isSendCallbacks() {
         return isSendCallbacks;
     }
@@ -164,14 +158,6 @@ public class SHA_256 {
         String digestStr = bytesToHex(digest);
         
         return digestStr;
-        
-         //System.out.println("Digest:");
-       // System.out.println(digestStr);
-        //System.out.println("");
-        
-        // String binary = new String(digestStr);
-        //System.out.println(hexToBin(digestStr));
-
     }
 
     private static String hexToBin(String hexString) {
@@ -265,8 +251,6 @@ public class SHA_256 {
         return hexString.toString();
     }
     
-
-    // NEXT class
     /**
      * Hashes the given message with SHA-256 and returns the hash.
      *
@@ -280,6 +264,7 @@ public class SHA_256 {
         // initialize all words
         int[] words = pad(message);
         
+        // Not removed Due to Dr Rick's "signature here", same applies for rest of file
         // Rick
         /*
         System.out.println("Pad: " + words.length);
@@ -316,39 +301,9 @@ public class SHA_256 {
             
             
             // Modify the zero-ed indexes at the end of the array using the following algorithm:
-            //For i from w[16…63]:
-            //s0 = (w[i-15] rightrotate 7) xor (w[i-15] rightrotate 18) xor (w[i-15] rightshift 3)
-            //s1 = (w[i- 2] rightrotate 17) xor (w[i- 2] rightrotate 19) xor (w[i- 2] rightshift 10)
-            //w[i] = w[i-16] + s0 + w[i-7] + s1
             for (int t = 16; t < w.length; ++t) {
-
-                //if (t == 16) {
-                //    System.out.println("HERE");
-                 //   System.out.println("t " + t + ": ");
-                 //   System.out.println("W[1]   :" + padLeftZeros(Integer.toBinaryString(W[t-15]), 32));
-                 //   System.out.println("ROTR  7: " + padLeftZeros(Integer.toBinaryString(Integer.rotateRight(W[t-15], 7)), 32));
-                 //   System.out.println("ROTR 18: " + padLeftZeros(Integer.toBinaryString(Integer.rotateRight(W[t-15], 18)), 32));
-                  //  System.out.println("SHR   3:" + padLeftZeros(Integer.toBinaryString(W[t-15] >>> 3), 32));
-                  //  System.out.println("s0     :" + padLeftZeros(Integer.toBinaryString(smallSig0(W[t-15])), 32));
-               // }               
-                
-                
-                w[t] = smallSig1(w[t - 2]) + w[t - 7] + smallSig0(w[t - 15]) + w[t - 16];
+                 w[t] = smallSig1(w[t - 2]) + w[t - 7] + smallSig0(w[t - 15]) + w[t - 16];
             }
-            
- 
-            //System.out.println("W after mod");
-            //for (int t = 0; t < W.length; t++)
-             //   System.out.println("t" + t + ": " + padLeftZeros(Integer.toBinaryString(W[t]),32) + " ");
-            
-            
-           // System.out.println("W after mod as hex:");
-            //for (int t = 0; t < W.length; t++)
-                //System.out.format("%d ", W[t]);
-              //  System.out.format("t  %d %2$04X\n", t, W[t]);
-            
-            //System.out.println("");
-
 
             // let TEMP = H
             System.arraycopy(h, 0, temp, 0, h.length);
@@ -357,24 +312,6 @@ public class SHA_256 {
             for (int t = 0; t < w.length; ++t) {
                 //     =  H                 E              E         F        G
                 int t1 = temp[7] + bigSig1(temp[4]) + ch(temp[4], temp[5], temp[6]) + K[t] + w[t];
-                
-                /*
-  
-                if (t == 0) {
-                    int kw = + K[t] + W[t];
-                    System.out.println("W[0]: " + padLeftZeros(Integer.toBinaryString(W[0]), 32));
-                    System.out.println("KW: " + padLeftZeros(Integer.toBinaryString(kw), 32));
-                    
-                    int r1 = ch(TEMP[4], TEMP[5], TEMP[6]) + K[t] + W[t];
-                    System.out.println("r1: " + padLeftZeros(Integer.toBinaryString(r1), 32));
-                    int s1 = bigSig1(TEMP[4]);
-                    System.out.println("s1: " + padLeftZeros(Integer.toBinaryString(s1), 32));
-                    System.out.println("t1v: " + padLeftZeros(Integer.toBinaryString(t1), 32));
-                    
-                    System.out.println("D: " + padLeftZeros(Integer.toBinaryString(TEMP[3]), 32));
-                }
-    
-                */
                 
                 //                  A             A         B       C
                 int t2 = bigSig0(temp[0]) + maj(temp[0], temp[1], temp[2]);
@@ -386,45 +323,18 @@ public class SHA_256 {
                 
                 // }
                 // end Rick
-                
-                
-                
+
                 System.arraycopy(temp, 0, temp, 1, temp.length - 1);
-                
-                
-                
                 // E
                 temp[4] += t1;
                 temp[0] = t1 + t2;
-                
-                /*
-
-                if (t == 0) {
-                    System.out.println("T2 : " + padLeftZeros(Integer.toBinaryString(t2), 32));
-                
-                     System.out.println("newE: " + padLeftZeros(Integer.toBinaryString(TEMP[4]), 32));
-                
-                    System.out.println("New A: " + padLeftZeros(Integer.toBinaryString(TEMP[0]), 32));
-              System.out.println("New B: " + padLeftZeros(Integer.toBinaryString(TEMP[1]), 32));
-              System.out.println("New C: " + padLeftZeros(Integer.toBinaryString(TEMP[2]), 32));
-              System.out.println("New D: " + padLeftZeros(Integer.toBinaryString(TEMP[3]), 32));
-              System.out.println("New E: " + padLeftZeros(Integer.toBinaryString(TEMP[4]), 32));
-              System.out.println("New F: " + padLeftZeros(Integer.toBinaryString(TEMP[5]), 32));
-              System.out.println("New G: " + padLeftZeros(Integer.toBinaryString(TEMP[6]), 32));
-              System.out.println("New H: " + padLeftZeros(Integer.toBinaryString(TEMP[7]), 32));
-              
-                }
- 
-                */
             }
 
             // add values in TEMP to values in H
             for (int t = 0; t < h.length; ++t) {
                 h[t] += temp[t];
             }
-
         }
-
         return toByteArray(h);
     }
 

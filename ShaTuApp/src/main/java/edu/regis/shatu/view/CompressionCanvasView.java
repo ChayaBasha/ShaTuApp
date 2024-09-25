@@ -242,7 +242,6 @@ public class CompressionCanvasView extends UserRequestView {
         modAdditions[2].setLocation(new Point(x+ AddMod256Label.SIZE + 100, y));
         add(modAdditions[2]);
         
-        
         // Has Sigma1 inputs and centered on it
         x = sigma1Label.getLocation().x + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE + 150;
         y = sigma1Label.getLocation().y + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE;
@@ -254,7 +253,6 @@ public class CompressionCanvasView extends UserRequestView {
         y = sigma0Label.getLocation().y + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE;
         modAdditions[4].setLocation(new Point(x, y));
         add(modAdditions[4]);
-        
         
         x = sigma0Label.getLocation().x + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE + 150;
         modAdditions[5].setLocation(new Point(x, y));
@@ -293,7 +291,6 @@ public class CompressionCanvasView extends UserRequestView {
 
         g.drawLine(x1, y1, x2, y2);
         g.drawPolygon(xpoints, ypoints, 3); // Rickb
-       // g.fillPolygon(xpoints, ypoints, 3);
     }
 
     @Override

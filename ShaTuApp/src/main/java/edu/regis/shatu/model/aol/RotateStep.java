@@ -29,11 +29,6 @@ public class RotateStep  {
         
     }
 
-   // @Override
-  //  public String getType() {
-   //     return "RotateStep";
-   // }
-
     public Direction getDirection() {
         return direction;
     }

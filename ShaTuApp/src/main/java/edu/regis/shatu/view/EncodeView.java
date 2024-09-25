@@ -136,7 +136,6 @@ public class EncodeView extends UserRequestView implements ActionListener {
      * constraints.
      */
     private void initializeLayout() {
-        
         JPanel buttonPanel = createButtonPanel();  
         JPanel messageLengthPanel = createMessageLengthPanel();
         JPanel convertFromPanel = createConvertFromRadioPanel();
@@ -362,7 +361,6 @@ public class EncodeView extends UserRequestView implements ActionListener {
         }
     }
 
-    
     /**
      * Displays a hint in the feedback area to assist the user.
      */

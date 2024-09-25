@@ -13,7 +13,6 @@
 package edu.regis.shatu.view.act;
 
 import edu.regis.shatu.util.ImgFactory;
-import edu.regis.shatu.view.GuiController;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.KeyStroke;
@@ -67,6 +66,5 @@ public class SaveSessionAction extends ShaTuGuiAction {
     public void actionPerformed(ActionEvent evt) {
         // ToDo: what happens on a save
         System.out.println("Save not implemented");
-       // GuiController.instance().getStepView().selectPanel("RotateView");
     }
 }

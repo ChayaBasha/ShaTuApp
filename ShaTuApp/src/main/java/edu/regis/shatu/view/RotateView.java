@@ -41,7 +41,6 @@ import javax.swing.JRadioButton;
  * @author rickb
  */
 public class RotateView extends UserRequestView implements ActionListener, KeyListener {
-
     /**
      * The number of rotations used in the ROTR operation.
      */
@@ -147,13 +146,11 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         //a tutor reply for a new example. Done by pressing the New Example
         //button and on selection of the Panel
         prompt = new JLabel("Default Prompt Text");
-       
         problem = new JLabel("Default Problem Text");
         
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
         answerField.setHorizontalAlignment(JTextField.CENTER);
-
         // Create and initialize the checkButton
         checkButton = new JButton("Check");
         checkButton.addActionListener(this); // Add an action listener for the check button
@@ -193,68 +190,51 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         rotateAmount = new ButtonGroup();
         rotateAmount.add(rotate7Bits);
         rotateAmount.add(rotate16Bits);
-        
     }
     
     /**
      * Lays out the child components in this view using GridBagConstraints.
      */
     private void initializeLayout() {
-
         GridBagConstraints c = new GridBagConstraints();
-        
-
         // Add exampleInputLabel centered
-        
         addc(prompt, 2, 0, 2, 1, 0.2, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
         addc(problem, 2, 1, 2, 1, 0.2, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         // Add answerField to the layout, centered
         addc(answerField, 2, 2, 2, 1, 0.2, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         addc(checkButton, 2, 3, 2, 1, 0.2, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         addc(hintButton, 2, 4, 2, 1, 0.2, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         addc(nextQuestionButton, 7, 7, 2, 1, 0.0, 0.2,
                 GridBagConstraints.LAST_LINE_END, GridBagConstraints.NONE,
                 10, 5, 5, 5);
-        
         addc(newExampleButton, 1, 5, 2, 1, 0.0, 0.2, 
               GridBagConstraints.WEST, GridBagConstraints.NONE,
               5, 5, 5, 5);
-        
         addc(shortProblem, 0, 6, 1, 1, 0.0, 0.0, 
               GridBagConstraints.WEST, GridBagConstraints.NONE, 
               5, 5, 5, 5);
-        
         addc(longProblem, 0, 7, 1, 1, 0.0, 0.0, 
               GridBagConstraints.WEST, GridBagConstraints.NONE, 
               5, 5, 5, 5);
-        
         addc(rightRotate, 2, 6, 1, 1, 0.0, 0.0, 
               GridBagConstraints.WEST, GridBagConstraints.NONE, 
               5, 5, 5, 5);
-        
         addc(leftRotate, 2, 7, 1, 1, 0.0, 0.0, 
               GridBagConstraints.WEST, GridBagConstraints.NONE, 
               5, 5, 5, 5);
-        
         addc(rotate7Bits, 3, 6, 1, 1, 0.0, 0.0, 
               GridBagConstraints.WEST, GridBagConstraints.NONE, 
               5, 5, 5, 5);
-      
         addc(rotate16Bits, 3, 7, 1, 1, 0.0, 0.0, 
               GridBagConstraints.WEST, GridBagConstraints.NONE, 
               5, 5, 5, 5);
@@ -319,7 +299,6 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         else {
            answer = input.substring(positions) + input.substring(0, positions);
         }
-
         return answer;
     }
 
@@ -383,7 +362,7 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
        //   It's misleading to create a new one after 'public NewExampleRequest newRequest'
        RotateStep example = new RotateStep();
        example.setDirection(RotateStep.Direction.RIGHT);
-       example.setAmount();
+       example.setAmount(7);
        example.setLength(16);
        example.setData("0000000001111111");
        //Conditionals to determine the problem displayed by the view
