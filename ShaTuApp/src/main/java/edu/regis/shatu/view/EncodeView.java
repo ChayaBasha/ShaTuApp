@@ -17,7 +17,7 @@ import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.EncodeAsciiExample;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
 import edu.regis.shatu.model.aol.EncodeAsciiStep.OutputListener;
-
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -54,7 +54,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener, EncodeAsciiStep.OutputListener {
+public class EncodeView extends UserRequestView implements ActionListener, EncodeAsciiStep.OutputListener {
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
@@ -94,12 +94,10 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         prepareNextQuestion();
     }
 
-    @Override
     public NewExampleRequest newRequest() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
     public StepCompletion stepCompletion() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

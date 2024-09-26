@@ -183,12 +183,10 @@ public class StepView extends JPanel {
        }
     }
     
-            
-  
-    
- 
-       
-    
+    public StepSelection getSelectedPanel() {
+        return selectedPanel;
+    }
+
     /**
      * Create the child GUI components appearing in this frame.
      */

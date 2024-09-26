@@ -102,7 +102,7 @@ public class NewExampleAction extends ShaTuGuiAction {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         
         
- System.out.println("Here1");
+        System.out.println("Here1");
         User user = SplashFrame.instance().getUser();
          System.out.println("Here2");
         //Catches a possible IllegalArgumentException thrown by the 

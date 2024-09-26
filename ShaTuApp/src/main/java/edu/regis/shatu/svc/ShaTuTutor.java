@@ -468,6 +468,8 @@ public class ShaTuTutor implements TutorSvc {
                                                  bitLength);
         
         StepCompletionReply stepReply = new StepCompletionReply();
+        stepReply.setCorrectAnswer(expectedResult);
+        stepReply.setResponse(result);
 
         if (expectedResult.equals(result)) {
             stepReply.setIsCorrect(true);
@@ -541,9 +543,11 @@ public class ShaTuTutor implements TutorSvc {
        // System.out.println("Result: " + example.getResult());
         
         String expectedResult = choiceFunction(operand1, operand2, operand3, bitLength);
-        //System.out.println("Expected result: " + expectedResult);
+        System.out.println("Expected result: " + expectedResult);
   
         StepCompletionReply stepReply = new StepCompletionReply();
+        stepReply.setCorrectAnswer(expectedResult);
+        stepReply.setResponse(result);
         
         if (expectedResult.equals(result)) {
             stepReply.setIsCorrect(true);

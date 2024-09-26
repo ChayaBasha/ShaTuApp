@@ -52,6 +52,8 @@ public enum ExampleType {
     
     STEP_COMPLETION_REPLY("Step Completion Reply"),
     
+    HINT_REPLY("Hint Reply"),
+    
     /**
      * The initial default value in a NewExampleRequest
      */
