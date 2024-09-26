@@ -23,7 +23,10 @@ import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import java.util.ArrayList;
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
+import edu.regis.shatu.view.act.NewExampleAction;
+import edu.regis.shatu.view.act.StepCompletionAction;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,10 +71,13 @@ public class Add1View extends UserRequestView implements ActionListener {
     private JTextField messageLengthField;
     private JTextArea responseArea;
     private JTextArea feedbackArea;
-    private JButton submitButton, nextButton, hintButton;
+    //private JPanel buttonPanel;
+    private JButton checkButton, nextButton, hintButton;
     private JTable asciiTable;
     private JScrollPane responseScrollPane, asciiTableScrollPane, feedbackScrollPane;
     private String question;
+    
+    private boolean wasHintRequested = false;
     
     // For random character generation
     private static final Random random = new Random();
@@ -89,7 +95,7 @@ public class Add1View extends UserRequestView implements ActionListener {
         
         initializeComponents();
         initializeLayout();
-        prepareNextQuestion();
+        //prepareNextQuestion(); Blocked during sprint 1
     }
     
     /**
@@ -100,7 +106,7 @@ public class Add1View extends UserRequestView implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == submitButton) {
+        if (event.getSource() == checkButton) {
             submitAnswer();           
         } else if (event.getSource() == nextButton) {
             prepareNextQuestion();
@@ -155,9 +161,10 @@ public class Add1View extends UserRequestView implements ActionListener {
         addc(buttonPanel, 0, 6, 1, 1, 
                 1.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.NONE, 10, 0, 0, 0);
+        /* Test Test Test sprint 1 in attempt to only display when needed.
         addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
                 7, 2.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
+                GridBagConstraints.BOTH, 5, 5, 5, 5);*/
     }  
     
     /**
@@ -173,6 +180,8 @@ public class Add1View extends UserRequestView implements ActionListener {
   
         // TEMPORARY UNTIL MODEL IS PROPOGATED DOWN 
         // Trim user input and split it into an array based on spaces.
+        
+        /* Original code blocked out during sprint 1
         String userInput = responseArea.getText().trim();
         String expectedAnswer = convertMessageToBinaryWithSpaces(question);        
         
@@ -191,9 +200,16 @@ public class Add1View extends UserRequestView implements ActionListener {
         }
         
         // Disable the submit button to prevent re-submission, and enable the next question button.
-        submitButton.setEnabled(false);
+        checkButton.setEnabled(false);
         hintButton.setEnabled(false);
-        nextButton.setEnabled(true);
+        nextButton.setEnabled(true);*/
+        
+        if (this.responseArea.getText().equals("")) {
+            this.feedbackArea.setText("Please provide an answer");
+        }
+        else {
+            //do nothing right now (sprint 1, choice func has verifyAnswer(), but its empty)
+        }
     }
     
     /**
@@ -203,6 +219,7 @@ public class Add1View extends UserRequestView implements ActionListener {
      * THIS NEEDS UPDATED ONCE MODEL IS CONFIGURED AND EXAMPLE IS COMPLETED
      */
     private void prepareNextQuestion() {
+        /* Code blocked during sprint 1
         // Clear any existing feedback and response from the previous question.
         feedbackArea.setText("");
         responseArea.setText("");
@@ -219,13 +236,13 @@ public class Add1View extends UserRequestView implements ActionListener {
             // Enable the buttons, ready for the user's response.
             // DO WE WANT TO DISABLE NEXT BUTTON ONCE MODEL COMPLETED AND LEARNING
             // AI GENERATES THE QUESTIONS?
-            submitButton.setEnabled(true);
+            checkButton.setEnabled(true);
             hintButton.setEnabled(true);
             nextButton.setEnabled(true);
         } catch (NumberFormatException e) {
             // If the message length input is not a valid number, inform the user.
             feedbackArea.setText("Please enter a valid message length.");
-        }
+        }*/
     }
     
     /**
@@ -234,7 +251,7 @@ public class Add1View extends UserRequestView implements ActionListener {
      * ***NEED TO REVIEW THIS AND THINK ABOUT IT.
      */
     public void requestHint() {
-        String hintText ="";
+        /*String hintText =""; // Code blocked during sprint 1
         
         try {
         Task task = model.currentTask();
@@ -268,7 +285,20 @@ public class Add1View extends UserRequestView implements ActionListener {
         if (hintText.isEmpty()) {
         feedbackArea.setText("Hint: Check the ASCII table to the right for "
             + "the appropriate representation.");
+        }*/
+        
+        this.feedbackArea.setText("Hint: Check the ASCII Table to the right for guidance.");
+        
+        if (!this.isAncestorOf(asciiTableScrollPane)) {
+            addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
+                    7, 2.0, 1.0, GridBagConstraints.CENTER, 
+                    GridBagConstraints.BOTH, 5, 5, 5, 5);
+            
+            this.wasHintRequested = true;
         }
+        
+        this.revalidate();
+        this.repaint();
     }
     
     /**
@@ -292,7 +322,11 @@ public class Add1View extends UserRequestView implements ActionListener {
                             + " immediately after the last character of the message,"
                             + " before any zero padding. This ensures that the "
                             + " padded message remains unique and distinguishable"
-                            + " from the original.</p>" +
+                            + " from the original. Please use the format: "
+                            + "######## # or if message length is two: "
+                            + "######## ######## # and keep going depending on "
+                            + "the message length. The single # would be "
+                            + "the 1 you are suppose to add.</p>" +
                     "</body>" +
                     "</html>"
             );
@@ -338,6 +372,21 @@ public class Add1View extends UserRequestView implements ActionListener {
      * 
      */
     private void setupButtons() {
+        checkButton = new JButton(StepCompletionAction.instance());
+        checkButton.addActionListener(this);
+
+        hintButton = new JButton("Hint");
+        hintButton.addActionListener(this);
+
+        nextButton = new JButton(NewExampleAction.instance());
+        nextButton.addActionListener(this);
+/* choice uses this, but its implemented below
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(checkButton);
+        buttonPanel.add(nextButton);
+        buttonPanel.add(hintButton);*/
+
+        /*original code
         submitButton = new JButton("Submit");
         nextButton = new JButton("Next");
         hintButton = new JButton("Hint");
@@ -345,6 +394,7 @@ public class Add1View extends UserRequestView implements ActionListener {
         nextButton.addActionListener(this);
         hintButton.addActionListener(this);
         nextButton.setEnabled(true);
+        */
     }
     
     /**
@@ -353,7 +403,7 @@ public class Add1View extends UserRequestView implements ActionListener {
      */
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(submitButton);
+        buttonPanel.add(checkButton);
         buttonPanel.add(nextButton);
         buttonPanel.add(hintButton);
         return buttonPanel;
@@ -477,14 +527,70 @@ public class Add1View extends UserRequestView implements ActionListener {
     public void setModel(TutoringSession model) {
         this.model = model;
         
-        updateDisplay();
+        updateView();
     }
     
     /**
      * Display the current tutoring session model in this view.
      * 
      */
-    private void updateDisplay() {
+    @Override
+    protected void updateView() {
+        
+        System.out.println("Add One Bit update display called");
+        
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        Step step = model.currentTask().currentStep();
+        
+        AddOneStep newAddOneBit = gson.fromJson(step.getData(), AddOneStep.class);
+        
+        //System.out.println(newAddOneBit.)
+        
+        // Clear any existing feedback and response from the previous question.
+        feedbackArea.setText("");
+        responseArea.setText("");
+        
+        this.question = newAddOneBit.getQuestion();
+        
+        if (this.question == null) {
+            questionLabel.setText("Please click new example button to get started");
+        }
+        
+        else {
+            questionLabel.setText(String.format("Convert the following "
+                        + "string to binary and append a 1 bit to it: %s", question));
+        }
+        
+        if (this.wasHintRequested) {
+            this.remove(this.asciiTableScrollPane);
+            this.revalidate();
+            this.repaint();
+        }
+        
+       /* try {      
+            // Parse the desired message length from the input field.
+            int messageLength = Integer.parseInt(messageLengthField.getText().trim());
+            question = generateRandomString(messageLength);
+                        
+            // Update the question label with the new question.
+            questionLabel.setText(String.format("Convert the following "
+                    + "string to binary and append a 1 bit to it: %s", question));
+            
+            // Enable the buttons, ready for the user's response.
+            // DO WE WANT TO DISABLE NEXT BUTTON ONCE MODEL COMPLETED AND LEARNING
+            // AI GENERATES THE QUESTIONS?
+            checkButton.setEnabled(true);
+            hintButton.setEnabled(true);
+            nextButton.setEnabled(true);
+        } catch (NumberFormatException e) {
+            // If the message length input is not a valid number, inform the user.
+            feedbackArea.setText("Please enter a valid message length.");
+        }*/
+        
+        //source.setText(newAddOneBit.getSource()); Commented out during sprint 1, dont think I need it.
+        
+        /* // Blocked during sprint 1
         Task task = model.currentTask();
         Step step = task.currentStep();
         
@@ -492,16 +598,50 @@ public class Add1View extends UserRequestView implements ActionListener {
         
         stepDataModel = gson.fromJson(data, AddOneStep.class);
         
-        source.setText(stepDataModel.getSource());
+        source.setText(stepDataModel.getSource());*/
     }
 
     @Override
     public NewExampleRequest newRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        //Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        NewExampleRequest ex = new NewExampleRequest();
+        
+        ex.setExampleType(ExampleType.ADD_ONE_BIT);
+        
+        AddOneStep newStep = new AddOneStep();
+        
+        newStep.setMessageLength(Integer.parseInt(messageLengthField.getText().trim()));
+        
+        
+        
+        //possibly missing something here, may need to look at AddOneStep constructor again
+        System.out.println("Before newstep");
+        System.out.println(newStep);
+        System.out.println("After newstep");
+        
+        ex.setData(gson.toJson(newStep));
+        
+        return ex;
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
     public StepCompletion stepCompletion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        Step currentStep = model.currentTask().currentStep();
+        
+        AddOneStep completedAddOneStep = gson.fromJson(currentStep.getData(), AddOneStep.class);
+        
+        String userResponse = this.responseArea.getText().replaceAll("\\s", "");
+        
+        completedAddOneStep.setUserAnswer(userResponse);
+        
+        StepCompletion step = new StepCompletion(currentStep, gson.toJson(completedAddOneStep));
+        
+        step.setStep(currentStep);
+        
+        return step;
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
