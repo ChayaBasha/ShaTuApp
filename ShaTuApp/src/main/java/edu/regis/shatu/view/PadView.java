@@ -12,6 +12,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import edu.regis.shatu.svc.SHA_256;
 import edu.regis.shatu.svc.SHA_256Listener;
 import java.awt.Dimension;
@@ -34,7 +36,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-public class PadView extends GPanel implements ActionListener, KeyListener, SHA_256Listener {
+public class PadView extends UserRequestView implements ActionListener, KeyListener, SHA_256Listener {
         
     /**
      * The ASCII character the student is being asked to convert
@@ -205,5 +207,15 @@ public class PadView extends GPanel implements ActionListener, KeyListener, SHA_
         gbc.gridwidth = 2; gbc.fill = GridBagConstraints.BOTH;
         JPanel filler = new JPanel();
         add(filler, gbc);        
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

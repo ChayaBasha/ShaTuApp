@@ -13,7 +13,7 @@ package edu.regis.shatu.view;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.Step;
-import edu.regis.shatu.model.Task;
+import edu.regis.shatu.model.StepCompletion;
 import static edu.regis.shatu.model.aol.ExampleType.ROTATE_BITS;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import edu.regis.shatu.model.aol.RotateStep;
@@ -27,7 +27,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import java.util.Random;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
@@ -41,7 +40,7 @@ import javax.swing.JRadioButton;
  *
  * @author rickb
  */
-public class RotateView extends UserRequestView<RotateStep> implements ActionListener, KeyListener {
+public class RotateView extends UserRequestView implements ActionListener, KeyListener {
 
     /**
      * The number of rotations used in the ROTR operation.
@@ -304,15 +303,20 @@ public class RotateView extends UserRequestView<RotateStep> implements ActionLis
        
     }
     
+        @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
     /**
      * Update the view with the contents of a new step sent by the tutor
      */
     @Override
-    public void updateView(){
+    protected void updateView(){
        Gson gson = new GsonBuilder().setPrettyPrinting().create();
        
        //Get the current step from the model
-       Step step = model.currentStep();
+       Step step = model.currentTask().currentStep();
                
        //Get the data from the model as a RotateStep object
        RotateStep newStep = gson.fromJson(step.getData(), RotateStep.class);
@@ -381,8 +385,5 @@ public class RotateView extends UserRequestView<RotateStep> implements ActionLis
                problemString.substring(8, 12) + ' ' + 
                problemString.substring(12);
       }
-   }
-   
-   
-   
+   }   
 }

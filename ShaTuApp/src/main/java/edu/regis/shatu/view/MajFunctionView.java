@@ -10,6 +10,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -37,7 +39,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  *
  * @author rickb
  */
-public class MajFunction extends GPanel implements ActionListener, KeyListener {
+public class MajFunctionView extends UserRequestView implements ActionListener, KeyListener {
     private String stringX, stringY, stringZ;
     private int problemSize; 
     private JTextArea descTextArea, feedbackTextArea, responseTextArea;
@@ -58,7 +60,7 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
     /**
      * Initialize this view including creating and laying out its child components.
      */
-    public MajFunction() {
+    public MajFunctionView() {
         initializeComponents();
         initializeLayout();
     }
@@ -565,5 +567,15 @@ public class MajFunction extends GPanel implements ActionListener, KeyListener {
         } else {
             verifyAnswer();
         }
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

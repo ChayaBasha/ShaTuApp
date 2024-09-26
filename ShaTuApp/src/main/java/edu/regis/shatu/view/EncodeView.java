@@ -12,10 +12,13 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.EncodeAsciiExample;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
 import edu.regis.shatu.model.aol.EncodeAsciiStep.OutputListener;
+
+import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -89,6 +92,16 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         initializeLayout();
         updateToRadioButtonsEnabledState();
         prepareNextQuestion();
+    }
+
+    @Override
+    public NewExampleRequest newRequest() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public StepCompletion stepCompletion() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     /**
@@ -791,7 +804,7 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
      * 
      * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
      */
-    private void updateView() {
+    protected void updateView() {
         if (model != null) {
             // ****TO-DO*****
             // Update the view's information from the model below are just some debugging
