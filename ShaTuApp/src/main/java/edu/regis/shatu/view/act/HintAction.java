@@ -126,13 +126,8 @@ public class HintAction extends ShaTuGuiAction {
                     break;
 
                 default:
-                    Task task = gson.fromJson(reply.getData(), Task.class);
-
-                    if (task.getType() == ExampleType.HINT_REPLY) {
-                        String prompt = "Hint";
-                        JOptionPane.showMessageDialog(MainFrame.instance(),
-                                prompt, "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    JOptionPane.showMessageDialog(MainFrame.instance(),
+                            reply.getData(), "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch(IllegalArgException e) {
             System.out.println("Illegal arg exception " + e);

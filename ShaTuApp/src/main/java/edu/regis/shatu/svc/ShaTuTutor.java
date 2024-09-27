@@ -124,17 +124,17 @@ public class ShaTuTutor implements TutorSvc {
                 try {
                 session = verifySession(request.getUserId(), request.getSessionId());
 
-            } catch (ObjNotFoundException ex) {
-                return createError("No session exists for user: " + request.getUserId(), ex);
-            } catch (IllegalArgException ex) {
-                return createError("Illegal session token sent for user: " + request.getUserId(), ex);
-            } catch (NonRecoverableException ex) {
-                return createError(ex.toString(), ex);
-            }
+                } catch (ObjNotFoundException ex) {
+                    return createError("No session exists for user: " + request.getUserId(), ex);
+                } catch (IllegalArgException ex) {
+                    return createError("Illegal session token sent for user: " + request.getUserId(), ex);
+                } catch (NonRecoverableException ex) {
+                    return createError(ex.toString(), ex);
+                }
 
-            String msg = "Session verified for " + request.getUserId();
-            Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, msg);
-            break;
+                String msg = "Session verified for " + request.getUserId();
+                Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, msg);
+                break;
 
             default: // e.g., signIn itself, newAccount
                 Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, "No token verification required");
@@ -263,7 +263,7 @@ public class ShaTuTutor implements TutorSvc {
         TutorReply reply = new TutorReply("Hint");
         reply.setData("This is a hint from the tutor.");
 
-        return new TutorReply();
+        return reply;
     }
 
     /**
