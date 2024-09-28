@@ -15,10 +15,13 @@ package edu.regis.shatu.view.act;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.err.IllegalArgException;
+import edu.regis.shatu.model.Hint;
+import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.Task;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.model.aol.ExampleType;
+import edu.regis.shatu.model.aol.StepSubType;
 import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import edu.regis.shatu.svc.SvcFacade;
@@ -126,8 +129,14 @@ public class HintAction extends ShaTuGuiAction {
                     break;
 
                 default:
-                    JOptionPane.showMessageDialog(MainFrame.instance(),
-                            reply.getData(), "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
+                    Step step = gson.fromJson(reply.getData(), Step.class);
+                    if (step.getSubType() == StepSubType.REQUEST_HINT) {
+                        Hint hint = step.getCurrentHint();
+                        exView.getModel().currentTask().currentStep().setCurrentHintIndex(step.getCurrentHintIndex() + 1);
+                        String prompt = hint.getText();
+                        JOptionPane.showMessageDialog(MainFrame.instance(),
+                                prompt, "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
+                    }
             }
         } catch(IllegalArgException e) {
             System.out.println("Illegal arg exception " + e);
