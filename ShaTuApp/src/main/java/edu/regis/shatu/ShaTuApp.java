@@ -122,7 +122,7 @@ public class ShaTuApp {
                 Logger.getLogger(ShaTuApp.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SecurityException e) {
             LOGGER.severe("Couldn't create Data directory in NetBeans Project.");
-            LOGGER.severe("Perhaps, try changing permissions.");
+            LOGGER.severe("Maybe, try changing permissions.");
         }
     }
 }
