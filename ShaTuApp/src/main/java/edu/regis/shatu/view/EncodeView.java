@@ -54,7 +54,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener, EncodeAsciiStep.OutputListener {
+public class EncodeView extends UserRequestView implements ActionListener, EncodeAsciiStep.OutputListener {
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
