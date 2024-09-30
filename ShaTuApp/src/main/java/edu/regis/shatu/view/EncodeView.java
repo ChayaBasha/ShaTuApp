@@ -61,7 +61,7 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
     private JTextField messageLengthField;
     private JTextArea responseArea;
     private JTextArea feedbackArea;
-    private JButton submitButton, nextButton, hintButton;
+    private JButton submitButton, nextButton, hintButton, showHideAsciiTableButton;
     private JTable asciiTable;
     private JScrollPane responseScrollPane, asciiTableScrollPane, feedbackScrollPane;
     private String question;
@@ -94,15 +94,15 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         prepareNextQuestion();
     }
 
-    @Override
-    public NewExampleRequest newRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public StepCompletion stepCompletion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+//    @Override
+//    public NewExampleRequest newRequest() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
+//
+//    @Override
+//    public StepCompletion stepCompletion() {
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//    }
     
     /**
      * Enumeration to hold the various conversion types
@@ -157,6 +157,7 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         setupFeedbackArea();
         setupButtons();
         setupAsciiTable();
+        setupAsciiTableToggleButton();
         setupExampleInputField();
         stepThroughButton = new JButton("Step Through ASCII Conversion");
         completeOutputButton = new JButton("Complete ASCII Conversion");
@@ -220,6 +221,9 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
     addc(buttonPanel, 0, 7, 3, 1, 
             1.0, 1.0, GridBagConstraints.CENTER, 
             GridBagConstraints.NONE, 10, 0, 0, 0);
+    addc(showHideAsciiTableButton, 3, 0, 1, 1, 
+            1.0, 0.0, GridBagConstraints.NORTH, 
+            GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
     addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
             8, 3.0, 1.0, GridBagConstraints.CENTER, 
             GridBagConstraints.BOTH, 5, 5, 5, 5);
@@ -746,6 +750,31 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         int randomInt = 32 + random.nextInt(127 - 32);
         return randomInt; 
     }
+    
+    /**
+     * On button press will show/hide ASCII Table
+     */
+    private void setupAsciiTableToggleButton() {
+    //If button is pressed setup ascii table
+    setupAsciiTable();
+    
+    //Create the Show/Hide button
+    showHideAsciiTableButton = new JButton("Hide ASCII Table");
+    showHideAsciiTableButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean isCurrentlyVisible = asciiTableScrollPane.isVisible();
+            asciiTableScrollPane.setVisible(!isCurrentlyVisible);
+            
+            //Update button text based on show/hide press
+            if (isCurrentlyVisible) {
+                showHideAsciiTableButton.setText("Show ASCII Table");
+            } else {
+                showHideAsciiTableButton.setText("Hide ASCII Table");
+            }
+        }
+    });
+}
     
     /**
      * Initializes the ASCII table and its scroll pane

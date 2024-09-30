@@ -154,8 +154,8 @@ public class StepView extends JPanel {
                 return choiceFunctionView;
             case COMPRESS:
                 return compressionView;
-            case ENCODE:
-                return encodeView;
+//            case ENCODE:
+//                return encodeView;
             case INIT_VARS:
                     return initVarView;
             case MAJ_FUNCTION:
