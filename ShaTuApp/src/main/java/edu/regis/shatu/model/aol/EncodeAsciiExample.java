@@ -47,10 +47,10 @@ public class EncodeAsciiExample {
      */
     private int timeOut;
     
-    public EncodeAsciiExample() {
-        exampleString = "";
-        asciiEncoding = new int[0];
-    }
+    public EncodeAsciiExample(String example) {
+    this.exampleString = example;  // Initialize with the provided string
+    asciiEncoding = new int[example.length()];  // Initialize based on string length
+}
 
     public int getStringLength() {
         return stringLength;
