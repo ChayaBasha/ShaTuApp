@@ -102,10 +102,10 @@ public void actionPerformed(ActionEvent evt) {
     switch (reply.getStatus()) {
         case "Authenticated":
             TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
-
+            System.out.println("SIGN IN ACTION: reply.getData() = "+reply.getData());
             SplashFrame.instance().setVisible(true); // Keep SplashFrame visible
 
-            SplashFrame.instance().selectDashboard(); // Switch to the DashboardPanel
+            SplashFrame.instance().selectDashboard(session); // Switch to the DashboardPanel
 
             break;
 

@@ -12,21 +12,18 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.TutoringSession;
 /**
- *
+ * The dashboard screen to be displayed upon user sign in.
+ * Enables user to select a mode from the tutor (teach me, practice, quiz me)
+ * Tracks user's progress for each mode.
  * @author Ryley M
  */
 public class DashboardPanel extends javax.swing.JPanel {
-    private String userID;
+    private TutoringSession tutoringSession; // Reference to current tutoringSession
 
-    public DashboardPanel(String userID) {
-        this.userID = userID;
-        initComponents();
-    }
-    /**
-     * Creates new form DashboardPanel
-     */
-    public DashboardPanel() {
+    public DashboardPanel(TutoringSession tutoringSession) {
+        this.tutoringSession = tutoringSession;
         initComponents();
     }
 
@@ -61,7 +58,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         welcomeLabel.setText("Welcome!");
         welcomeLabel.setToolTipText("");
         welcomeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        welcomeLabel.setText("Welcome, " + userID + "!");
+        welcomeLabel.setText("Welcome, " +"User" + "!");
         headerPanel.add(welcomeLabel, java.awt.BorderLayout.CENTER);
 
         logOutButton.setText("Log Out");
@@ -169,7 +166,7 @@ public class DashboardPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void practiceButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_practiceButton1ActionPerformed
-     SplashFrame.instance().selectTutoringSessionView();
+     SplashFrame.instance().selectTutoringSessionView(this.tutoringSession);
     }//GEN-LAST:event_practiceButton1ActionPerformed
 
     private void logOutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOutButtonMouseClicked

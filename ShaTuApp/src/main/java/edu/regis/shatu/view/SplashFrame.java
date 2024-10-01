@@ -13,6 +13,7 @@
 package edu.regis.shatu.view;
 
 import edu.regis.shatu.model.Account;
+import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.User;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -107,6 +108,9 @@ public class SplashFrame extends JFrame {
      */
     private TutoringSessionView tutoringSessionView;
     
+    private TutoringSession tutoringSession;
+    
+    
     /**
      * A panel which allows the user to create a new student account with 
      * associated sign-in information.
@@ -117,7 +121,7 @@ public class SplashFrame extends JFrame {
      * The number of consecutive illegal passwords attempted by the current
      * user attempting to login (see MAX_SIGNIN_ATTEMPTS).
      */
-    protected int signInAttempts = 0;
+    protected int signInAttempts = 1;
     
    /**
      * Create and layout the child components in this Splash JFrame.
@@ -169,7 +173,7 @@ public class SplashFrame extends JFrame {
      * of the number of user attempts thus far.
      */
     public void invalidPass() {
-        if (signInAttempts < MAX_SIGNIN_ATTEMPTS) {
+        if (signInAttempts <= MAX_SIGNIN_ATTEMPTS) {
            
             String msg = "Invalid Password attempt " + 
                          String.valueOf(signInAttempts) + " of " + 
@@ -200,8 +204,11 @@ public class SplashFrame extends JFrame {
     
     /**
      * Sets the current card panel to Dashboard.
+     * @param session
      */
-    public void selectDashboard() {
+    public void selectDashboard(TutoringSession session) {
+        this.tutoringSession = session;
+        dashboardPanel = new DashboardPanel(this.tutoringSession);
         selectPanel(DASHBOARD);
     }
     
@@ -245,7 +252,11 @@ public class SplashFrame extends JFrame {
             JButton but = splashPanel.getSigninButton();
         
             SwingUtilities.getRootPane(but).setDefaultButton(but);
-        } else {
+        }
+        else if (name.equals(TUTOR)) {
+            System.out.println("Switch to tutoring session view here");
+        }
+        else {
             newAccountPanel.updateFocus();
         }
     }
@@ -255,7 +266,7 @@ public class SplashFrame extends JFrame {
      * @param userId 
      */
     public void initializeDashboard(String userId) {
-        dashboardPanel = new DashboardPanel(userId);
+        dashboardPanel = new DashboardPanel(this.tutoringSession);
         cards.add(dashboardPanel, DASHBOARD);
         selectPanel(DASHBOARD);
     }
@@ -263,10 +274,17 @@ public class SplashFrame extends JFrame {
      /**
      * Selects a personalized practice screen for each user upon selecting
      * the dashboard's practice button.
+     * @param session
      */
-    public void selectTutoringSessionView() {
-        tutoringSessionView = new TutoringSessionView();
-        cards.add(tutoringSessionView, TUTOR);
+    public void selectTutoringSessionView(TutoringSession session) {
+        if(this.tutoringSessionView == null) {
+            this.tutoringSessionView = new TutoringSessionView();
+            cards.add(tutoringSessionView, TUTOR);
+        }
+
+        System.out.println("ERROR IS HERE");
+        System.out.println("TutoringSession session = "+session);
+        this.tutoringSessionView.setModel(session);
         selectPanel(TUTOR);
     }
 
