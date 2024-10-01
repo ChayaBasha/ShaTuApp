@@ -169,6 +169,7 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
      * constraints.
      */
     private void initializeLayout() {
+
     JPanel buttonPanel = createButtonPanel();  
     JPanel messageLengthPanel = createMessageLengthPanel();
     JPanel convertFromPanel = createConvertFromRadioPanel();
@@ -444,7 +445,6 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         }
     }
 
-    
     /**
      * Displays a hint in the feedback area to assist the user.
      */

@@ -169,8 +169,6 @@ public class ShaTuTutor implements TutorSvc {
      * status is "ERR".
      */
     public TutorReply createAccount(String jsonAcct) throws NonRecoverableException {
-       // gson = new GsonBuilder().setPrettyPrinting().create();
-
         Account acct = gson.fromJson(jsonAcct, Account.class);
 
         int courseId = DEFAULT_COURSE_ID; // Currently only one course
@@ -215,10 +213,7 @@ public class ShaTuTutor implements TutorSvc {
      */
     public TutorReply signIn(String jsonUser) {
         System.out.println("Received sign in: " + jsonUser);
-        //gson = new GsonBuilder().setPrettyPrinting().create();
-
-        User user = gson.fromJson(jsonUser, User.class
-        );
+        User user = gson.fromJson(jsonUser, User.class);
 
         try {
             User dbUser = ServiceFactory.findUserSvc().retrieve(user.getUserId());
@@ -235,17 +230,14 @@ public class ShaTuTutor implements TutorSvc {
 
             } else {
                 return new TutorReply("InvalidPassword");
-
             }
 
         } catch (ObjNotFoundException e) {
             return new TutorReply("UnknownUser");
-
         } catch (NonRecoverableException ex) {
             Logger.getLogger(ShaTuTutor.class
                     .getName()).log(Level.SEVERE, null, ex);
             return new TutorReply();
-
         }
     }
 
@@ -267,8 +259,6 @@ public class ShaTuTutor implements TutorSvc {
     }
 
     /**
-     * 
-     * 
      * @param jsonObj a JSon encoded StepCompletion object
      * @return 
      */
@@ -340,8 +330,6 @@ public class ShaTuTutor implements TutorSvc {
         return reply;
     }
     
-    
-    
       public TutorReply completeEncodeStep(StepCompletion completion) {
         TutorReply reply = new TutorReply(":StepCompletionReply");
         
@@ -399,6 +387,7 @@ public class ShaTuTutor implements TutorSvc {
         
         // TO_DO: keep track of next step id and sequence id
         // this is really a new example at this point
+
         Step step = new Step(1, 0, StepSubType.STEP_COMPLETION_REPLY);
         step.setCurrentHintIndex(0);
         step.setNotifyTutor(true);
@@ -460,7 +449,6 @@ public class ShaTuTutor implements TutorSvc {
         boolean shiftRight = example.isShiftRight();
         int bitLength = example.getBitLength();
         String result = example.getResult();
-        
         
         String expectedResult = bitShiftFunction(operand, 
                                                  shiftLength, 
@@ -538,10 +526,8 @@ public class ShaTuTutor implements TutorSvc {
           String operand3 = example.getOperand3();
         int bitLength = example.getBitLength();
         String result = example.getResult();
-       // System.out.println("Result: " + example.getResult());
         
         String expectedResult = choiceFunction(operand1, operand2, operand3, bitLength);
-        //System.out.println("Expected result: " + expectedResult);
   
         StepCompletionReply stepReply = new StepCompletionReply();
         
@@ -852,8 +838,6 @@ public class ShaTuTutor implements TutorSvc {
 
         step.setData(gson.toJson(subStep));
 
-        // TaskState state = new TaskState();
-        // state.set
         Task task = new Task();
         task.setKind(TaskKind.PROBLEM);
         task.setType(ExampleType.ASCII_ENCODE);
@@ -939,8 +923,6 @@ public class ShaTuTutor implements TutorSvc {
 
         step.setData(gson.toJson(newAddOneBit));
 
-        // TaskState state = new TaskState();
-        // state.set
         Task task = new Task();
         task.setKind(TaskKind.PROBLEM);
         task.setType(ExampleType.ADD_ONE_BIT);
@@ -1093,31 +1075,9 @@ public class ShaTuTutor implements TutorSvc {
 
         example.generatedRandomOperands(size);
 
-        //example.setPreSize(size);
-        //example.setPostSize(size);
-        //int maxOperandVal = (int) Math.pow(2.0d, size) - 1; // e.g., 2^8 - 1 = 255
-        // int operand1 = rnd.nextInt((maxOperandVal - 1) + 1);
-        //example.setOperand1Val(operand1);
-        //int operand2 = rnd.nextInt((maxOperandVal - 1) + 1);
-        //example.setOperand2Val(operand2);
-        //int xor = operand1 ^ operand2;
         int xor = (int) example.getOperand1Val() ^ (int) example.getOperand2Val();
         example.setResultVal(xor);
 
-        /*
-        builder.setLength(0); // clear the builder
-        for (int i = 0; i < size; i++) {
-            char char1 = operand1.charAt(i);
-            char char2 = operand2.charAt(i);
-            if (((char1 == '0') && (char2 == '0')) || ((char1 == '1') && (char2 == '1'))) {
-                builder.append('0');
-            } else {
-                builder.append('1');
-            }
-        }
-        
-        example.setResult(builder.toString());
-         */
         BitOpStep subStep = new BitOpStep();
         subStep.setExample(example);
         //ToDo: multistep should be determined by the student model.
@@ -1133,8 +1093,6 @@ public class ShaTuTutor implements TutorSvc {
 
         step.setData(gson.toJson(subStep));
 
-        // TaskState state = new TaskState();
-        // state.set
         Task task = new Task();
         task.setKind(TaskKind.PROBLEM);
         task.setType(ExampleType.XOR_BITS);
@@ -1216,8 +1174,6 @@ public class ShaTuTutor implements TutorSvc {
 
         step.setData(gson.toJson(subStep));
 
-        // TaskState state = new TaskState();
-        // state.set
         Task task = new Task();
         task.setKind(TaskKind.PROBLEM);
         task.setType(ExampleType.ADD_BITS);

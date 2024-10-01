@@ -12,7 +12,6 @@
  */
 package edu.regis.shatu.view;
 
-import edu.regis.shatu.util.ImgFactory;
 import edu.regis.shatu.view.act.SaveSessionAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

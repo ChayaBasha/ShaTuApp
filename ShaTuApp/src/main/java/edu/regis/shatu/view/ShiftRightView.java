@@ -341,16 +341,13 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
      * @return The result after performing the right shift operation.
      */
     public String shiftRightString(int x, int places) {
-
         // Perform the right shift operation
         int result = x >>> places;
-
         // Print the original and shifted binary numbers
         System.out.println("Original Binary: " + Integer.toBinaryString(x));
         System.out.println("Shifted Binary:  " + Integer.toBinaryString(result));
 
         return Integer.toBinaryString(result);
-
     }
 
     @Override
@@ -378,7 +375,6 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     @Override
     public NewExampleRequest newRequest() {
         NewExampleRequest ex = new NewExampleRequest();
-
         //Set example type to the problem associated with the current view
         ex.setExampleType(ExampleType.SHIFT_BITS);
         

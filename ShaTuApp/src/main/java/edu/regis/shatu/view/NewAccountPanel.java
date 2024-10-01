@@ -157,12 +157,8 @@ public class NewAccountPanel extends GPanel {
     //}
     private void initComponents() {
         LoginDocumentListener docListener = new LoginDocumentListener();
-
-        //fName = new JTextField("First", 15);
         fName = new HintTextField("First", 15);
-        //fName.setForeground(new Color(230,230,230));
         fName.getDocument().addDocumentListener(docListener);
-        //((AbstractDocument) fName.getDocument()).setDocumentFilter(new NameFilter());
 
         lName = new HintTextField("Last", 30);
         lName.getDocument().addDocumentListener(docListener);
@@ -177,7 +173,6 @@ public class NewAccountPanel extends GPanel {
         pass2 = new JPasswordField(20);
         pass2.getDocument().addDocumentListener(docListener);
 
-        //SignInAction act = SignInAction.instance();
         signInBut = new JButton(SignInAction.instance());
         signInBut.setEnabled(true);
 
@@ -372,9 +367,7 @@ public class NewAccountPanel extends GPanel {
     }
 
     private void checkStrength() {
-
         int points = 0;
-
         char[] text = pass1.getPassword();
 
         if (text.length >= 6) {
@@ -397,15 +390,12 @@ public class NewAccountPanel extends GPanel {
                 isSpecial = true;
             }
         }
-
         if (isSpecial) {
             points++;
         }
-
         if (isLower && isUpper) {
             points++;
         }
-
         switch (points) {
             case 0:
                 strength.setText("(Strength: Very poor)");
@@ -424,7 +414,6 @@ public class NewAccountPanel extends GPanel {
                 strength.setForeground(Color.GREEN);
                 break;
         }
-
     }
 
     private boolean samePasswords() {
@@ -434,17 +423,14 @@ public class NewAccountPanel extends GPanel {
         if (text1.length == text2.length) {
             if (text1.length == 0) {
                 return false;
-
             } else {
                 for (int i = 0; i < text1.length; i++) {
                     if (text1[i] != text2[i]) {
                         return false;
                     }
                 }
-
                 return true;
             }
-
         } else {
             return false;
         }
@@ -455,9 +441,6 @@ public class NewAccountPanel extends GPanel {
      * button.
      */
     private void enableButtons(Document e) {
-        //Document document = (Document)e.getDocument();
-        //fName.getDocument().getLength() !=0;
-
         boolean isValidFName = !fName.isDefaultValue();
         if (isValidFName) {
             fName.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -499,14 +482,12 @@ public class NewAccountPanel extends GPanel {
         } else {
             pass1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         }
-
         boolean isSamePass = samePasswords();
         if (isSamePass) {
             pass2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         } else {
             pass2.setBorder(BorderFactory.createLineBorder(Color.RED));
         }
-
         if (isValidFName && isValidLName && isValidUserId && isSamePass) {
             createAcctBut.setEnabled(true);
             msg.setText("");
@@ -522,7 +503,6 @@ public class NewAccountPanel extends GPanel {
      * in order to appropriate enable the buttons in the dialog.
      */
     public class LoginDocumentListener implements DocumentListener {
-
         /**
          * As text was insert into the userId or password field, check whether
          * we need to enable or disable the LoginDialog's buttons.
@@ -530,11 +510,9 @@ public class NewAccountPanel extends GPanel {
         @Override
         public void insertUpdate(DocumentEvent e) {
             Component comp = SplashFrame.instance().getFocusOwner();
-
             if (comp == pass1) {
                 checkStrength();
             }
-
             enableButtons(e.getDocument());
         }
 
@@ -545,11 +523,9 @@ public class NewAccountPanel extends GPanel {
         @Override
         public void removeUpdate(DocumentEvent e) {
             Component comp = MainFrame.instance().getFocusOwner();
-
             if (comp == pass1) {
                 checkStrength();
             }
-
             enableButtons(e.getDocument());
         }
 
@@ -560,11 +536,9 @@ public class NewAccountPanel extends GPanel {
         @Override
         public void changedUpdate(DocumentEvent e) {
             Component comp = MainFrame.instance().getFocusOwner();
-
             if (comp == pass1) {
                 checkStrength();
             }
-
             enableButtons(e.getDocument());
         }
     }
@@ -582,11 +556,9 @@ public class NewAccountPanel extends GPanel {
             BigInteger i = new BigInteger(1, m.digest());
 
             return String.format("%1$032X", i).toLowerCase();
-
         } catch (NoSuchAlgorithmException e) {
             LOGGER.severe(e.toString());
         }
-
         return "";
     }
 
@@ -600,25 +572,19 @@ public class NewAccountPanel extends GPanel {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(base.getBytes("UTF-8"));
-
             StringBuilder hexString = new StringBuilder();
-
             for (int i = 0; i < hash.length; i++) {
                 String hex = Integer.toHexString(0xff & hash[i]);
 
                 if (hex.length() == 1) {
                     hexString.append('0');
                 }
-
                 hexString.append(hex);
             }
-
             return hexString.toString();
-
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }
     }
-
 }
 

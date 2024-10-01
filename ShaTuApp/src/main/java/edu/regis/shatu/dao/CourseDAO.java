@@ -171,25 +171,6 @@ public class CourseDAO implements CourseSvc {
     }
 
     /**
-     * Extract and create a problem outcome from the given element.
-     *
-     * @param element an &lt;Outcome> with type "Problem"
-     * @return
-     * @throws XmlException
-     */
-   /* private Outcome extractProblem(Element element) throws XmlException {
-        int id = XmlMgr.getIntAttribute(element, "id");
-
-        ProblemOutcome outcome = new ProblemOutcome(id);
-
-        outcome.setSequenceId(XmlMgr.getIntAttribute(element, "sequenceId"));
-        outcome.setProblemId(XmlMgr.getIntAttribute(element, "problemId"));
-
-        return outcome;
-    }
-    */
-
-    /**
      * Extract and return the tasks in the given &lt;Unit> element
      * 
      * @param parent &lt;Unit>   // ToDo is this always true?
@@ -200,25 +181,6 @@ public class CourseDAO implements CourseSvc {
         
         for (Element child : XmlMgr.getChildren(parent, "Task"))
             tasks.add(extractTask(child));
-        
-        // Sort tasks by sequence order
-        /*
-        for (int i = 0; i < tasks.size() - 1; i++) {
-            int minIdx = i;
-            int minSeq = tasks.get(i).getSequenceId();
-                
-            for (int j = i + 1; j < tasks.size(); j++)   
-                if (tasks.get(j).getSequenceId() < minSeq)
-                    minIdx = j;
-        
-                
-            if (i != minIdx) { // swap
-                Task tmp = tasks.get(i);
-                tasks.set(i, tasks.get(minIdx));
-                tasks.set(minIdx, tmp);
-            }
-        }
-        */
             
         return tasks;
     }
