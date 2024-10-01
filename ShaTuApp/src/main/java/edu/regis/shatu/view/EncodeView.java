@@ -16,7 +16,6 @@ import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.EncodeAsciiExample;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
-import edu.regis.shatu.model.aol.EncodeAsciiStep.OutputListener;
 
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Component;
@@ -33,17 +32,17 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 
 /**
@@ -54,7 +53,7 @@ import javax.swing.SwingUtilities;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener, EncodeAsciiStep.OutputListener {
+public class EncodeView extends UserRequestView implements ActionListener, KeyListener, EncodeAsciiStep.OutputListener {
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
@@ -130,6 +129,37 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         } else if (event.getSource() == completeOutputButton){
             handleCompleteAsciiConversion();
         }
+    }
+    
+     @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    /**
+     * Handles the keyPressed event for the view.
+     *
+     * @param e The KeyEvent that occurred.
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && responseArea.getText().equals("")) {
+            feedbackArea.setText("Please provide an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
+        }
+    }
+
+    /**
+     * Handles the keyReleased event for the view.
+     *
+     * @param e The KeyEvent that occurred.
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+    
+    private void verifyAnswer() {
+      
     }
 
     private void processExampleSelection(String selectedExample) {
