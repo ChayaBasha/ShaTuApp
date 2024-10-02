@@ -46,6 +46,7 @@ import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.StudentModel;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
@@ -505,7 +506,61 @@ public class ShaTuTutor implements TutorSvc {
         return reply;
     }
     public TutorReply completeAddBitsStep(StepCompletion completion) {
-        TutorReply reply = new TutorReply(":StepCompletionReply");
+         Random rnd = new Random();
+        System.out.println("Tutor completeAddBitsStep");
+        
+        BitOpStep example = gson.fromJson(completion.getData(), BitOpStep.class);
+        
+        String operand1 = example.getExample().getOperand1();
+        String operand2 = example.getExample().getOperand2();
+        String result = example.getExample().getResult();
+        
+        int m = 8; //this will be changed
+        
+        String expectedResult = addBitsFunction(operand1, operand2, m);
+        
+        StepCompletionReply stepReply = new StepCompletionReply();
+
+        if (expectedResult.equals(result)) {
+            stepReply.setIsCorrect(true);
+            stepReply.setIsRepeatStep(false);
+            stepReply.setIsNewStep(true);
+
+            // ToDo: Use the student model to figure out whether we want
+            // to give the student another practice problem of the same
+            // type or move on to an entirely different problem.
+            stepReply.setIsNewTask(true);
+
+            // ToDo: currently only one step in a task, so there isn't a next one???
+            stepReply.setIsNextStep(false);
+
+        } else {
+            stepReply.setIsCorrect(false);
+            stepReply.setIsRepeatStep(true);
+            stepReply.setIsNewStep(false);
+            stepReply.setIsNewTask(false);
+            stepReply.setIsNextStep(false);
+        }
+
+        Step step = new Step(1, 0, StepSubType.STEP_COMPLETION_REPLY);
+        step.setCurrentHintIndex(0);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+        
+        step.setData(gson.toJson(stepReply));
+
+        Task task = new Task();
+        task.setKind(TaskKind.PROBLEM);
+        task.setType(ExampleType.STEP_COMPLETION_REPLY);
+        task.setDescription("Choose your next action");
+        task.addStep(step); 
+
+        TutorReply reply = new TutorReply(":Success");
+
+        reply.setData(gson.toJson(task));
         
         return reply;
     }
@@ -1177,7 +1232,7 @@ public class ShaTuTutor implements TutorSvc {
         Task task = new Task();
         task.setKind(TaskKind.PROBLEM);
         task.setType(ExampleType.ADD_BITS);
-        task.setDescription("Xor the bits in the two operands");
+        task.setDescription("addition modulo 2^256 the bits in the two operands");
         task.addStep(step);
 
         // ToDo: Add the task to the session and update it.
@@ -1269,6 +1324,47 @@ System.out.println("before reply return");
         String binaryResult = formatResult(shiftedOperand, bitLength);
 
         return binaryResult;
+    }
+    
+    /**
+     * Performs binary addition modulo 2^256
+     * 
+     * @param operand1   The binary string for operand 1.
+     * @param operand2   The binary string for operand 2.
+     * @param m    The int for calculating the modulo
+     * @return          The binary string result after adding two bits
+     */
+    private String addBitsFunction(String operand1, String operand2, int m) {
+        
+        if (operand1 == null || operand1.isEmpty()) {
+            return "";
+        }
+        if (operand2 == null || operand2.isEmpty()) {
+            return "";
+        }
+
+        // Convert binary strings to BigIntegers
+        BigInteger num1 = new BigInteger(operand1, 2);
+        BigInteger num2 = new BigInteger(operand2, 2);
+
+        // Perform addition
+        BigInteger sum = num1.add(num2);
+
+        // Calculate the result modulo 2^256
+        BigInteger modulo = new BigInteger("2").pow(m);
+        BigInteger result = sum.mod(modulo);
+
+        // Convert the result back to a binary string
+        String resultBinary = result.toString(2);
+
+        // Ensure the binary string has 256 bits (pad with leading zeros if necessary)
+        while (resultBinary.length() < m) {
+            resultBinary = "0" + resultBinary;
+        }
+
+        System.out.println("Result : " + resultBinary);
+
+        return resultBinary;
     }
     
      /**

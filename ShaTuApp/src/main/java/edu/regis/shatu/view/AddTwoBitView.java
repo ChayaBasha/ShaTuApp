@@ -46,11 +46,14 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
 
     private String binary1 = "101100";
     private String binary2 = "011011";
+    private String result;
     
     private JTextField answerField;
     private JLabel instructionLabel;
     private JLabel stringLabel1;
     private JLabel stringLabel2;
+    private JLabel stringLabel3;
+    private JLabel stringLabel4; // Only for testing that view is communicating with server
     private JButton checkButton; // Add the check button
     private JButton hintButton;
     private JButton nextQuestionButton;
@@ -85,8 +88,10 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
     private void initializeComponents() {
         instructionLabel = new JLabel("Add two binary numbers using modulo 2^"+ m + " addition");
         
-        stringLabel1 = new JLabel("binary number1 : " + binary1);
-        stringLabel2 = new JLabel("binary number2 : " + binary2);
+        stringLabel1 = new JLabel("binary number1 : " );
+        stringLabel2 = new JLabel("binary number2 : " );
+        stringLabel3 = new JLabel("Hit New Example to get first set of numbers" );
+        stringLabel4 = new JLabel();  //only for testing that view is communicating with server
         
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
@@ -123,6 +128,15 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
 
         // Add binaryNumberTwoLabel centered below binaryNumberOneLabel
         addc(stringLabel2, 0, 2, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        addc(stringLabel3, 0, 3, 1, 1, 0.0, 0.0,
+                GridBagConstraints.CENTER, GridBagConstraints.NONE,
+                5, 5, 5, 5);
+        
+        // To provide answer for easier testing during build of application
+        addc(stringLabel4, 0, 9, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
 
@@ -251,9 +265,7 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
     private void onCheckButton() {
         if (answerField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");
-        } else {
-            verifyAnswer();
-        }
+        } 
     }
 
     /**
@@ -265,15 +277,15 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
     @Override
     public NewExampleRequest newRequest() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
+
         NewExampleRequest ex = new NewExampleRequest();
-        
+
         ex.setExampleType(ExampleType.ADD_BITS);
-        
+
         BitOpStep newStep = new BitOpStep();
-        
+
         ex.setData(gson.toJson(newStep));
-        
+
         return ex;
     }
 
@@ -288,9 +300,9 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         Step currentStep = model.currentTask().currentStep();
 
         BitOpStep example = gson.fromJson(currentStep.getData(), BitOpStep.class);
-
+        
         String userResponse = answerField.getText().replaceAll("\\s", "");
-
+        
         example.getExample().setResult(userResponse);
 
         StepCompletion step = new StepCompletion(currentStep, gson.toJson(example));
@@ -309,14 +321,18 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Step step = model.currentTask().getCurrentStep();
-
+        
         BitOpStep example = gson.fromJson(step.getData(), BitOpStep.class);
+        
+        System.out.println("AddTwoBitView update display called");
         
         binary1 = example.getExample().getOperand1();
         binary2 = example.getExample().getOperand2();
-
+        result = calculateModulo(binary1, binary2);
+        
         stringLabel1.setText("binary number1: " + binary1);
         stringLabel2.setText("binary number2: " + binary2);
+        stringLabel4.setText("the result is: " + result);
 
     }
     
