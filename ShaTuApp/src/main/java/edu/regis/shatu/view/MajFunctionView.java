@@ -42,8 +42,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class MajFunctionView extends UserRequestView implements ActionListener, KeyListener {
     private String stringX, stringY, stringZ;
     private int problemSize; 
-    private JTextArea descTextArea, feedbackTextArea, responseTextArea;
-    private JScrollPane feedbackPane, responsePane, majTruthTablePane;
+    private JTextArea descTextArea, responseTextArea;
+    private JScrollPane responsePane, majTruthTablePane;
     private GPanel truthTablePanel, questionPanel, descriptionPanel, qrPanel;
     private JPanel buttonPanel, radioButtonPanel; 
     private JTable majTruthTable;
@@ -84,7 +84,6 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         setUpRadioButtons();
         setUpQuestionArea();
         setUpResponseArea();
-        setUpFeedbackArea();
         setUpButtons();
         setUpTruthTable();
         setUpDescriptionPanel();
@@ -254,20 +253,6 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         responsePane.setPreferredSize(new Dimension(800, 200));
     }
     
-     /**
-     * Initialized the feedback area
-     */
-    private void setUpFeedbackArea() {
-        feedbackTextArea = new JTextArea(3, 20);
-        feedbackTextArea.setEditable(false);
-        feedbackTextArea.setLineWrap(true);
-        feedbackTextArea.setWrapStyleWord(true);
-        feedbackTextArea.setBackground(null);
-        
-        feedbackPane = new JScrollPane(feedbackTextArea);
-        feedbackPane.setPreferredSize(new Dimension(800, 200));
-    }
-    
     /**
      * Sets up the Check, New Example, and Hint buttons and their action listeners
      */
@@ -290,17 +275,13 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
     }
     
     /**
-     * Creates a GPanel containing the response and feedback JScrollPanes and 
+     * Creates a GPanel containing the response JScrollPanes and 
      * the button panel. 
      */
     private void setUpQRPanel(){ //Rename function (frPanel?)
         qrPanel = new GPanel();
         
         qrPanel.addc(responsePane, 0, 0, 1, 1, 1.0, 1.0,
-                GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
-                5, 5, 5, 5);
-        
-        qrPanel.addc(feedbackPane, 0, 1, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
 
@@ -349,6 +330,9 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         truthTablePanel.addc(majTruthTablePane, 0, 2, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 5, 5, 5, 5);
+        
+        truthTablePanel.setVisible(false);
+
     }
     
     /**
@@ -364,6 +348,7 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         majTruthTable.getColumnModel().getColumn(1).setPreferredWidth(25);
         majTruthTable.getColumnModel().getColumn(2).setPreferredWidth(25);
         majTruthTable.getColumnModel().getColumn(6).setPreferredWidth(130);
+        
     }
     
      /**
@@ -459,7 +444,6 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
      */
     private void generateNewQuestion() {   
         responseTextArea.setText("");
-        feedbackTextArea.setText("");
         
         stringX = generateInputString();
         stringY = generateInputString();
@@ -512,11 +496,10 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         userResponse = userResponse.replaceAll("\\s", "");
         
         if (correctAnswer.equals(userResponse)) {
-            feedbackTextArea.setText("Correct!");
-            newExampleButton.setEnabled(true);
+            JOptionPane.showMessageDialog(this, "Correct!");
             checkButton.setEnabled(false);
         } else {
-            feedbackTextArea.setText("Incorrect! Please check your entry and "
+            JOptionPane.showMessageDialog(this, "Incorrect! Please check your entry and "
                     + "try again or use the hint feature for help. Correct answer: " + correctAnswer);
         }
     }
@@ -528,7 +511,7 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER && responseTextArea.getText().equals("")) {
-            feedbackTextArea.setText("Please provide an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             verifyAnswer();
         }
@@ -546,9 +529,8 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         generateNewQuestion();
         
         responseTextArea.setText("");
-        feedbackTextArea.setText("New Example Generated");
+        JOptionPane.showMessageDialog(this, "New Example Generated");
         
-        newExampleButton.setEnabled(true);
         checkButton.setEnabled(true);
     }
 
@@ -556,7 +538,9 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
      * Displays a message dialog indicating the provision of a hint.
     */
     private void onNextHint() {
-        feedbackTextArea.setText("Hint: Check the truth table above for the "
+        truthTablePanel.setVisible(true);
+
+        JOptionPane.showMessageDialog(this, "Hint: Check the truth table above for the "
                 + "appropriate values.");
     }
 
@@ -565,7 +549,7 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
     */
     private void onCheckButton() {
         if (responseTextArea.getText().equals("")) {
-            feedbackTextArea.setText("Please provide an answer");
+            JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else {
             verifyAnswer();
         }
