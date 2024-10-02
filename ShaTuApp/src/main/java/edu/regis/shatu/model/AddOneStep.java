@@ -27,6 +27,14 @@ public class AddOneStep {
      */
     private String target;
     
+    private int messageLength;
+    
+    private String question;
+    
+    private String result;
+    
+    private String userAnswer;
+    
     /**
      * Initialize this step with the given source and target data.
      * 
@@ -36,6 +44,9 @@ public class AddOneStep {
     public AddOneStep(String source, String target) {
         this.source = source;
         this.target = target;
+    }
+    public AddOneStep() {
+        
     }
 
     public String getSource() {
@@ -52,5 +63,37 @@ public class AddOneStep {
 
     public void setTarget(String target) {
         this.target = target;
+    }
+
+    public void setMessageLength(int messageLength) {
+        this.messageLength = messageLength;
+    }
+    
+    public int getMessageLength() {
+        return this.messageLength;
+    }
+    
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+    
+    public String getQuestion() {
+        return this.question;
+    }
+    
+    public void setResult(String newResult) {
+        this.result = newResult;
+    }
+    
+    public String getResult() {
+        return this.result;
+    }
+    
+    public void setUserAnswer(String userResponse) {
+        this.userAnswer = userResponse;
+    }
+    
+    public String getUserAnswer() {
+        return this.userAnswer;
     }
 }

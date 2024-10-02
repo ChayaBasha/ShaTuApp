@@ -323,7 +323,8 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         Step step = model.currentTask().getCurrentStep();
 
         BitShiftStep example = gson.fromJson(step.getData(), BitShiftStep.class);
-
+        
+        System.out.println("Shift right update display called");
         operand = example.getOperand();
         shiftLength = example.getShiftLength();
         operandLabel.setText(operand);
