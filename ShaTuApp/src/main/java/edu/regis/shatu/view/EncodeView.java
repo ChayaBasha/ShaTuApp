@@ -12,13 +12,16 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.Task;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.EncodeAsciiExample;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
-import edu.regis.shatu.model.aol.EncodeAsciiStep.OutputListener;
-
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
+import edu.regis.shatu.svc.ShaTuTutor;
+import edu.regis.shatu.svc.TutorReply;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
@@ -43,6 +46,8 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javax.swing.SwingUtilities;
 
 
@@ -54,7 +59,8 @@ import javax.swing.SwingUtilities;
  * 
  * @author rickb
  */
-public class EncodeView extends GPanel implements ActionListener, EncodeAsciiStep.OutputListener {
+public class EncodeView extends GPanel implements ActionListener {
+    private Gson gson;
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
@@ -72,8 +78,11 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
     private JTextField exampleInputField;
     private JButton stepThroughButton;
     private JButton completeOutputButton;
+    private JButton submitAsciiButton;
+    private JButton newExampleButton;
     private EncodeAsciiStep asciiStep;
     private String lastInput = "";
+    private int currentIndex = 0;
 
     
     // For random character generation
@@ -87,6 +96,7 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
      * Constructor initializes the view by setting up components and layout.
      */
     public EncodeView() {
+        gson = new GsonBuilder().setPrettyPrinting().create();
         questionData = new ArrayList<>();
         initializeComponents();
         initializeLayout();
@@ -129,7 +139,11 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
             handleStepThroughAscii();
         } else if (event.getSource() == completeOutputButton){
             handleCompleteAsciiConversion();
-        }
+        } else if (event.getSource() == submitAsciiButton) {
+            asciiStepQuestion();
+        } else if (event.getSource() == newExampleButton) {
+            handleNewAsciiExampleRequest();
+    }
     }
 
     private void processExampleSelection(String selectedExample) {
@@ -159,8 +173,12 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         setupAsciiTable();
         setupAsciiTableToggleButton();
         setupExampleInputField();
+        submitAsciiButton = new JButton("Submit ASCII Value");
         stepThroughButton = new JButton("Step Through ASCII Conversion");
         completeOutputButton = new JButton("Complete ASCII Conversion");
+        newExampleButton = new JButton("New ASCII Example");
+        newExampleButton.addActionListener(this);
+        submitAsciiButton.addActionListener(this); 
         stepThroughButton.addActionListener(this);
         completeOutputButton.addActionListener(this);
     }
@@ -195,7 +213,6 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
     addc(completeOutputButton, 1, 8, 1, 1, 
          1.0, 0.0, GridBagConstraints.CENTER, 
          GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-    
     addc(messageLengthPanel, 0, 2, 1, 1, 
             1.0, 0.0, GridBagConstraints.CENTER, 
             GridBagConstraints.NONE, 5, 5, 5, 5);
@@ -205,7 +222,6 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
     addc(convertToPanel, 2, 2, 1, 1, 
             1.0, 0.0, GridBagConstraints.CENTER, 
             GridBagConstraints.NONE, 5, 5, 5, 5); 
-
     addc(questionLabel, 0, 3, 3, 1, 
             1.0, 0.0, GridBagConstraints.CENTER, 
             GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
@@ -224,21 +240,110 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
     addc(showHideAsciiTableButton, 3, 0, 1, 1, 
             1.0, 0.0, GridBagConstraints.NORTH, 
             GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    
     addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
             8, 3.0, 1.0, GridBagConstraints.CENTER, 
             GridBagConstraints.BOTH, 5, 5, 5, 5);
+    addc(submitAsciiButton, 0, 9, 1, 1, 
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+      addc(newExampleButton, 1, 9, 1, 1, 
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    
 }
-
-
     
     private void setupExampleInputField() {
-    exampleInputField = new JTextField(20);  // Creates a text field with a preferred width
+    exampleInputField = new JTextField(9);  // Creates a text field with a preferred width
 }
     
-    @Override
     public void appendText(String text) {
         responseArea.append(text + "\n");  // Append new text with a newline for readability
     }
+    
+    private void asciiStepQuestion() {
+    String userInput = responseArea.getText().trim();
+
+    //Reset index if the string changed
+    if (!exampleInputField.getText().equals(lastInput)) {
+        currentIndex = 0;
+        lastInput = exampleInputField.getText();
+        char firstChar = lastInput.charAt(currentIndex);
+        feedbackArea.setText("Please enter the ASCII value for the first"
+                + " character: '" + firstChar + "'.");
+    }
+
+    //Get the example string from the input field
+    String exampleString = exampleInputField.getText();
+
+    //Ensure the current index is within bounds of the string
+    if (currentIndex >= exampleString.length()) {
+        feedbackArea.setText("All characters have been encoded correctly!");
+        return;
+    }
+    
+    //Get the current character based on the current index
+    char currentChar = exampleString.charAt(currentIndex);
+    String expectedAscii = String.valueOf((int) currentChar);
+
+    //Compare the user's input to the expected ASCII value
+    if (userInput.equals(expectedAscii)) {
+        feedbackArea.setText("Correct! The "
+                + "ASCII value for '" + currentChar + 
+                "' is " + expectedAscii + ".");
+
+        //When correct, move to next character
+        currentIndex++;
+
+        //Check if there are more characters to encode
+        if (currentIndex < exampleString.length()) {
+            char nextChar = exampleString.charAt(currentIndex);
+            feedbackArea.append("\nPlease enter the ASCII value for the next character: '" + nextChar + "'.");
+            responseArea.setText("");
+        } else {
+            feedbackArea.append("\nAll characters have been encoded correctly!");
+        }
+    } else {
+        feedbackArea.setText("Incorrect. The ASCII value for"
+                + " '" + currentChar + "' is not " + userInput + ". Try again.");
+    }
+}
+
+
+
+    private void handleNewAsciiExampleRequest() {
+    //Create a new ShaTuTutor object
+    ShaTuTutor tutor = new ShaTuTutor();
+    int length = random.nextInt(6) + 3;
+    
+    //Prepare the JSON request with EncodeAsciiExample data
+    String userInput = exampleInputField.getText();
+    EncodeAsciiExample example = new EncodeAsciiExample(userInput);
+    example.setStringLength(length);
+    String exampleJson = gson.toJson(example);
+    NewExampleRequest request = new NewExampleRequest();
+    request.setExampleType(ExampleType.ASCII_ENCODE);
+    request.setData(exampleJson);
+    String jsonRequest = gson.toJson(request);
+    
+    //Call the backend method using the tutor object
+    TutorReply reply = tutor.newExample(jsonRequest);
+    Task task = gson.fromJson(reply.getData(), Task.class);
+    Step step = task.getSteps().get(0);
+    EncodeAsciiStep asciiStep = gson.fromJson(step.getData(), EncodeAsciiStep.class);
+    EncodeAsciiExample receivedExample = asciiStep.getExample();
+
+    //Display the example string in the UI
+    SwingUtilities.invokeLater(() -> {
+        exampleInputField.setText(receivedExample.getExampleString());
+        feedbackArea.setText("Please enter the ASCII value for the first "
+            + "character: '" + receivedExample.getExampleString().charAt(0) + "'.");
+            responseArea.setText("");
+        });
+
+        currentIndex = 0;
+    }
+
     private void handleStepThroughAscii() {
         String userInput = exampleInputField.getText();
     if (asciiStep == null || !userInput.equals(lastInput)) {
@@ -249,7 +354,7 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
         asciiStep.setMultiStep(true);
     }
     String result = asciiStep.encode();
-    responseArea.setText(result);  // Set the returned output to the response area
+    feedbackArea.setText(result);  // Set the returned output to the response area
 }
     private void handleCompleteAsciiConversion() {
     String userInput = exampleInputField.getText();  // Get user input from text field
@@ -258,7 +363,7 @@ public class EncodeView extends GPanel implements ActionListener, EncodeAsciiSte
     asciiStep.setExample(example);
     asciiStep.setMultiStep(false);  // Set to complete mode
     String result = asciiStep.encode();  // This will complete the ASCII conversion process at once
-    responseArea.setText(result);
+    feedbackArea.setText(result);
 }
 
     /**

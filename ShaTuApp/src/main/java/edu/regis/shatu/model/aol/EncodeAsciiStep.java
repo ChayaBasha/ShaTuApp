@@ -33,7 +33,6 @@ public class EncodeAsciiStep  {
      * step.
      */
     private boolean multiStep;
-    private OutputListener outputListener;
     
     public EncodeAsciiStep() {
     this.multiStep = false;  // Set default to single-step encoding
