@@ -1,3 +1,4 @@
+
 /*
  * SHATU: SHA-256 Tutor
  * 
@@ -18,6 +19,10 @@ import edu.regis.shatu.model.AddOneStep;
 import edu.regis.shatu.model.Hint;
 import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.Task;
+import edu.regis.shatu.svc.ClientRequest;
+import edu.regis.shatu.svc.ServerRequestType;
+import java.util.ArrayList;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;

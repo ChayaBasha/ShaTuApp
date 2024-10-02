@@ -387,6 +387,7 @@ public class ShaTuTutor implements TutorSvc {
         
         // TO_DO: keep track of next step id and sequence id
         // this is really a new example at this point
+
         Step step = new Step(1, 0, StepSubType.STEP_COMPLETION_REPLY);
         step.setCurrentHintIndex(0);
         step.setNotifyTutor(true);

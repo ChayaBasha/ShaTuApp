@@ -64,7 +64,6 @@ public class AddOneStep {
     public void setTarget(String target) {
         this.target = target;
     }
-
     public void setMessageLength(int messageLength) {
         this.messageLength = messageLength;
     }
@@ -96,4 +95,5 @@ public class AddOneStep {
     public String getUserAnswer() {
         return this.userAnswer;
     }
+   
 }
