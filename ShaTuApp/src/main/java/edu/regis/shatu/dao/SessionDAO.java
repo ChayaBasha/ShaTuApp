@@ -69,7 +69,6 @@ public class SessionDAO implements SessionSvc {
             Path path = Paths.get(fileName);
         
             try (Writer writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-                //gson.toJson(session, writer);
                 String jsonStr = gson.toJson(session);
                 writer.write(jsonStr);
                 writer.flush();

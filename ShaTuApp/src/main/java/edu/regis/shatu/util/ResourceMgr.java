@@ -107,9 +107,9 @@ public class ResourceMgr {
 
         try {
             locale = new Locale(getProp(LANGUAGE_PROP), getProp(COUNTRY_PROP));
-  // System.out.println("HERE");
+
             msgs =  ResourceBundle.getBundle(UI_RESOURCE_PATH, locale);
-       
+   
         } catch (MissingPropertyException e) {
             LOGGER.log(Level.SEVERE, "Missing Property", e);
         }
@@ -162,17 +162,7 @@ public class ResourceMgr {
 		throw new FileNotFoundException("property file '" + 
 						path +
 						"' not found in the classpath");
-
 	    properties.load(strm);
-
-          //  System.out.println("Keys: ");
-           // Enumeration itr = properties.keys();
-           // while (itr.hasMoreElements()) {
-           //     System.out.println("Key: " + itr.nextElement());
-          //  }
-            
-            
-
 	} catch (FileNotFoundException e) {
 	    LOGGER.log(Level.ALL, "PropertyMgr-ERR_100: {0}", e.toString());
 	} catch (IOException e) {

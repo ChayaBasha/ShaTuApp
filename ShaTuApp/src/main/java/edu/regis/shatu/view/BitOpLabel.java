@@ -112,7 +112,6 @@ public class BitOpLabel extends JLabel implements MouseListener {
         if (!isSelected) {
             select();
         }
-        
     }
 
     @Override

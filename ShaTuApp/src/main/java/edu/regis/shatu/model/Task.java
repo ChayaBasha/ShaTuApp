@@ -48,12 +48,6 @@ public class Task extends TitledModel {
     private ScaffoldLevel scaffolding = ScaffoldLevel.EXTREME;
     
     /**
-     * Indicates the student's overall progress on this task.
-     * (For IN_PROGRESS tasks, the student model has the current step.)
-     */
-    //private TaskState state = TaskState.PENDING;
-    
-    /**
      * The sequence in which this task is performed in its problem.
      */
     private int sequenceId;
@@ -125,8 +119,6 @@ public class Task extends TitledModel {
     public void setScaffolding(ScaffoldLevel scaffolding) {
         this.scaffolding = scaffolding;
     }
-    
-    
     
     public TaskState getState() {
         return state;

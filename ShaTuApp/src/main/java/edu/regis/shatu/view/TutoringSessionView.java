@@ -85,8 +85,6 @@ public class TutoringSessionView extends GPanel {
         addc(stepSelectorView, 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
-
         addc(stepView, 1, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
                 5, 5, 5, 5);

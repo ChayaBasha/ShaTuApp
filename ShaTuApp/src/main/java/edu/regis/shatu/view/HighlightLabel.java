@@ -84,8 +84,7 @@ public class HighlightLabel extends JLabel implements MouseListener {
      */
     public HighlightLabel(String text) { //, StepSelection stepSelection) 
         super(text, SwingConstants.CENTER);
-        
-        //this.stepSelection = stepSelection;
+
         isSelected = false;
 
         Dimension d = new Dimension(140, 28); // Determined empirically
@@ -120,7 +119,6 @@ public class HighlightLabel extends JLabel implements MouseListener {
         if (!isSelected) {
             select();
         }
-        
     }
 
     @Override

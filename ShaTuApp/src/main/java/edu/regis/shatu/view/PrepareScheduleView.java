@@ -25,12 +25,10 @@ import javax.swing.JLabel;
  * @author rickb
  */
 public class PrepareScheduleView extends UserRequestView implements ActionListener {
-
     
     private JButton testBut;
     
     public PrepareScheduleView() {
-
         initializeComponents();
         initializeLayout();
     }
@@ -46,19 +44,14 @@ public class PrepareScheduleView extends UserRequestView implements ActionListen
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-     
-        
         testBut = new JButton("Verify");
         testBut.setToolTipText("Click to verify input");
     }
     
     private void initializeLayout() {
- 
-        
         addc(testBut, 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
         // Fills the remaining space
         addc(new JLabel(""), 0, 1, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH,
