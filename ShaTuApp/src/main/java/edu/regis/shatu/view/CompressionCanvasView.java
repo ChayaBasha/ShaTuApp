@@ -183,6 +183,14 @@ public class CompressionCanvasView extends UserRequestView {
         g.drawLine(x, y, x, y - 40);
         drawArrowLine(g, x, y -40, x, p.y, 6, 6);
         
+        // Arrow from Kt to modAdditions[2]
+        p = modAdditions[2].getLocation();
+        x = p.x + 60;
+        y = p.y + AddMod256Label.HALF_SIZE;
+        //x2 = p.x + AddMod256Label.HALF_SIZE;
+        //g.drawLine(x, y, x - 40, y);
+        drawArrowLine(g, x, y, x - 40, y, 6, 6);
+        
     }
 
     /**
