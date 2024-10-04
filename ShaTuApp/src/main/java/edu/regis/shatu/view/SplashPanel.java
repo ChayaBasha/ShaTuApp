@@ -82,6 +82,7 @@ public class SplashPanel extends GPanel {
 	layoutComponents();
         
         // ToDo: TMP DEBUGGING (saves me typing), remove this for real
+        
         userId.setText("");
     }
     
@@ -147,6 +148,7 @@ public class SplashPanel extends GPanel {
 	userId.getDocument().addDocumentListener(docListener);
 
 	password = new JPasswordField(20);
+        password.setText("");
 	password.getDocument().addDocumentListener(docListener);
 
 	signInBut = new JButton(SignInAction.instance());

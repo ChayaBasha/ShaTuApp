@@ -18,17 +18,19 @@ import edu.regis.shatu.model.Course;
 
 /**
  * Specifies the API for Course life-cycle maintenance (database persistence).
+ * Defines the methods required for retrieving and managing course data.
  * 
  * @author rickb
  */
 public interface CourseSvc {
+
     /**
      * Locate and return the course with the given id.
      *
-     * @param id  integer key of the course to load.
-     * @return The course with the given id.
-     * @exception ObjNotFoundException No course with the given id exists.
-     * @throws NonRecoverableException see the documentation for this exception.
+     * @param id  The unique identifier of the course to load.
+     * @return The Course object corresponding to the given id.
+     * @throws ObjNotFoundException if no course with the given id exists.
+     * @throws NonRecoverableException if a SQL or database-related error occurs.
      */
     Course retrieve(int id) throws ObjNotFoundException, NonRecoverableException;
 }

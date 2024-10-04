@@ -18,6 +18,8 @@ import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import edu.regis.shatu.model.aol.RotateStep;
 import edu.regis.shatu.view.act.NewExampleAction;
+import edu.regis.shatu.svc.ShaTuTutor;
+import edu.regis.shatu.model.Task;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,11 +28,21 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
-
-
+import javax.swing.text.StyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.BadLocationException;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.util.Random;
+import javax.swing.JPanel;
 /**
  * RotateView class represents the GUI view for rotating strings using ROTR (Right Rotate).
  * It extends GPanel and implements ActionListener and KeyListener interfaces.
@@ -53,7 +65,7 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
     
     private int numRotations;
     private String problemString;
-    private String answer;
+    private JTextPane bitShiftPane;
     private JLabel prompt;
     private JLabel problem;
     private JTextField answerField;
@@ -61,17 +73,22 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
     private JButton hintButton;
     private JButton nextQuestionButton;
     private JButton newExampleButton;
+    private JButton nextStepButton;
     private JRadioButton shortProblem;
     private JRadioButton longProblem;
     private JRadioButton rightRotate;
     private JRadioButton leftRotate;
     private JRadioButton rotate7Bits;
     private JRadioButton rotate16Bits;
-    private ButtonGroup lengthType;
-    private ButtonGroup rotationType;
-    private ButtonGroup rotateAmount;
+    private ButtonGroup rotateRadioGrp;
+    private ButtonGroup lengthRadioGrp;
+    private ButtonGroup amountRadioGrp;
+    private JPanel mainRadioPanel;
+    private JPanel rotateRadioPanel;
+    private JPanel lengthRadioPanel;
+    private JPanel amountRadioPanel;
+    private JPanel buttonPanel;
     private RotateStep currentStep;
-
     /**
      * Initializes the RotateView by creating and laying out its child components.
      */
@@ -116,9 +133,15 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
        else {
            newStep.setAmount(16);
        }
+       ShaTuTutor tutor = new ShaTuTutor();
+       String inputString = tutor.getGeneratedInputString(newStep.getLength());
        //Set the data of the NewExampleRequest to the new RotateStep containing
        //the desired conditions
-       ex.setData(gson.toJson(newStep));
+       newStep.setData(inputString);
+       String rotateStepJson = gson.toJson(newStep);
+
+       // Set the serialized JSON string in the NewExampleRequest
+       ex.setData(rotateStepJson);
        
        return ex;
     }
@@ -151,104 +174,106 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         answerField = new JTextField(10);
         answerField.addKeyListener(this);
         answerField.setHorizontalAlignment(JTextField.CENTER);
-        // Create and initialize the checkButton
+
         checkButton = new JButton("Check");
-        checkButton.addActionListener(this); // Add an action listener for the check button
+        checkButton.addActionListener(this);
 
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
-
-        nextQuestionButton = new JButton("Next Question");
-        nextQuestionButton.addActionListener(this);
         
         newExampleButton = new JButton(NewExampleAction.instance());
         newExampleButton.setToolTipText("Generate New Example Problem");
+        newExampleButton.addActionListener(this);
         
         shortProblem = new JRadioButton("16-bit");
         shortProblem.setSelected(true);
-        
         longProblem = new JRadioButton("32-bit");
         
         rightRotate = new JRadioButton("Right Rotation");
         rightRotate.setSelected(true);
-        
         leftRotate = new JRadioButton("Left Rotation");
         
         rotate7Bits = new JRadioButton("Rotate 7 bits");
         rotate7Bits.setSelected(true);
-        
         rotate16Bits = new JRadioButton("Rotate 16 bits");
         
-        lengthType = new ButtonGroup();
-        lengthType.add(shortProblem);
-        lengthType.add(longProblem);
+        lengthRadioGrp = new ButtonGroup();
+        lengthRadioGrp.add(shortProblem);
+        lengthRadioGrp.add(longProblem);
         
-        rotationType = new ButtonGroup();
-        rotationType.add(rightRotate);
-        rotationType.add(leftRotate);
+        rotateRadioGrp = new ButtonGroup();
+        rotateRadioGrp.add(rightRotate);
+        rotateRadioGrp.add(leftRotate);
         
-        rotateAmount = new ButtonGroup();
-        rotateAmount.add(rotate7Bits);
-        rotateAmount.add(rotate16Bits);
+        amountRadioGrp = new ButtonGroup();
+        amountRadioGrp.add(rotate7Bits);
+        amountRadioGrp.add(rotate16Bits);
     }
     
     /**
      * Lays out the child components in this view using GridBagConstraints.
      */
     private void initializeLayout() {
+        lengthRadioPanel = new JPanel(new GridLayout(2, 1));
+        lengthRadioPanel.add(shortProblem);
+        lengthRadioPanel.add(longProblem);
+        
+        rotateRadioPanel = new JPanel(new GridLayout(2, 1));
+        rotateRadioPanel.add(rightRotate);
+        rotateRadioPanel.add(leftRotate);
+        
+        amountRadioPanel = new JPanel(new GridLayout(2, 1));
+        amountRadioPanel.add(rotate7Bits);
+        amountRadioPanel.add(rotate16Bits);
+        
+        mainRadioPanel = new JPanel(new GridLayout(1, 3));
+        mainRadioPanel.add(lengthRadioPanel);
+        mainRadioPanel.add(rotateRadioPanel);
+        mainRadioPanel.add(amountRadioPanel);
+        
+        buttonPanel = createButtonPanel();
+        
         GridBagConstraints c = new GridBagConstraints();
-        // Add exampleInputLabel centered
-        addc(prompt, 2, 0, 2, 1, 0.2, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        addc(problem, 2, 1, 2, 1, 0.2, 1.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        // Add answerField to the layout, centered
-        addc(answerField, 2, 2, 2, 1, 0.2, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
-                5, 5, 5, 5);
-        addc(checkButton, 2, 3, 2, 1, 0.2, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        addc(hintButton, 2, 4, 2, 1, 0.2, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.NONE,
-                5, 5, 5, 5);
-        addc(nextQuestionButton, 7, 7, 2, 1, 0.0, 0.2,
-                GridBagConstraints.LAST_LINE_END, GridBagConstraints.NONE,
-                10, 5, 5, 5);
-        addc(newExampleButton, 1, 5, 2, 1, 0.0, 0.2, 
-              GridBagConstraints.WEST, GridBagConstraints.NONE,
-              5, 5, 5, 5);
-        addc(shortProblem, 0, 6, 1, 1, 0.0, 0.0, 
-              GridBagConstraints.WEST, GridBagConstraints.NONE, 
-              5, 5, 5, 5);
-        addc(longProblem, 0, 7, 1, 1, 0.0, 0.0, 
-              GridBagConstraints.WEST, GridBagConstraints.NONE, 
-              5, 5, 5, 5);
-        addc(rightRotate, 2, 6, 1, 1, 0.0, 0.0, 
-              GridBagConstraints.WEST, GridBagConstraints.NONE, 
-              5, 5, 5, 5);
-        addc(leftRotate, 2, 7, 1, 1, 0.0, 0.0, 
-              GridBagConstraints.WEST, GridBagConstraints.NONE, 
-              5, 5, 5, 5);
-        addc(rotate7Bits, 3, 6, 1, 1, 0.0, 0.0, 
-              GridBagConstraints.WEST, GridBagConstraints.NONE, 
-              5, 5, 5, 5);
-        addc(rotate16Bits, 3, 7, 1, 1, 0.0, 0.0, 
-              GridBagConstraints.WEST, GridBagConstraints.NONE, 
-              5, 5, 5, 5);
+        // Prompt and problem labels
+        addc(prompt, 0, 0, 2, 1, 0.2, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.NONE,
+            5, 5, 5, 5);
+
+        addc(problem, 0, 1, 2, 1, 0.2, 1.0,
+            GridBagConstraints.CENTER, GridBagConstraints.NONE,
+            5, 5, 5, 5);
+        // Answer field
+        addc(answerField, 0, 2, 2, 1, 1.0, 0.0, 
+            GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, 
+            5, 5, 5, 5);
+        addc(buttonPanel, 0, 3, 3, 1, 1.0, 1.0, 
+            GridBagConstraints.CENTER, GridBagConstraints.NONE, 
+            10, 0, 0, 0);
+        // Radio buttons section
+        addc(mainRadioPanel, 0, 4, 1, 1, 0.0, 0.0, 
+             GridBagConstraints.WEST, GridBagConstraints.NONE, 
+             5, 5, 5, 5);
     }
     
+   
+   private JPanel createButtonPanel(){
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(checkButton);
+        buttonPanel.add(hintButton);
+        buttonPanel.add(newExampleButton);
+       return buttonPanel;
+   }
+   
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == checkButton) {
             onCheckButton();
         } else if (event.getSource() == hintButton) {
             onNextHint();
-        } else if (event.getSource() == nextQuestionButton) {
-            onNextQuestion();
-        } 
+        } else if (event.getSource() == newExampleButton){
+            NewExampleRequest example = newRequest();
+            System.out.println(example.getData());
+        }
     }
 
     @Override
@@ -260,7 +285,7 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         if (e.getKeyCode() == KeyEvent.VK_ENTER && answerField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            verifyAnswer();
+            verifyAnswer(this.problemString, this.numRotations);
         }
     }
 
@@ -277,54 +302,55 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
      * @return The rotated string.
      */
     protected String rotateString(String input, int positions) {
-        this.currentStep.setDirection(RotateStep.Direction.RIGHT);
-        if (input == null || input.isEmpty()) {
+        String inputStr = input.replaceAll("\\s", "");
+        if (inputStr == null || inputStr.isEmpty()) {
             return input;
         }
 
-        int length = input.length();
+        int length = inputStr.length();
         positions = positions % length; // Ensure positions is within the string length
+
+        System.out.println("Original string: " + inputStr);
+        System.out.println("Positions to rotate: " + positions);
 
         if (positions < 0) {
             positions = length + positions; // Handle negative positions
         }
 
         // Perform the rotation
-        // The rotated string is formed by concatenating two substrings:
-        // 1. The substring starting from (length - positions) to the end of the string.
-        // 2. The substring from the beginning of the string to (length - positions).
-        if(currentStep.getDirection() == RotateStep.Direction.RIGHT){
-           answer = input.substring(length - positions) + input.substring(0, length - positions);
+        if (currentStep == null) {
+            System.out.println("currentStep is null!");
+        } else {
+            System.out.println("Direction: " + currentStep.getDirection());
         }
-        else {
-           answer = input.substring(positions) + input.substring(0, positions);
+
+        if (currentStep.getDirection() == RotateStep.Direction.RIGHT) {
+            // Right rotation
+            String rotated = inputStr.substring(length - positions) + inputStr.substring(0, length - positions);
+            System.out.println("Rotated (right): " + rotated);
+            return rotated;
+        } else {
+            // Left rotation
+            String rotated = inputStr.substring(positions) + inputStr.substring(0, positions);
+            System.out.println("Rotated (left): " + rotated);
+            return rotated;
         }
-        return answer;
     }
 
     /**
      * Verifies the user's answer by comparing it with the correct rotated string.
      */
-    private void verifyAnswer() {
-        this.problemString = "0000000001111111";
-        this.numRotations = 7;
-        String correctAnswer = rotateString(problemString, numRotations);
+    private void verifyAnswer(String probString, int numRot) {
+        System.out.println("Problem String: " + probString + "\n" + numRot + "\n");
+        String correctAnswer = rotateString(probString, numRot);  // Use probString instead of problemString
         // Get the text from the answerField when the checkButton is clicked
-        String userAnswer = answerField.getText();
+        String userAnswer = answerField.getText().replaceAll("\\s", "");
 
         if (userAnswer.equals(correctAnswer)) {
             JOptionPane.showMessageDialog(this, "Correct");
         } else {
             JOptionPane.showMessageDialog(this, "Incorrect. The correct answer is: " + correctAnswer);
         }
-    }
-    
-    /**
-     * Displays a message dialog indicating the start of the next question.
-     */
-    private void onNextQuestion() {
-       // prompt = new JLabel("Perform ROTR(" + generateRotations() + ") on: " + generateProblems());
-        JOptionPane.showMessageDialog(this, "Next Question");  
     }
 
     /**
@@ -341,64 +367,53 @@ public class RotateView extends UserRequestView implements ActionListener, KeyLi
         if (answerField.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Please provide an answer");
         } else {
-            verifyAnswer();
+            String prob = this.problemString;
+            int rotations = this.numRotations;
+            System.out.println("This problem string: " + problem + ", this numrotations: " + rotations + "\n");
+            verifyAnswer(prob, rotations);
         }
     }
-    
      /**
      * Update the view with the contents of a new step sent by the tutor
      */
     @Override
-    protected void updateView(){
-       Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    protected void updateView() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Step step = model.currentTask().getCurrentStep();
+        
+        RotateStep example = gson.fromJson(step.getData(), RotateStep.class);
 
-       Step step = model.currentTask().getCurrentStep();
-               
-       //Get the data from the model as a RotateStep object
-       // ***** MODEL IS NOT PROVIDING ANY DATA ******
-       // RotateStep example = gson.fromJson(step.getData(), RotateStep.class);
-       // ***** SKIPPING GSON MODEL FOR NOW, HARDCODING FROM VIEW *****
-       // Also changed variable from 'newStep' to 'example' to match ChoiceFunctionView.java
-       //   It's misleading to create a new one after 'public NewExampleRequest newRequest'
-       RotateStep example = new RotateStep();
-       example.setDirection(RotateStep.Direction.RIGHT);
-       example.setAmount(7);
-       example.setLength(16);
-       example.setData("0000000001111111");
-       //Conditionals to determine the problem displayed by the view
-       if(example.getDirection() == RotateStep.Direction.RIGHT){
-          prompt.setText("Perform ROR(" + example.getAmount() + ") on the following String:");
-       }
-       else {
-          prompt.setText("Perform ROL(" + example.getAmount() + ") on the following String:");
-       }
-       
-       //Update the problem JLabel with the new bit String to be rotated
-       problem.setText(formatProblemString(example.getData()));
-       
+        this.currentStep = example;
+        
+        String problemData = currentStep.getData();
+
+        if (rightRotate.isSelected()) {
+            currentStep.setDirection(RotateStep.Direction.RIGHT);
+        } else {
+            currentStep.setDirection(RotateStep.Direction.LEFT);
+        }
+
+        if (currentStep.getDirection() == RotateStep.Direction.RIGHT) {
+            prompt.setText("Perform ROR(" + currentStep.getAmount() + ") on the following String:");
+        } else {
+            prompt.setText("Perform ROL(" + currentStep.getAmount() + ") on the following String:");
+        }
+
+        // Get and set problem data
+        if (problemData == null || problemData.isEmpty()) {
+            prompt.setText("");
+            problem.setText("Click 'New Example' when ready.");
+        } else {
+            // Set the problem label
+            problem.setText(problemData);
+            this.problemString = problemData;
+            this.numRotations = currentStep.getAmount();
+        }
     }
-
-    /**
-     * UI formatting to separate the problem string by nibble
-     * @param problemString the unspaced problem string to be solved
-     * @return the spaced problem string for user convenience
-     */
-   private String formatProblemString(String problemString){
-      if(problemString.length() > 16){
-         return problemString.substring(0, 4) + ' ' + 
-               problemString.substring(4, 8) + ' ' + 
-               problemString.substring(8, 12) + ' ' + 
-               problemString.substring(12, 16) + ' ' + 
-               problemString.substring(16, 20) + ' ' + 
-               problemString.substring(20, 24) + ' ' + 
-               problemString.substring(24, 28) + ' ' + 
-               problemString.substring(28);
-      }
-      else{
-         return problemString.substring(0, 4) + ' ' + 
-               problemString.substring(4, 8) + ' ' + 
-               problemString.substring(8, 12) + ' ' + 
-               problemString.substring(12);
-      }
-   }   
+    
+    @Override
+    public void setCurrentTask(Task task) {
+        this.model.addCurrentTask(task);
+        updateView();
+    }
 }
