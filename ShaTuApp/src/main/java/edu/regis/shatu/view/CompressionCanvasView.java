@@ -17,6 +17,7 @@ import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import javax.swing.JLabel;
 
 /**
  * Displays a single round of the SHA-256 compression algorithm.
@@ -71,6 +72,8 @@ public class CompressionCanvasView extends UserRequestView {
     private BitOpLabel sigma1Label;
     private BitOpLabel chLabel;
     private BitOpLabel majLabel;
+    private JLabel wLabel = new JLabel();
+    private JLabel kLabel = new JLabel();
 
     public CompressionCanvasView() {
         setLayout(null);
@@ -106,6 +109,18 @@ public class CompressionCanvasView extends UserRequestView {
             p = outWorkingVars[i + 1].getLocation();
             x2 = p.x + WorkingVarLabel.HALF_SIZE;
             drawArrowLine(g, x, y + 300, x2, p.y, 6, 6);
+        }
+        
+        // Lines going into working variables
+        for (int i = 0; i < inWorkingVars.length; i++) {
+            p = inWorkingVars[i].getLocation();
+
+            x = p.x + WorkingVarLabel.HALF_SIZE;
+            y = p.y + WorkingVarLabel.SIZE;
+
+            g.drawLine(x, y, x, y - 60);
+            
+            drawArrowLine(g, x, y -60, x, p.y, 6, 6);
         }
         
         // hide the 'd' to 'e' connection behind the modulo addition
@@ -184,8 +199,8 @@ public class CompressionCanvasView extends UserRequestView {
 
         sigma1Label = new BitOpLabel("s1");
         sigma0Label = new BitOpLabel("s0");
-        chLabel = new BitOpLabel("ch");
-        majLabel = new BitOpLabel("maj");
+        chLabel = new BitOpLabel("Ch");
+        majLabel = new BitOpLabel("Maj");
 
     }
 
