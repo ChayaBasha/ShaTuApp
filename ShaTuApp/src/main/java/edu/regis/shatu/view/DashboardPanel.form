@@ -38,7 +38,7 @@
             <Property name="horizontalTextPosition" type="int" value="0"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="welcomeLabel.setText(&quot;Welcome, &quot; +&quot;User&quot; + &quot;!&quot;);"/>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="welcomeLabel.setText(&quot;Welcome, &quot; + tutoringSession.getAccount().getFirstName() + &quot;!&quot;);"/>
           </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">

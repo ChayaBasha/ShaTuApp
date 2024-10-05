@@ -12,6 +12,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.Account;
+import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.svc.SHA_256;
 import edu.regis.shatu.view.act.NewUserAction;
@@ -138,6 +140,20 @@ public class SplashPanel extends GPanel {
         return signInBut;
     }
     
+    
+    private TutoringSession authenticateUser(String userId, String encryptedPass) {
+    // Simulate server-side authentication and session creation
+    if (userId != null && encryptedPass.equals("validEncryptedPassword")) {
+        TutoringSession session = new TutoringSession();
+        Account account = new Account();
+        account.setUserId(userId);
+        account.setPassword(encryptedPass);
+        session.setAccount(account);
+        return session;
+    }
+    return null;
+}
+
     /**
      * Create the primary child components used in this view
      */
@@ -153,19 +169,20 @@ public class SplashPanel extends GPanel {
 	signInBut = new JButton(SignInAction.instance());
 	signInBut.setEnabled(false);
         signInBut.addActionListener(e -> {
-            // Fetch the userId from the text field
-            String userIdInput = userId.getText();
+        // Fetch the userId and encrypted password
+        String userIdInput = userId.getText();
 
-            if (!userIdInput.isEmpty()) {
+        if (!userIdInput.isEmpty()) {
                 // Encrypt the password for validation (if needed)
                 String encryptedPass = SHA_256.instance().sha256(new String(password.getPassword()));
 
                 // Pass the userId to SplashFrame and initialize the Dashboard
-                SplashFrame.instance().initializeDashboard(userIdInput);
+                SplashFrame.instance().initializeDashboard(authenticateUser(userId.getText(), encryptedPass));
             } else {
                 JOptionPane.showMessageDialog(this, "Please enter your User ID", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
         
         createAcctBut = new JButton(NewUserAction.instance());
     }

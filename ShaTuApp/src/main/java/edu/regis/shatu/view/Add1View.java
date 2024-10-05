@@ -114,6 +114,7 @@ public class Add1View extends UserRequestView implements ActionListener {
      * Initializes all GUI components, setting up their properties and configurations.
      */
     private void initializeComponents() {  
+        source = new JLabel();
         setupDescriptionSection();
         setupQuestionLabel();
         setupInstructionLabel();
@@ -129,7 +130,6 @@ public class Add1View extends UserRequestView implements ActionListener {
      * constraints.
      */
     private void initializeLayout() {
-        
         JPanel buttonPanel = createButtonPanel();  
         JPanel messageLengthPanel = createMessageLengthPanel();
 
@@ -139,27 +139,29 @@ public class Add1View extends UserRequestView implements ActionListener {
                 GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
         addc(messageLengthPanel, 0, 1, 1, 1, 
                 1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 5, 5, 5, 5);        
-        addc(questionLabel, 0, 2, 1, 1, 
+                GridBagConstraints.NONE, 5, 5, 5, 5);
+        addc(source, 0, 2, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER, 
+                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);  // Add the source label here
+        addc(questionLabel, 0, 3, 1, 1, 
                 1.0, 0.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-         addc(instructionsLabel, 0, 3, 1, 1, 
+        addc(instructionsLabel, 0, 4, 1, 1, 
                 1.0, 0.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-        addc(responseScrollPane, 0, 4, 1, 1, 
+        addc(responseScrollPane, 0, 5, 1, 1, 
                 1.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.BOTH, 5, 5, 5, 5);
-        addc(feedbackScrollPane, 0, 5, 1, 1, 
+        addc(feedbackScrollPane, 0, 6, 1, 1, 
                 1.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.BOTH, 5, 5, 5, 5);
-        addc(buttonPanel, 0, 6, 1, 1, 
+        addc(buttonPanel, 0, 7, 1, 1, 
                 1.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.NONE, 10, 0, 0, 0);
         addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
                 7, 2.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.BOTH, 5, 5, 5, 5);
-    }  
-    
+    }
+
     /**
      * Submit the student's answer to the tutor.
      */
@@ -487,12 +489,31 @@ public class Add1View extends UserRequestView implements ActionListener {
     private void updateDisplay() {
         Task task = model.currentTask();
         Step step = task.currentStep();
-        
+
         String data = step.getData();
-        
+
         stepDataModel = gson.fromJson(data, AddOneStep.class);
-        
-        source.setText(stepDataModel.getSource());
+
+        if (stepDataModel != null) {
+            source.setText(stepDataModel.getSource());  // Update the source label
+        } else {
+            System.err.println("stepDataModel is null, unable to update display");
+        }
+    }
+    
+    @Override
+    /**
+     * Updates the description, question, and hints from the model
+     * 
+     * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
+     */
+    protected void updateView() {
+        if (model != null) {
+            // ****TO-DO*****
+            // Update the view's information from the model
+            // Debugging dynamic updates to the model can be done here.
+            System.out.println("Add1VitView");
+        }
     }
 
     @Override

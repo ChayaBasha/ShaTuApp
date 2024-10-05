@@ -101,14 +101,17 @@ public void actionPerformed(ActionEvent evt) {
 
     switch (reply.getStatus()) {
         case "Authenticated":
+            // Deserialize or create TutoringSession object
             TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
-            System.out.println("SIGN IN ACTION: reply.getData() = "+reply.getData());
             SplashFrame.instance().setVisible(true); // Keep SplashFrame visible
-
-            SplashFrame.instance().selectDashboard(session); // Switch to the DashboardPanel
-
+            // Ensure session is not null
+            if (session == null) {
+                System.err.println("TutoringSession is null after authentication");
+            } else {
+                System.out.println("SIGN IN ACTION: session = " + session.getAccount().getFirstName());
+                SplashFrame.instance().selectDashboard(session);  // Pass the session to the dashboard
+            }
             break;
-
         case "InvalidPassword":
             SplashFrame.instance().invalidPass();
             break;

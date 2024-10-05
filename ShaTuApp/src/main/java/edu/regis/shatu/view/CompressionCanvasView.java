@@ -12,7 +12,9 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
+import edu.regis.shatu.model.Task;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -294,6 +296,21 @@ public class CompressionCanvasView extends UserRequestView {
         g.drawLine(x1, y1, x2, y2);
         g.drawPolygon(xpoints, ypoints, 3); // Rickb
        // g.fillPolygon(xpoints, ypoints, 3);
+    }
+    
+    @Override
+    /**
+     * Updates the description, question, and hints from the model
+     * 
+     * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
+     */
+    protected void updateView() {
+        if (model != null) {
+            // ****TO-DO*****
+            // Update the view's information from the model
+            // Debugging dynamic updates to the model can be done here.
+            System.out.println("CompressionCanvasView");
+        }
     }
 
     @Override

@@ -202,29 +202,76 @@ public class SplashFrame extends JFrame {
         selectPanel(SPLASH);
     }
     
+    public void setSession(TutoringSession session) {
+        this.tutoringSession = session;  // Store the session for later use
+        if (this.tutoringSession == null) {
+            System.err.println("Failed to store TutoringSession in SplashFrame");
+        } else {
+            System.out.println("TutoringSession successfully stored in SplashFrame");
+        }
+    }
+
+    public TutoringSession getSession() {
+        return this.tutoringSession;
+    }
     /**
      * Sets the current card panel to Dashboard.
      * @param session
      */
     public void selectDashboard(TutoringSession session) {
-        this.tutoringSession = session;
-        dashboardPanel = new DashboardPanel(this.tutoringSession);
-        selectPanel(DASHBOARD);
+        if (session == null) {
+            System.err.println("TutoringSession is null in selectDashboard");
+            return;  // Exit early to prevent passing a null session
+        }
+
+        this.setSession(session);  // Store the session for later use
+        this.dashboardPanel = new DashboardPanel(session);  // Pass session to DashboardPanel
+        this.cards.add(dashboardPanel, DASHBOARD);
+        this.selectPanel(DASHBOARD);  // Display the dashboard
+        System.out.println("SplashFrame.java: selectDashboard: session = " + session.getAccount().getFirstName());
     }
+
+
+
     
+     /**
+     * Selects a personalized practice screen for each user upon selecting
+     * the dashboard's practice button.
+     * @param session
+     */
+        public void selectPracticeScreen() {
+        TutoringSession session = getSession(); // Retrieve the session
+        if (session == null) {
+            System.err.println("Session is null when switching to practice screen.");
+            return;
+        }
+
+        // Initialize the TutoringSessionView if it's not already initialized
+        if (this.tutoringSessionView == null) {
+            this.tutoringSessionView = new TutoringSessionView(); // Create the tutoring session view
+            cards.add(tutoringSessionView, TUTOR);  // Add it to the CardLayout
+        }
+
+        // Set the model (session) for the TutoringSessionView
+        this.tutoringSessionView.setModel(session);
+
+        // Switch to the tutoring session view
+        selectPanel(TUTOR);
+    }
+
     /**
      * Display the New User panel, which allows the user to create a new
      * student account with associated sign-in information.
      */
     public void selectNewUser() {
-        selectPanel(NEW_USER);
+        this.selectPanel(NEW_USER);
     }
     
     /**
      * Reset the text fields in the new account panel to the empty string.
      */
     public void clearNewAccountPanel() {
-        newAccountPanel.clearFields();
+        this.newAccountPanel.clearFields();
     }
     
     /**
@@ -246,18 +293,15 @@ public class SplashFrame extends JFrame {
     private void selectPanel(String name) {
         CardLayout cl = (CardLayout) (cards.getLayout());
         cl.show(cards, name);
-        selectedPanel = name;
+        this.selectedPanel = name;
         
         if (name.equals(SPLASH)) {
             JButton but = splashPanel.getSigninButton();
         
             SwingUtilities.getRootPane(but).setDefaultButton(but);
         }
-        else if (name.equals(TUTOR)) {
-            System.out.println("Switch to tutoring session view here");
-        }
         else {
-            newAccountPanel.updateFocus();
+            this.newAccountPanel.updateFocus();
         }
     }
     
@@ -265,39 +309,28 @@ public class SplashFrame extends JFrame {
      * Initializes a personalized dashboard screen for each user after sign in.
      * @param userId 
      */
-    public void initializeDashboard(String userId) {
-        dashboardPanel = new DashboardPanel(this.tutoringSession);
-        cards.add(dashboardPanel, DASHBOARD);
-        selectPanel(DASHBOARD);
-    }
-    
-     /**
-     * Selects a personalized practice screen for each user upon selecting
-     * the dashboard's practice button.
-     * @param session
-     */
-    public void selectTutoringSessionView(TutoringSession session) {
-        if(this.tutoringSessionView == null) {
-            this.tutoringSessionView = new TutoringSessionView();
-            cards.add(tutoringSessionView, TUTOR);
+    public void initializeDashboard(TutoringSession session) {
+        if (session == null) {
+            System.err.println("TutoringSession is null in initializeDashboard");
+            return;
         }
 
-        System.out.println("ERROR IS HERE");
-        System.out.println("TutoringSession session = "+session);
-        this.tutoringSessionView.setModel(session);
-        selectPanel(TUTOR);
+        this.setSession(session);  // Store the session for future use
+        this.dashboardPanel = new DashboardPanel(session);  // Pass session to DashboardPanel
+        this.cards.add(dashboardPanel, DASHBOARD);
+        this.selectPanel(DASHBOARD);  // Display the dashboard
     }
 
     /**
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-        cards = new JPanel(new CardLayout());
+        this.cards = new JPanel(new CardLayout());
         
-        splashPanel = new SplashPanel();
-        newAccountPanel = new NewAccountPanel();
+        this.splashPanel = new SplashPanel();
+        this.newAccountPanel = new NewAccountPanel();
                         
-        cards.add(splashPanel, SPLASH);
-        cards.add(newAccountPanel, NEW_USER);
+        this.cards.add(splashPanel, SPLASH);
+        this.cards.add(newAccountPanel, NEW_USER);
     }
 }

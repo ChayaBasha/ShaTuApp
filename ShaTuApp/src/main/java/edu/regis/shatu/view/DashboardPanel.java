@@ -24,7 +24,16 @@ public class DashboardPanel extends javax.swing.JPanel {
 
     public DashboardPanel(TutoringSession tutoringSession) {
         this.tutoringSession = tutoringSession;
-        initComponents();
+
+        if (tutoringSession == null) {
+            System.err.println("TutoringSession is null in DashboardPanel constructor");
+        } else if (tutoringSession.getAccount() == null) {
+            System.err.println("Account is null in DashboardPanel");
+        } else {
+            System.out.println("DashboardPanel initialized for user: " + tutoringSession.getAccount().getFirstName());
+        }
+
+        initComponents();  // Initialize UI components
     }
 
     /**
@@ -58,7 +67,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         welcomeLabel.setText("Welcome!");
         welcomeLabel.setToolTipText("");
         welcomeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        welcomeLabel.setText("Welcome, " +"User" + "!");
+        welcomeLabel.setText("Welcome, " + tutoringSession.getAccount().getFirstName() + "!");
         headerPanel.add(welcomeLabel, java.awt.BorderLayout.CENTER);
 
         logOutButton.setText("Log Out");
@@ -166,7 +175,7 @@ public class DashboardPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void practiceButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_practiceButton1ActionPerformed
-     SplashFrame.instance().selectTutoringSessionView(this.tutoringSession);
+     SplashFrame.instance().selectPracticeScreen();
     }//GEN-LAST:event_practiceButton1ActionPerformed
 
     private void logOutButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOutButtonMouseClicked
