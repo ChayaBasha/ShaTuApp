@@ -141,6 +141,13 @@ public class SplashPanel extends GPanel {
     }
     
     
+    /**
+     * Creates an account instance for the user upon successful sign-in.
+     * @param userId
+     * @param encryptedPass
+     * @return A TutoringSession instance set with the signed-in user's account instance.
+     * Null otherwise.
+     */
     private TutoringSession authenticateUser(String userId, String encryptedPass) {
     // Simulate server-side authentication and session creation
     if (userId != null && encryptedPass.equals("validEncryptedPassword")) {

@@ -17,7 +17,7 @@ import edu.regis.shatu.model.TutoringSession;
  * The dashboard screen to be displayed upon user sign in.
  * Enables user to select a mode from the tutor (teach me, practice, quiz me)
  * Tracks user's progress for each mode.
- * @author Ryley M
+ * @author Ryley MacLagan
  */
 public class DashboardPanel extends javax.swing.JPanel {
     private TutoringSession tutoringSession; // Reference to current tutoringSession

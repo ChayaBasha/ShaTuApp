@@ -202,6 +202,10 @@ public class SplashFrame extends JFrame {
         selectPanel(SPLASH);
     }
     
+    /**
+     * Sets current TutoringSession instance for the SplashFrame.
+     * @param session 
+     */
     public void setSession(TutoringSession session) {
         this.tutoringSession = session;  // Store the session for later use
         if (this.tutoringSession == null) {
@@ -210,10 +214,15 @@ public class SplashFrame extends JFrame {
             System.out.println("TutoringSession successfully stored in SplashFrame");
         }
     }
-
+    
+    /**
+     * Returns the current session for the SplashFrame.
+     * @return The current TutoringSession instance.
+     */
     public TutoringSession getSession() {
         return this.tutoringSession;
     }
+    
     /**
      * Sets the current card panel to Dashboard.
      * @param session
@@ -231,9 +240,6 @@ public class SplashFrame extends JFrame {
         System.out.println("SplashFrame.java: selectDashboard: session = " + session.getAccount().getFirstName());
     }
 
-
-
-    
      /**
      * Selects a personalized practice screen for each user upon selecting
      * the dashboard's practice button.
@@ -307,7 +313,7 @@ public class SplashFrame extends JFrame {
     
     /**
      * Initializes a personalized dashboard screen for each user after sign in.
-     * @param userId 
+     * @param sessin: a reference to the current SplashFrame session instance.
      */
     public void initializeDashboard(TutoringSession session) {
         if (session == null) {

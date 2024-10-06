@@ -20,7 +20,6 @@ import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import edu.regis.shatu.svc.SvcFacade;
 import edu.regis.shatu.svc.TutorReply;
-import edu.regis.shatu.view.MainFrame;
 import edu.regis.shatu.view.SplashFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -103,12 +102,13 @@ public void actionPerformed(ActionEvent evt) {
         case "Authenticated":
             // Deserialize or create TutoringSession object
             TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
+            
             SplashFrame.instance().setVisible(true); // Keep SplashFrame visible
+            
             // Ensure session is not null
             if (session == null) {
                 System.err.println("TutoringSession is null after authentication");
             } else {
-                System.out.println("SIGN IN ACTION: session = " + session.getAccount().getFirstName());
                 SplashFrame.instance().selectDashboard(session);  // Pass the session to the dashboard
             }
             break;
