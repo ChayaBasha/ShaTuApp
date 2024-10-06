@@ -65,7 +65,6 @@ public class ShaOneView extends UserRequestView implements ActionListener, KeyLi
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
-
         exampleInputLabel = new JLabel("Given an 𝑛 bit binary number, output the value of the SHA Σ₁ function");
 
         answerField = new JTextField(10);
@@ -86,29 +85,23 @@ public class ShaOneView extends UserRequestView implements ActionListener, KeyLi
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-
         GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
-
         // Add exampleInputLabel centered
         addc(exampleInputLabel, 0, 0, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         // Add answerField to the layout, centered
         addc(answerField, 0, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         addc(checkButton, 0, 2, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
         addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
         addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
@@ -122,16 +115,13 @@ public class ShaOneView extends UserRequestView implements ActionListener, KeyLi
      * @return The binary result after the right shift operation.
      */
     public String shiftRightString(int x, int places) {
-
         // Perform the right shift operation
         int result = x >> places;
-
         // Print the original and shifted binary numbers
         System.out.println("Original Binary: " + Integer.toBinaryString(x));
         System.out.println("Shifted Binary:  " + Integer.toBinaryString(result));
 
         return Integer.toBinaryString(result);
-
     }
     
     @Override

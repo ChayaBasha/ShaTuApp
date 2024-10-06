@@ -25,7 +25,6 @@ public class BitShiftStep
     private int shiftLength;
     private boolean shiftRight;
     
-    
     // Getter and Setter for operand
     public String getOperand() {
         return operand;

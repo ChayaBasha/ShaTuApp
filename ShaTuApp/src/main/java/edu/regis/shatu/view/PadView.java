@@ -14,7 +14,6 @@ package edu.regis.shatu.view;
 
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.NewExampleRequest;
-import edu.regis.shatu.svc.SHA_256;
 import edu.regis.shatu.svc.SHA_256Listener;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -91,13 +90,11 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
             verifyInput();
         }
     }
-    
-    
+        
     @Override
     public void keyTyped(KeyEvent event){
        if (event.getSource()== charInput){
           String userInput = charInput.getText();
-
        }
     }
     
@@ -112,10 +109,8 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
         String userInput = charInput.getText();
         String binaryString = convertStringToBinary(userInput);
         String formattedBinary = formatBinaryString(binaryString); 
-
         // Adjusting bit positions string to match the formatted binary string
         String bitPositions = "  4|   8|  12|  16|  20|  24|  28|  32|";
-
         // Construct the message with HTML for better control over formatting
         String message = "<html><pre>Bit positions: " + bitPositions + "<br/>Binary:"
                 + "        " + formattedBinary + "</pre></html>";
@@ -130,7 +125,6 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
         StringBuilder sb = new StringBuilder();
         // Pad the binary string to ensure it's 32 bits long
         binary = String.format("%32s", binary).replaceAll(" ", "0");
-
         // Insert spaces every 4 characters from the end to align with bit markers
         for (int i = 0; i < binary.length(); i++) {
             if (i > 0 && i % 4 == 0) {
@@ -145,22 +139,17 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
     
     @Override
     public void keyReleased(KeyEvent event) {
-       
     }
-    
  
     /**
      * Create the child GUI components appearing in this frame.
      */
     private void initializeComponents() {
         exampleCharacter = new JLabel("Perform Padding on the ASCII character to binary:");
-
         charInput = new JTextField(20);
         charInput.addKeyListener(this);
-
         verifyButton = new JButton("Verify");
         verifyButton.addActionListener(this);
-        
     }
     
     /**
@@ -171,27 +160,23 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.NORTHWEST;
-
         // Title label
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
         JLabel titleLabel = new JLabel("Binary Padding Tutor");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 24));
         add(titleLabel, gbc);
-
         // Description label
         gbc.gridy++;
         gbc.gridwidth = 2; gbc.fill = GridBagConstraints.NONE;
         JLabel descriptionLabel = new JLabel("<html><p>Convert the provided ASCII character into a binary format and pad to simulate SHA-256 input preparation.</p></html>");
         add(descriptionLabel, gbc);
-
         // Input label and field
         gbc.gridy++;
         gbc.gridwidth = 1; gbc.fill = GridBagConstraints.HORIZONTAL;
         add(new JLabel("Enter Character: "), gbc);
         gbc.gridx = 1;
         add(charInput, gbc);
-
         // Verify button
         gbc.gridy++;
         gbc.gridx = 0; 
@@ -199,7 +184,6 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
         gbc.fill = GridBagConstraints.NONE; // Remove the fill constraint to prevent horizontal stretching
         verifyButton.setPreferredSize(new Dimension(100, 25)); // Optionally set a preferred size
         add(verifyButton, gbc);
-
         // Filler panel to push everything up
         gbc.gridy++;
         gbc.gridx = 0;
@@ -208,7 +192,7 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
         JPanel filler = new JPanel();
         add(filler, gbc);        
     }
-    
+
     @Override
     /**
      * Updates the description, question, and hints from the model
@@ -223,7 +207,7 @@ public class PadView extends UserRequestView implements ActionListener, KeyListe
             System.out.println("PadView");
         }
     }
-
+    
     @Override
     public NewExampleRequest newRequest() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

@@ -35,7 +35,7 @@ public class WorkingVarLabel extends JLabel implements MouseListener {
     
     public static final int HALF_SIZE = SIZE / 2;
     
-        /**
+    /**
      * This empty border serves as an inset so the text doesn't touch the edges.
      */
     private static final Border EMPTY_BORDER = new EmptyBorder(5, 10, 5, 10);
@@ -82,17 +82,13 @@ public class WorkingVarLabel extends JLabel implements MouseListener {
      */
     public WorkingVarLabel(String text) {
         super(text, SwingConstants.CENTER);
-        
         isSelected = false;
-
         Dimension d = new Dimension(SIZE, SIZE); 
-
         setOpaque(true);
         setBackground(NORMAL_BACKGROUND);
         setBorder(NORMAL_BORDER);
         setMinimumSize(d);
         setSize(d);
-
         this.addMouseListener(this);
     }
     
@@ -112,7 +108,6 @@ public class WorkingVarLabel extends JLabel implements MouseListener {
         if (!isSelected) {
             select();
         }
-        
     }
 
     @Override

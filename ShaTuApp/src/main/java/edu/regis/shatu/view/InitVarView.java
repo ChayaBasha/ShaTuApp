@@ -47,8 +47,6 @@ public class InitVarView extends UserRequestView implements ActionListener {
      */
     private void initializeComponents() {
         test = new JLabel("InitVar Test");
-        
-
     }
     
     /**
@@ -65,7 +63,6 @@ public class InitVarView extends UserRequestView implements ActionListener {
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
     }
-    
     @Override
     /**
      * Updates the description, question, and hints from the model
@@ -80,7 +77,7 @@ public class InitVarView extends UserRequestView implements ActionListener {
             System.out.println("InitVarView");
         }
     }
-    
+
     @Override
     public NewExampleRequest newRequest() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -90,5 +87,4 @@ public class InitVarView extends UserRequestView implements ActionListener {
     public StepCompletion stepCompletion() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
 }

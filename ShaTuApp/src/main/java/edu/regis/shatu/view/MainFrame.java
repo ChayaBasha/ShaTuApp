@@ -105,9 +105,7 @@ public class MainFrame extends JFrame implements WindowListener {
      */
     public void setModel(TutoringSession model) {
         // ToDo: Ask to save changes to existing model?
-        
         this.model = model;
-        
         view.setModel(model);
     }
 
@@ -166,6 +164,5 @@ public class MainFrame extends JFrame implements WindowListener {
      * Display the current model in this frame's view.
      */
     private void updateView() {
-        
     }
 }

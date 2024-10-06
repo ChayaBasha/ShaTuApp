@@ -81,11 +81,8 @@ public class NewExampleAction extends ShaTuGuiAction {
      */
     private NewExampleAction() {
         super("New Example");
-
         putValue(SHORT_DESCRIPTION, "Next Example");
-
         putValue(MNEMONIC_KEY, KeyEvent.VK_N);
-        //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
@@ -100,13 +97,10 @@ public class NewExampleAction extends ShaTuGuiAction {
     public void actionPerformed(ActionEvent evt) {
         System.out.println("actionPerformed");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
-        
- System.out.println("Here1");
+        System.out.println("Here1");
         User user = SplashFrame.instance().getUser();
-         System.out.println("Here2");
+        System.out.println("Here2");
         //Catches a possible IllegalArgumentException thrown by the 
-        //getUserRequestView() method
         try{
             System.out.println("Here3");
            //Get the view that originated the NewExampleRequest
@@ -122,19 +116,13 @@ public class NewExampleAction extends ShaTuGuiAction {
            request.setUserId(user.getUserId());
            request.setSessionId(MainFrame.instance().getModel().getSecurityToken());
            request.setData(gson.toJson(ex));
-           
            //Send the request to the tutor and save the reply
            TutorReply reply = SvcFacade.instance().tutorRequest(request);
-
-           
         switch (reply.getStatus()) {
             case "ERR":
                 // If we get here, there is a coding error in the tutor svc
-                //frame.displayError("Ooops, an unexpected error occurred: SI_1");
                 System.out.println("Coding error  status: " + reply.getStatus());
-
                 break;
-
             default:
                 System.out.println("got a reply");
                //If the status was not an error, we can update the model and the
@@ -143,7 +131,6 @@ public class NewExampleAction extends ShaTuGuiAction {
             }
         }catch(IllegalArgException e){
            System.out.println("Illegal arg exception " + e);
-            }
-        
+        }
     }
 }

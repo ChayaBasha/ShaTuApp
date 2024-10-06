@@ -20,6 +20,7 @@ import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import edu.regis.shatu.svc.SvcFacade;
 import edu.regis.shatu.svc.TutorReply;
+import edu.regis.shatu.view.MainFrame;
 import edu.regis.shatu.view.SplashFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -73,9 +74,7 @@ public class SignInAction extends ShaTuGuiAction {
      */
     private SignInAction() {
         super("Sign In");
-
         putValue(SHORT_DESCRIPTION, "Sign-in to the tutor");
-
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
@@ -88,41 +87,34 @@ public class SignInAction extends ShaTuGuiAction {
      * @param evt ignored
      */
     @Override
-public void actionPerformed(ActionEvent evt) {
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public void actionPerformed(ActionEvent evt) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        User user = SplashFrame.instance().getUser();
+        ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
+        request.setData(gson.toJson(user));
+        TutorReply reply = SvcFacade.instance().tutorRequest(request);
 
-    User user = SplashFrame.instance().getUser();
+        switch (reply.getStatus()) {
+            case "Authenticated":
+                TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
 
-    ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
-    request.setData(gson.toJson(user));
+                // Combining both changes:
+                MainFrame frame = MainFrame.instance();
+                //frame.setVisible(true);
+                frame.setModel(session);  // Set session in MainFrame
 
-    TutorReply reply = SvcFacade.instance().tutorRequest(request);
-
-    switch (reply.getStatus()) {
-        case "Authenticated":
-            // Deserialize or create TutoringSession object
-            TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
-            
-            SplashFrame.instance().setVisible(true); // Keep SplashFrame visible
-            
-            // Ensure session is not null
-            if (session == null) {
-                System.err.println("TutoringSession is null after authentication");
-            } else {
-                SplashFrame.instance().selectDashboard(session);  // Pass the session to the dashboard
-            }
-            break;
-        case "InvalidPassword":
-            SplashFrame.instance().invalidPass();
-            break;
-
-        case "UnknownUser":
-            SplashFrame.instance().unknownUser();
-            break;
-
-        default:
-            // If we get here, there is a coding error in the tutor svc
-            System.out.println("Coding error  status: " + reply.getStatus());
+                SplashFrame.instance().selectDashboard(session);
+                SplashFrame.instance().setVisible(true); // Hide the SplashFrame
+                
+                break;
+            case "InvalidPassword":
+                SplashFrame.instance().invalidPass();
+                break;
+            case "UnknownUser":
+                SplashFrame.instance().unknownUser();
+                break;
+            default:
+                System.out.println("Coding error  status: " + reply.getStatus());
         }
     }
 }

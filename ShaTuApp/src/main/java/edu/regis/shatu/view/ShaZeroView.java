@@ -18,7 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Random;
 
 /**
  * ShaZero class represents the GUI view for performing the SHA Σ₀ function, involving rotation and right shift operations.
@@ -87,7 +86,6 @@ public class ShaZeroView extends UserRequestView implements ActionListener, KeyL
      * Layout the child components in this view.
      */
     private void initializeLayout() {
-
         GridBagConstraints centerConstraints = new GridBagConstraints();
         centerConstraints.anchor = GridBagConstraints.CENTER;
         centerConstraints.insets = new Insets(5, 5, 5, 5);
@@ -96,20 +94,16 @@ public class ShaZeroView extends UserRequestView implements ActionListener, KeyL
         addc(exampleInputLabel, 0, 0, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-
         // Add answerField to the layout, centered
         addc(answerField, 0, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         addc(checkButton, 0, 2, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
         addc(hintButton, 0, 3, 2, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
         addc(nextQuestionButton, 0, 7, 1,1,0.0,0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);

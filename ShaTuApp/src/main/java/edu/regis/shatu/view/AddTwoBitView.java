@@ -12,17 +12,26 @@
  */
 package edu.regis.shatu.view;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
-import edu.regis.shatu.model.Task;
+import edu.regis.shatu.model.aol.BitOpStep;
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
-import javax.swing.*;
-import java.awt.*;
+import edu.regis.shatu.view.act.NewExampleAction;
+import edu.regis.shatu.view.act.StepCompletionAction;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigInteger;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  * AddTwoBitView class represents a GUI view for adding two binary numbers modulo 2^m.
@@ -30,6 +39,7 @@ import java.math.BigInteger;
  * Provides functionality for hints and moving to the next question.
  *
  * @author rickb
+ * @author Amanda Roskelley
  */
 public class AddTwoBitView extends UserRequestView implements ActionListener, KeyListener {
     /**
@@ -37,8 +47,8 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
      */
     private final int m = 8; // will be changed and dynamically updated
 
-    private final String binary1 = "101100";
-    private final String binary2 = "011011";
+    private String binary1 = "101100";
+    private String binary2 = "011011";
     
     private JTextField answerField;
     private JLabel instructionLabel;
@@ -47,7 +57,7 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
     private JButton checkButton; // Add the check button
     private JButton hintButton;
     private JButton nextQuestionButton;
-
+    
     /**
      * Initializes the AddTwoBitView by creating and laying out its child components.
      */
@@ -85,13 +95,13 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         answerField.addKeyListener(this);
 
         // Create and initialize the checkButton
-        checkButton = new JButton("Check");
-        checkButton.addActionListener(this); // Add an action listener for the check button
+        checkButton = new JButton(StepCompletionAction.instance());
+        checkButton.addActionListener(this);
         
         hintButton = new JButton("Hint");
         hintButton.addActionListener(this);
         
-        nextQuestionButton = new JButton("Next Question");
+        nextQuestionButton = new JButton(NewExampleAction.instance());
         nextQuestionButton.addActionListener(this);
     }
 
@@ -228,7 +238,7 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
      * Handles the action for the Next Question button.
      */
     private void onNextQuestion() {
-        JOptionPane.showMessageDialog(this, "Next Question");
+        //JOptionPane.showMessageDialog(this, "Next Question");
     }
 
     /**
@@ -248,30 +258,74 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
             verifyAnswer();
         }
     }
-    
-    @Override
+
     /**
-     * Updates the description, question, and hints from the model
+     * Create and return the server request this view makes when a user selects
+     * that they want to practice a new add two n bits example.
      * 
-     * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
+     * @return 
      */
+    @Override
+    public NewExampleRequest newRequest() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+        NewExampleRequest ex = new NewExampleRequest();
+        
+        ex.setExampleType(ExampleType.ADD_BITS);
+        
+        BitOpStep newStep = new BitOpStep();
+        
+        ex.setData(gson.toJson(newStep));
+        
+        return ex;
+    }
+
+    /**
+     * Gets the current step, then gets the next example, completes the current step
+     * and then gets the next step.
+     * 
+     * @return 
+     */
+    @Override
+    public StepCompletion stepCompletion() {
+        Step currentStep = model.currentTask().currentStep();
+
+        BitOpStep example = gson.fromJson(currentStep.getData(), BitOpStep.class);
+
+        String userResponse = answerField.getText().replaceAll("\\s", "");
+
+        example.getExample().setResult(userResponse);
+
+        StepCompletion step = new StepCompletion(currentStep, gson.toJson(example));
+        
+        step.setStep(currentStep);
+
+        return step;
+    }
+    
+    /**
+     * Update the view with the new operands.
+     * 
+     */
+    @Override
     protected void updateView() {
         if (model != null) {
             // ****TO-DO*****
             // Update the view's information from the model
             // Debugging dynamic updates to the model can be done here.
-            System.out.println("AddTwoVitView");
+            System.out.println("InitVarView");
+            
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+            Step step = model.currentTask().getCurrentStep();
+
+            BitOpStep example = gson.fromJson(step.getData(), BitOpStep.class);
+
+            binary1 = example.getExample().getOperand1();
+            binary2 = example.getExample().getOperand2();
+
+            stringLabel1.setText("binary number1: " + binary1);
+            stringLabel2.setText("binary number2: " + binary2);
         }
-    }
-
-    @Override
-    public NewExampleRequest newRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public StepCompletion stepCompletion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    }    
 }
-

@@ -199,19 +199,15 @@ public class SplashPanel extends GPanel {
      */
     private void layoutComponents() {
         setBackground(new Color(0, 43, 73));
-
 	addc(createHeader(), 0,0, 2,1, 1.0,0.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.HORIZONTAL,
 	     5,5,5,5);	
-
 	addc(createOverview(), 0,1, 1,1, 1.0,1.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,
 	     5,5,5,5);	
-
 	addc(createLogin(), 1,1, 1,1, 0.0,0.0,
 	    GridBagConstraints.NORTHWEST,  GridBagConstraints.NONE,
 	    10,5,5,5);	
-
         addc(new JLabel(" "), 0,2, 2,1, 1.0,1.0,
             GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,
             5,5,5,5);
@@ -249,14 +245,12 @@ public class SplashPanel extends GPanel {
 	panel.addc(createAcctBut, 2,0, 1,1, 0.0,0.0,
 		   GridBagConstraints.EAST, GridBagConstraints.NONE,
 		   5,5,5,5);	
-
 	return panel;
     }
     
      private GPanel createLogin() {
 	GPanel panel = new GPanel();
 	panel.setBackground(new Color(241,196,0));
-
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
 
         JLabel label = new JLabel("Sign in");
@@ -270,7 +264,6 @@ public class SplashPanel extends GPanel {
 	panel.addc(label, 0,1, 1,1, 1.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 		   5,5,5,5);
-
  	panel.addc(userId, 0,2, 2,1, 1.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
 		   0,5,5,5);
@@ -281,19 +274,15 @@ public class SplashPanel extends GPanel {
 	panel.addc(label, 0,3, 1,1, 0.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 		   15,5,5,5);
-
 	panel.addc(password, 0,4, 2,1, 1.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
 		   0,5,5,5);
-
 	panel.addc(signInBut, 0,5, 1,1, 0.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 		   15,5,5,5);
-
 	return panel;
     }
 
-    
     private GPanel createOverview() {
 	GPanel panel = new GPanel();
 	panel.setBackground(new Color(241,196,0));
@@ -315,7 +304,6 @@ public class SplashPanel extends GPanel {
 		   GridBagConstraints.NORTHWEST,  GridBagConstraints.NONE,
 		   0,5,5,5);	
 
-	
 	JTextArea descr = new JTextArea();
 	descr.setEditable(false);
 	descr.setLineWrap(true);
@@ -341,11 +329,10 @@ public class SplashPanel extends GPanel {
 	panel.addc(new JLabel(" "), 0,4, 1,1, 1.0,1.0,
 		   GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,
 		   5,5,5,5);
-        
         return panel;
     }
     
-       /**
+     /**
      * Listens to changes made to the LoginDialog's userId and password fields
      * in order to appropriate enable the buttons in the dialog.
      */
@@ -387,66 +374,9 @@ public class SplashPanel extends GPanel {
 	    if ((userId.getDocument().getLength() == 0) ||
 		(password.getDocument().getLength() == 0)) {
 		signInBut.setEnabled(false);
-
 	    } else {
 		signInBut.setEnabled(true);
 	    }
 	}
     }
-    
-     /**
-     * Encrypt the given password using SHA-256
-     * @param base
-     * @return 
-     */
-    /*
-    public static String encryptSHA256(String base) {
-        // ToDo: use the EncryptionMgr ???
-        try{
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            
-            StringBuilder hexString = new StringBuilder();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-            
-                if(hex.length() == 1) 
-                    hexString.append('0');
-            
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-            
-        } catch(UnsupportedEncodingException | NoSuchAlgorithmException ex){
-            throw new RuntimeException(ex);
-        }
-    }
-    */
-
-    /**
-     * Encrypt the given password using MD5
-     */
-    /*
-    private String encrypt(String password) {
-        // ToDo: use the EncryptionMgr ???
-	try {
-	    MessageDigest m = MessageDigest.getInstance("MD5");
-	    byte[] data = password.getBytes();
-
-	    m.update(data,0,data.length);
-
-	    BigInteger i = new BigInteger(1,m.digest());
-
-	    return String.format("%1$032X", i).toLowerCase();
-
-	} catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(e.getMessage());
-	}
-
-	return "";
-    }
-    */
-    
 }
