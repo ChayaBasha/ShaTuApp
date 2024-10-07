@@ -84,11 +84,8 @@ public class StepCompletionAction extends ShaTuGuiAction {
      */
     private StepCompletionAction() {
         super("Check");
-
         putValue(SHORT_DESCRIPTION, "Check Example");
-
         putValue(MNEMONIC_KEY, KeyEvent.VK_C);
-        //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
@@ -102,20 +99,15 @@ public class StepCompletionAction extends ShaTuGuiAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
         User user = SplashFrame.instance().getUser();
-     
         //Catches a possible IllegalArgumentException thrown by the 
         //getUserRequestView() method
         try{
-
             //Get the current view that initiated the StepCompletionRequest
             UserRequestView exView = GuiController.instance().getStepView().getUserRequestView();
-   
             //Call the overridden newRequest() method to generate an appropriate
             //request to the tutor based on the current view
             StepCompletion ex = exView.stepCompletion();
-            
             //Construct the request with the users data and NewExampleRequest
             //returned by the newRequest() method
             ClientRequest request = new ClientRequest(ServerRequestType.COMPLETED_STEP);
@@ -204,6 +196,10 @@ public class StepCompletionAction extends ShaTuGuiAction {
                                         JOptionPane.showMessageDialog(MainFrame.instance(),
                                         stepReply.getCorrectAnswer(), "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
                                     }
+
+=======
+
+
                                 }
                             }
 
@@ -211,6 +207,9 @@ public class StepCompletionAction extends ShaTuGuiAction {
                     }
 
                 //exView.setCurrentTask(task);  
+
+
+
             }
         }catch(IllegalArgException e){
            System.out.println("Illegal arg exception " + e);

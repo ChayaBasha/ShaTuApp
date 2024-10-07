@@ -12,8 +12,6 @@
  */
 package edu.regis.shatu.model;
 
-import edu.regis.shatu.model.aol.StepSubType;
-
 /**
  *
  * @author rickb

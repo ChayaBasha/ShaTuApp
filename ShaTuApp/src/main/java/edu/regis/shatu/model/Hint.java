@@ -12,8 +12,6 @@
  */
 package edu.regis.shatu.model;
 
-import edu.regis.shatu.model.Model;
-
 /**
  * A suggestion as to the next Step the Student should perform in the tutor.
  * 

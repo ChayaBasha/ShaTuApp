@@ -95,6 +95,5 @@ public class AddOneStep {
     public String getUserAnswer() {
         return this.userAnswer;
     }
-    
-    
+   
 }

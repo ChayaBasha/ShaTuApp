@@ -21,10 +21,5 @@ public class CompleteTaskStep {
     public CompleteTaskStep() {
 
     }
-
-   // @Override
-   // public String getType() {
-   //     return "CompleteTaskStep";
-   // }
 }
 

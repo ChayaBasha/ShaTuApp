@@ -56,7 +56,5 @@ public class LaunchReply {
     public void setSession(TutoringSession session) {
         this.session = session;
     }
-    
-    
 }
 

@@ -19,7 +19,6 @@ import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
-import edu.regis.shatu.model.aol.RotateStep;
 import edu.regis.shatu.view.act.NewExampleAction;
 import edu.regis.shatu.view.act.StepCompletionAction;
 import java.awt.Dimension;
@@ -30,9 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Enumeration;
-import java.util.Random;
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -201,8 +197,7 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
         ActionListener selection = e -> {
             JRadioButton source = (JRadioButton) e.getSource();
             updateProblemSi(source);
-            //generateNewQuestion();
-        };
+         };
 
         fourRadioButton.addActionListener(selection);
         eightRadioButton.addActionListener(selection);
@@ -373,7 +368,6 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
 
         chTruthTablePane = new JScrollPane(chTruthTable);
         chTruthTablePane.setPreferredSize(new Dimension(400, 151));
-        // chTruthTablePane.setSize(new Dimension(400, 151));
         chTruthTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         chTruthTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -407,148 +401,6 @@ public class ChoiceFunctionView extends UserRequestView implements ActionListene
         chTruthTable.getColumnModel().getColumn(5).setPreferredWidth(100);
     }
 
-    /**
-     * Generates an n-bit binary string (length 4, 8, 16, or 32) to be used as
-     * an input into the Ch function. Every four bits are separated by a space
-     * to improve readability.
-     *
-     * @return A string to be used as an input into the function.
-     */
-    /*
-    private String generateInputString() {
-        String inputString;
-        String tempString;
-        StringBuilder inputStringBuilder = new StringBuilder();
-        int num;
-
-        switch (problemSize) {
-            case 4:
-                num = random.nextInt();
-                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
-                inputStringBuilder.append(tempString);
-                break;
-            case 8:
-                num = random.nextInt();
-                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
-                inputStringBuilder.append(tempString);
-
-                inputStringBuilder.append(" ");
-                num = random.nextInt();
-                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
-                inputStringBuilder.append(tempString);
-                break;
-            case 16:
-                num = random.nextInt();
-                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
-                inputStringBuilder.append(tempString);
-
-                for (int i = 0; i < 3; i++) {
-                    inputStringBuilder.append(" ");
-                    num = random.nextInt();
-                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
-                    inputStringBuilder.append(tempString);
-                }
-                break;
-            case 32:
-                num = random.nextInt();
-                tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
-                inputStringBuilder.append(tempString);
-
-                for (int i = 0; i < 7; i++) {
-                    inputStringBuilder.append(" ");
-                    num = random.nextInt();
-                    tempString = String.format("%4s", Integer.toBinaryString(num & 0xF)).replace(' ', '0');
-                    inputStringBuilder.append(tempString);
-                }
-                break;
-            default:
-                break;
-        }
-
-        inputString = inputStringBuilder.toString();
-
-        return inputString;
-    }
-     */
-    /**
-     * Formats the result output by the choice function based on the size of the
-     * problem.
-     *
-     * @param answer the output of the choice function
-     *
-     * @return the binary string representation of the answer
-     */
-    /*
-    private String formatResult(long answer) {
-        String finalResult = "";
-
-        switch (problemSize) {
-            case 4:
-                finalResult = String.format("%4s", Long.toBinaryString(answer)).replace(' ', '0');
-                break;
-            case 8:
-                finalResult = String.format("%8s", Long.toBinaryString(answer)).replace(' ', '0');
-                break;
-            case 16:
-                finalResult = String.format("%16s", Long.toBinaryString(answer)).replace(' ', '0');
-                break;
-            case 32:
-                finalResult = String.format("%32s", Long.toBinaryString(answer)).replace(' ', '0');
-                break;
-            default:
-                break;
-        }
-        return finalResult;
-    }
-     */
-    /**
-     * Generates and displays three new input strings.
-     */
-    /*
-    private void generateNewQuestion() {
-        responseTextArea.setText("");
-        feedbackTextArea.setText("");
-
-        stringX = generateInputString();
-        stringY = generateInputString();
-        stringZ = generateInputString();
-
-        stringXLabel.setText("x: " + stringX);
-        stringYLabel.setText("y: " + stringY);
-        stringZLabel.setText("z: " + stringZ);
-    }
-     */
-    /**
-     * Evaluates the choice function Ch(x, y, z).
-     *
-     * @param x Binary string representation of x.
-     * @param y Binary string representation of y.
-     * @param z Binary string representation of z.
-     * @return Binary string result of Ch(x, y, z).
-     */
-    /*
-    private String choiceFunction(String x, String y, String z) {
-        // Convert the binary strings to integer values
-        String tempX = x.replaceAll("\\s", "");
-        String tempY = y.replaceAll("\\s", "");
-        String tempZ = z.replaceAll("\\s", "");
-
-        long intX = Long.parseLong(tempX, 2);
-        long intY = Long.parseLong(tempY, 2);
-        long intZ = Long.parseLong(tempZ, 2);
-
-        long xy = intX & intY;
-
-        long notX = ~intX & intZ;
-
-        long result = xy ^ notX;
-
-        // Convert the result back to binary string
-        String binaryResult = formatResult(result);
-
-        return binaryResult;
-    }
-     */
     /**
      * Handles the actionPerformed event for buttons in the view.
      *

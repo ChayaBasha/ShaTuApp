@@ -55,13 +55,11 @@ public class NewUserAction extends ShaTuGuiAction {
      */
     private NewUserAction() {
         super("New User");
-        
         putValue(SHORT_DESCRIPTION, "Request to create a new user");
         putValue(MNEMONIC_KEY, KeyEvent.VK_U);
        // putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
     
-
     /**
      * Handle the user's request to create a new user by displaying the new
      * user panel.

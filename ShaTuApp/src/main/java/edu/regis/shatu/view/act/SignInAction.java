@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.model.TutoringSession;
-import edu.regis.shatu.model.Step;
 import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
 import edu.regis.shatu.svc.SvcFacade;
@@ -75,9 +74,7 @@ public class SignInAction extends ShaTuGuiAction {
      */
     private SignInAction() {
         super("Sign In");
-
         putValue(SHORT_DESCRIPTION, "Sign-in to the tutor");
-
         putValue(MNEMONIC_KEY, KeyEvent.VK_S);
         //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
@@ -92,39 +89,26 @@ public class SignInAction extends ShaTuGuiAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         User user = SplashFrame.instance().getUser();
-
         ClientRequest request = new ClientRequest(ServerRequestType.SIGN_IN);
         request.setData(gson.toJson(user));
-
         TutorReply reply = SvcFacade.instance().tutorRequest(request);
-
         switch (reply.getStatus()) {
             case "Authenticated":
                 MainFrame frame = MainFrame.instance();
-
                 TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
-
                 SplashFrame.instance().setVisible(false);
-
                 frame.setVisible(true);
-
                 frame.setModel(session);
-
                 break;
-
             case "InvalidPassword":
                 SplashFrame.instance().invalidPass();
                 break;
-
             case "UnknownUser":
                 SplashFrame.instance().unknownUser();
                 break;
-
             default:
                 // If we get here, there is a coding error in the tutor svc
-                //frame.displayError("Ooops, an unexpected error occurred: SI_1");
                 System.out.println("Coding error  status: " + reply.getStatus());
         }
     }

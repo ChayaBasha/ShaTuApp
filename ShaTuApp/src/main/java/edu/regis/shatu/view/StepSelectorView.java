@@ -54,10 +54,7 @@ public class StepSelectorView extends GPanel {
             selectedStep.getLabel().deselect();
         
         GuiController.instance().getStepView().selectPanel(selection);
-    
         selectedStep = selection;
-        
-       
     }
     
     /**
@@ -77,11 +74,9 @@ public class StepSelectorView extends GPanel {
         addc(label, 0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-        
         addc(createPreprocessingPanel(), 0, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         addc(createHashCompPanel(), 0, 2, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
@@ -103,23 +98,18 @@ public class StepSelectorView extends GPanel {
         panel.addc(label, 0, 0, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         panel.addc(StepSelection.ENCODE.getLabel(), 0, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.ADD1.getLabel(), 0, 2, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.PAD.getLabel(), 0, 3, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.LENGTH.getLabel(), 0, 4, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         return panel;
     }
     
@@ -139,51 +129,39 @@ public class StepSelectorView extends GPanel {
         panel.addc(label, 0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         panel.addc(StepSelection.PREPARE.getLabel(), 0, 1, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.INIT_VARS.getLabel(), 0, 2, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.COMPRESS.getLabel(), 0, 3, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.ROTATE_BITS.getLabel(), 0, 4, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.SHIFT_RIGHT.getLabel(), 0, 5, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         panel.addc(StepSelection.XOR.getLabel(), 0, 6, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         panel.addc(StepSelection.ADD_TWO_BIT.getLabel(), 0, 7, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-                
         panel.addc(StepSelection.CHOICE_FUNCTION.getLabel(), 0, 8, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         panel.addc(StepSelection.MAJ_FUNCTION.getLabel(), 0, 9, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         panel.addc(StepSelection.SHA_ZERO.getLabel(), 0, 10, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-        
         panel.addc(StepSelection.SHA_ONE.getLabel(), 0, 11, 1, 1, 1.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
                 5, 5, 5, 5);
-
         return panel;
     }
 }

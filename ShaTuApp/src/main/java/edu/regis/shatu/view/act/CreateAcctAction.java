@@ -71,19 +71,7 @@ public class CreateAcctAction extends ShaTuGuiAction {
 
         putValue(SHORT_DESCRIPTION, "Create a new user");
         putValue(MNEMONIC_KEY, KeyEvent.VK_A);
-        //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
-
-    /**
-     * Return the Keystroke used to accelerate this action (Doesn't appear to
-     * override the hardware wiring of F1.)
-     *
-     * @return Ctrl-A
-     */
-   // @Override
-   // public KeyStroke getAcceleratorKeyStroke() {
-     //   return KeyStroke.getKeyStroke(KeyEvent.VK_A, CTRL_KEY);
-   // }
 
     /**
      * Handle the user's request to create a new student user account by
@@ -108,22 +96,17 @@ public class CreateAcctAction extends ShaTuGuiAction {
         switch (reply.getStatus()) {
             case "Created":
                 frame.clearNewAccountPanel();
-                
                 msg = "Student user account successfully created\n\n" +
                         "Press okay and we'll return you to the sign-in screen\n\n" +
                         "Then, please sign-in to the tutor using this account.";
-
                 JOptionPane.showMessageDialog(SplashFrame.instance(), msg);
-                    
                 frame.selectSplash();
                 break;
-                
             case "IllegalUserId":
                 msg = "User id already exists: " + account.getUserId();
                 JOptionPane.showMessageDialog(null, msg, "Information",
                                               JOptionPane.INFORMATION_MESSAGE);
-            break;
-            
+                break;
             default: // "ERR" Error should have been logged in tutor.
                 msg = "An unexpected error occurred. Please contact ShaTu support";
                 JOptionPane.showMessageDialog(null, msg, "Error",
