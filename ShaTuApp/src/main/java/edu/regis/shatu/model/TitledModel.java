@@ -11,85 +11,71 @@
  *  or conditions of any kind, either expressed or implied.
  */
 package edu.regis.shatu.model;
-
 /**
- * A model with a title and description.
+ * An abstract class representing a model with a title and description.
+ * All models extending this class will have a title and description that can be displayed to the user.
+ * This class is typically used for entities that are displayed in a GUI.
  * 
  * @author rickb
  */
 public abstract class TitledModel extends Model {
-    /**
-     * The title or name of this model, which can be displayed to the user.
-     */
+    // The title or name of the model, which is displayed to the user.
     protected String title;
-    
-    /**
-     * A brief description of this model, which can be displayed to the user.
-     */
+    // A brief description of the model, also displayed to the user.
     protected String description;
-    
     /**
-     * Instantiate this model with default id, title, and description
+     * Instantiate model with the default id, title, and description.
      */
     public TitledModel() {
         this(DEFAULT_ID);
     }
-    
     /**
-     * Instantiate this model with the given id
+     * Instantiate model with a specific id.
      * 
-     * @param id the model's unique id, as determined by the database used to
-     *           persist this model.
+     * @param id the model's unique id from the database.
      */
     public TitledModel(int id) {
         this(id, "");
     }
-    
     /**
-     * Initialize this model with the given id and title.
+     * Instantiate model with a specific id and title.
      * 
-     * @param id the model's unique id, as determined by the database used to
-     *           persist this model.
-     * @param title a String that can be displayed to the user.
+     * @param id the model's unique id from the database.
+     * @param title the title of the model.
      */
     public TitledModel(int id, String title) {
         super(id);
-        
         this.title = title;
-        description = "";
+        this.description = "";
     }
-
     /**
-     * Return this model's title.
+     * Get title of model.
      * 
-     * @return a string that can be displayed to the user.
+     * @return the title string.
      */
     public String getTitle() {
         return title;
     }
-
     /**
-     * Assign this model's title
+     * Set title of model.
      * 
-     * @param title a String that can be displayed to the user.
+     * @param title the new title to assign.
      */
     public void setTitle(String title) {
         this.title = title;
     }
-
     /**
-     * Return this model's description
+     * Get description of model.
      * 
-     * @return a String that can be displayed to the user 
+     * @return the description string.
      */
     public String getDescription() {
         return description;
     }
-
     /**
-     * Assign this model's description.
+     * Set description of model.
      * 
-     * @param description a String that can be displayed to the user.
+     * @param description the new description to assign.
      */
     public void setDescription(String description) {
         this.description = description;

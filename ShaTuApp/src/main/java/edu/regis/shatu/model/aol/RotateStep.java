@@ -24,11 +24,7 @@ public class RotateStep  {
     private int amount; //The number of bits to rotate in the given direction.
     private int length; //The length of the bit string to be rotated
     private String data; // rotated bits
-    
-    public RotateStep() {
-        
-    }
-
+    private String userResponse;
     public Direction getDirection() {
         return direction;
     }
@@ -59,5 +55,13 @@ public class RotateStep  {
 
     public void setData(String data) {
         this.data = data;
+    }
+    
+    public String getUserResponse(){
+        return userResponse;
+    }
+    
+    public void setUserResponse(String userResponse){
+        this.userResponse = userResponse;
     }
 }

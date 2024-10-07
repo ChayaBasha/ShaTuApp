@@ -77,9 +77,8 @@ public class Add1View extends UserRequestView implements ActionListener {
     private JTable asciiTable;
     private JScrollPane responseScrollPane, asciiTableScrollPane, feedbackScrollPane;
     private String question;
-    
+
     private boolean wasHintRequested = false;
-    
     // For random character generation
     private static final Random random = new Random();
     
@@ -115,7 +114,6 @@ public class Add1View extends UserRequestView implements ActionListener {
             requestHint();
         }
     }
-    
 
     /**
      * Initializes all GUI components, setting up their properties and configurations.
@@ -162,10 +160,12 @@ public class Add1View extends UserRequestView implements ActionListener {
         addc(buttonPanel, 0, 6, 1, 1, 
                 1.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.NONE, 10, 0, 0, 0);
+
         /* Test Test Test sprint 1 in attempt to only display when needed.
         addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
                 7, 2.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.BOTH, 5, 5, 5, 5);*/
+
     }  
     
     /**
@@ -181,7 +181,6 @@ public class Add1View extends UserRequestView implements ActionListener {
   
         // TEMPORARY UNTIL MODEL IS PROPOGATED DOWN 
         // Trim user input and split it into an array based on spaces.
-        
         /* Original code blocked out during sprint 1
         String userInput = responseArea.getText().trim();
         String expectedAnswer = convertMessageToBinaryWithSpaces(question);        
@@ -286,6 +285,9 @@ public class Add1View extends UserRequestView implements ActionListener {
         if (hintText.isEmpty()) {
         feedbackArea.setText("Hint: Check the ASCII table to the right for "
             + "the appropriate representation.");
+<<<<<<< HEAD
+        }
+=======
         }*/
         
         this.feedbackArea.setText("Hint: Check the ASCII Table to the right for guidance.");
@@ -527,7 +529,6 @@ public class Add1View extends UserRequestView implements ActionListener {
      */
     public void setModel(TutoringSession model) {
         this.model = model;
-        
         updateView();
     }
     
