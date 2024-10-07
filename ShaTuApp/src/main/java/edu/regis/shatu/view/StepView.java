@@ -16,7 +16,6 @@ import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.model.TutoringSession;
 
 import edu.regis.shatu.view.act.NewExampleAction;
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import javax.swing.BorderFactory;
@@ -70,6 +69,7 @@ public class StepView extends JPanel {
     private StepCompletionReplyView stepReplyView;
     
     private TutoringSession model;
+
 
     /**
      * Initialize and layout the child components (cards) displayed in this view.
@@ -179,6 +179,7 @@ public class StepView extends JPanel {
                 return exclusiveOrView;
    
             default:
+
                 String msg = "Illegal User RequestView in StepView selection " + selectedPanel;
                 throw new IllegalArgException(msg);
        }
@@ -230,6 +231,7 @@ public class StepView extends JPanel {
         add(initVarView, StepSelection.INIT_VARS.toString());
         add(exclusiveOrView, StepSelection.XOR.toString());
         add(choiceFunctionView, StepSelection.CHOICE_FUNCTION.toString());
+
 
         add(stepReplyView, StepSelection.STEP_REPLY.toString());
     }

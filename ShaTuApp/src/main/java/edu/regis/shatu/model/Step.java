@@ -156,6 +156,17 @@ public class Step extends TitledModel {
     }
     
     public Hint getCurrentHint() {
+        if (hints.isEmpty()) {
+            Hint noHint = new Hint();
+            noHint.setText("Sorry, no hints available");
+            return noHint;
+        }
+        
+        // Reset the index to 0 if it exceeds the list size
+        if (currentHintIndex >= hints.size()) {
+            currentHintIndex = 0;
+        }
+        
         return hints.get(currentHintIndex);
     }
 
