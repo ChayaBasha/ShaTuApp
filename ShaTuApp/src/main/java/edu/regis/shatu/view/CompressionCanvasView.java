@@ -72,8 +72,8 @@ public class CompressionCanvasView extends UserRequestView {
     private BitOpLabel sigma1Label;
     private BitOpLabel chLabel;
     private BitOpLabel majLabel;
-    private JLabel wLabel = new JLabel();
-    private JLabel kLabel = new JLabel();
+    private VariableLabel wLabel;
+    private VariableLabel kLabel;
 
     public CompressionCanvasView() {
         setLayout(null);
@@ -187,8 +187,6 @@ public class CompressionCanvasView extends UserRequestView {
         p = modAdditions[2].getLocation();
         x = p.x + 60;
         y = p.y + AddMod256Label.HALF_SIZE;
-        //x2 = p.x + AddMod256Label.HALF_SIZE;
-        //g.drawLine(x, y, x - 40, y);
         drawArrowLine(g, x, y, x - 40, y, 6, 6);
         
     }
@@ -216,6 +214,9 @@ public class CompressionCanvasView extends UserRequestView {
         sigma0Label = new BitOpLabel("s0");
         chLabel = new BitOpLabel("Ch");
         majLabel = new BitOpLabel("Maj");
+        
+        wLabel = new VariableLabel("Wt");
+        kLabel = new VariableLabel("Kt");
 
     }
 
@@ -271,6 +272,22 @@ public class CompressionCanvasView extends UserRequestView {
         // Has W and K inputs
         modAdditions[2].setLocation(new Point(x+ AddMod256Label.SIZE + 100, y));
         add(modAdditions[2]);
+        
+        // W input location
+        x = modAdditions[2].getLocation().x;
+        y = modAdditions[2].getLocation().y;
+        x -= VariableLabel.HALF_SIZE - 10;
+        y -= VariableLabel.SIZE + 40;
+        wLabel.setLocation(x, y);
+        add(wLabel);
+        
+        // K input location
+        x = modAdditions[2].getLocation().x;
+        y = modAdditions[2].getLocation().y;
+        x += VariableLabel.SIZE + 10;
+        y -= VariableLabel.HALF_SIZE - 10;
+        kLabel.setLocation(x, y);
+        add(kLabel);
         
         // Has Sigma1 inputs and centered on it
         x = sigma1Label.getLocation().x + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE + 150;
