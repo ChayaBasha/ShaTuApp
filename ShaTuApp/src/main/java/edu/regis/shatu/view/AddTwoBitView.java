@@ -326,9 +326,15 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         
         System.out.println("AddTwoBitView update display called");
         
-        binary1 = example.getExample().getOperand1();
-        binary2 = example.getExample().getOperand2();
-        result = calculateModulo(binary1, binary2);
+        try {
+           binary1 = example.getExample().getOperand1();
+            binary2 = example.getExample().getOperand2();
+            result = calculateModulo(binary1, binary2); 
+        }
+        catch (NullPointerException e) {
+            System.out.println("Example is empty.");
+        }
+        
         
         stringLabel1.setText("binary number1: " + binary1);
         stringLabel2.setText("binary number2: " + binary2);
