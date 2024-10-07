@@ -81,7 +81,7 @@ public class TutoringSessionView extends GPanel {
         // StepView must be created before StepSelectorView since the later
         // references the EncodeView in StepView by selecting it.
         stepView = new StepView(); 
-
+        stepSelectorView = new StepSelectorView();
         //button for returning to dashboard
         dashboardButton = new JButton("Go to Dashboard");
         dashboardButton.addActionListener(e -> navigateToDashboard());
