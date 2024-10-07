@@ -197,7 +197,6 @@ public class StepCompletionAction extends ShaTuGuiAction {
                                         stepReply.getCorrectAnswer(), "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
                                     }
 
-=======
 
 
                                 }
