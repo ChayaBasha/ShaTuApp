@@ -44,9 +44,9 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
      */
     private final int m = 8; // will be changed and dynamically updated
 
-    private String binary1 = "101100";
-    private String binary2 = "011011";
-    private String result;
+    private String binary1 = "";
+    private String binary2 = "";
+    private String result = "";
     
     private JTextField answerField;
     private JLabel instructionLabel;
@@ -90,7 +90,7 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         
         stringLabel1 = new JLabel("binary number1 : " );
         stringLabel2 = new JLabel("binary number2 : " );
-        stringLabel3 = new JLabel("Hit New Example to get first set of numbers" );
+        stringLabel3 = new JLabel("Hit New Example to get set of binary numbers" );
         stringLabel4 = new JLabel();  //only for testing that view is communicating with server
         
         answerField = new JTextField(10);
@@ -327,7 +327,7 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         System.out.println("AddTwoBitView update display called");
         
         try {
-           binary1 = example.getExample().getOperand1();
+            binary1 = example.getExample().getOperand1();
             binary2 = example.getExample().getOperand2();
             result = calculateModulo(binary1, binary2); 
         }
@@ -338,6 +338,7 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
         
         stringLabel1.setText("binary number1: " + binary1);
         stringLabel2.setText("binary number2: " + binary2);
+        //this is just for testing purposes and can be removed after it is verified that the check button works
         stringLabel4.setText("the result is: " + result);
 
     }
