@@ -47,7 +47,7 @@ public class StepView extends JPanel {
     
     private Add1View add1View;
     
-    private PadView padView;
+    private Pad0View padView;
     
     private RotateView rotateView;
     
@@ -203,7 +203,7 @@ public class StepView extends JPanel {
         shaZero = new ShaZeroView();
         shaOne = new ShaOneView();
         add1View = new Add1View();
-        padView = new PadView();
+        padView = new Pad0View();
         rotateView = new RotateView();
         initVarView = new InitVarView();
         exclusiveOrView = new ExclusiveOrView();
