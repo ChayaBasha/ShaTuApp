@@ -125,17 +125,17 @@ public class ShaTuTutor implements TutorSvc {
                 try {
                 session = verifySession(request.getUserId(), request.getSessionId());
 
-            } catch (ObjNotFoundException ex) {
-                return createError("No session exists for user: " + request.getUserId(), ex);
-            } catch (IllegalArgException ex) {
-                return createError("Illegal session token sent for user: " + request.getUserId(), ex);
-            } catch (NonRecoverableException ex) {
-                return createError(ex.toString(), ex);
-            }
+                } catch (ObjNotFoundException ex) {
+                    return createError("No session exists for user: " + request.getUserId(), ex);
+                } catch (IllegalArgException ex) {
+                    return createError("Illegal session token sent for user: " + request.getUserId(), ex);
+                } catch (NonRecoverableException ex) {
+                    return createError(ex.toString(), ex);
+                }
 
-            String msg = "Session verified for " + request.getUserId();
-            Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, msg);
-            break;
+                String msg = "Session verified for " + request.getUserId();
+                Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, msg);
+                break;
 
             default: // e.g., signIn itself, newAccount
                 Logger.getLogger(ShaTuTutor.class.getName()).log(Level.INFO, "No token verification required");
@@ -247,16 +247,64 @@ public class ShaTuTutor implements TutorSvc {
      *
      * This method handles ":RequestHint" requests from the GUI client.
      *
-     * @param sessionInfo a
+     * @param jsonObj
      * @return a TutorReply, if successful, the status is "Hint" with data being
      * a displayable hint text string.
      */
-    public TutorReply requestHint(String sessionInfo) {
-        // ToDo: this is simply a hard coded test case
-        TutorReply reply = new TutorReply("Hint");
-        reply.setData("This is a hint from the tutor.");
+    public TutorReply requestHint(String jsonObj) {
+        System.out.println("requestHint");
+        StepCompletion completion = gson.fromJson(jsonObj, StepCompletion.class);
+        
+        Step step = completion.getStep();
+        
+        switch (step.getSubType()) {
+            case INFO_MESSAGE:
+                return completeInfoMsgStep(completion);
 
-        return new TutorReply();
+            case ENCODE_BINARY: // TO_DO: Really the same
+            case ENCODE_HEX:
+            case ENCODE_ASCII:
+               return hintEncode(completion);
+                
+            case ADD_ONE_BIT:
+               return hintAddOne(completion);
+    
+            case PAD_ZEROS:  
+                return hintPadZeros(completion);
+                
+            case ADD_MSG_LENGTH:
+                return hintAddMsgLen(completion);
+                
+            case PREPARE_SCHEDULE:
+                return hintPrepareSchedule(completion);
+            
+            case INITIALIZE_VARS:
+                return hintInitVars(completion);
+                
+            case COMPRESS_ROUND:
+                return hintCompressRound(completion);
+            
+            case ROTATE_BITS:
+                return hintRotateBits(completion);
+    
+            case SHIFT_BITS:
+                return hintShiftBits(completion);
+            
+            case XOR_BITS:
+                return hintXorBits(completion);
+            
+            case ADD_BITS:
+                return hintAddBits(completion);
+            
+            case MAJORITY_FUNCTION:
+                return hintMajorityFunction(completion);
+            
+            case CHOICE_FUNCTION:
+                return hintChoiceFunction(completion);
+                
+            default:
+                return createError("Unknown step completion: " + step.getSubType(), null);
+        }
     }
 
     /**
@@ -457,6 +505,8 @@ public class ShaTuTutor implements TutorSvc {
                                                  bitLength);
         
         StepCompletionReply stepReply = new StepCompletionReply();
+        stepReply.setCorrectAnswer(expectedResult);
+        stepReply.setResponse(result);
 
         if (expectedResult.equals(result)) {
             stepReply.setIsCorrect(true);
@@ -583,8 +633,12 @@ public class ShaTuTutor implements TutorSvc {
         String result = example.getResult();
         
         String expectedResult = choiceFunction(operand1, operand2, operand3, bitLength);
+
+        System.out.println("Expected result: " + expectedResult);
   
         StepCompletionReply stepReply = new StepCompletionReply();
+        stepReply.setCorrectAnswer(expectedResult);
+        stepReply.setResponse(result);
         
         if (expectedResult.equals(result)) {
             stepReply.setIsCorrect(true);
@@ -1540,5 +1594,121 @@ System.out.println("before reply return");
         }
 
         return sb.toString();
+    }
+
+    private TutorReply hintEncode(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintAddOne(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintPadZeros(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintAddMsgLen(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintPrepareSchedule(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintInitVars(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintCompressRound(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintRotateBits(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintShiftBits(StepCompletion completion)
+    {
+        System.out.println("Tutor hintShiftBits");
+        
+        BitShiftStep example = gson.fromJson(completion.getData(), BitShiftStep.class);
+        String operand = example.getOperand();
+        int shiftLength = example.getShiftLength();
+        boolean shiftRight = example.isShiftRight();
+        int bitLength = example.getBitLength();
+        String result = example.getResult();
+        
+        
+        String expectedResult = bitShiftFunction(operand, 
+                                                 shiftLength, 
+                                                 shiftRight, 
+                                                 bitLength);
+        
+        StepCompletionReply stepReply = new StepCompletionReply();
+        stepReply.setCorrectAnswer(expectedResult);
+        stepReply.setResponse(result);
+
+        
+        stepReply.setIsCorrect(false);
+        stepReply.setIsRepeatStep(true);
+        stepReply.setIsNewStep(false);
+        stepReply.setIsNewTask(false);
+        stepReply.setIsNextStep(false);
+        
+        Hint hintOne = new Hint();
+        hintOne.setId(0);
+        String hintText = "There will be " + shiftLength + " zeros on the left";
+        hintOne.setText(hintText);
+        
+        Hint hintTwo = new Hint();
+        hintTwo.setId(1);
+        hintText = "Remove " + shiftLength + " bits from the right";
+        hintTwo.setText(hintText);
+
+        Step step = completion.getStep();
+        step.addHint(hintOne);
+        step.addHint(hintTwo);
+        step.setNotifyTutor(true);
+        step.setIsCompleted(false);
+        step.setSubType(StepSubType.REQUEST_HINT);
+        // ToDo: fix timeouts
+        Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
+        step.setTimeout(timeout);
+        step.setData(gson.toJson(stepReply));
+
+        TutorReply reply = new TutorReply(":Success");
+
+        reply.setData(gson.toJson(step));
+        
+        return reply;
+    }
+
+    private TutorReply hintXorBits(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintAddBits(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintMajorityFunction(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    private TutorReply hintChoiceFunction(StepCompletion completion)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

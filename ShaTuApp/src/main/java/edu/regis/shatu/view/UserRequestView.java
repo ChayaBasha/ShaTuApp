@@ -67,6 +67,10 @@ public abstract class UserRequestView extends GPanel {
      */
     public abstract StepCompletion stepCompletion();
 
+    public TutoringSession getModel() {
+        return this.model;
+    }
+    
     public void setModel(TutoringSession model) {
         gson = new GsonBuilder().setPrettyPrinting().create();
         random = new Random();
