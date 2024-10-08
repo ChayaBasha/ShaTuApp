@@ -16,19 +16,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
-import edu.regis.shatu.model.aol.BitOpExample;
 import edu.regis.shatu.model.aol.BitOpStep;
 import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import edu.regis.shatu.view.act.NewExampleAction;
 import edu.regis.shatu.view.act.StepCompletionAction;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigInteger;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  * AddTwoBitView class represents a GUI view for adding two binary numbers modulo 2^m.
@@ -306,18 +309,23 @@ public class AddTwoBitView extends UserRequestView implements ActionListener, Ke
      */
     @Override
     protected void updateView() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        if (model != null) {
+            // ****TO-DO*****
+            // Update the view's information from the model
+            // Debugging dynamic updates to the model can be done here.
+            System.out.println("InitVarView");
+            
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        Step step = model.currentTask().getCurrentStep();
+            Step step = model.currentTask().getCurrentStep();
 
-        BitOpStep example = gson.fromJson(step.getData(), BitOpStep.class);
-        
-        binary1 = example.getExample().getOperand1();
-        binary2 = example.getExample().getOperand2();
+            BitOpStep example = gson.fromJson(step.getData(), BitOpStep.class);
 
-        stringLabel1.setText("binary number1: " + binary1);
-        stringLabel2.setText("binary number2: " + binary2);
+            binary1 = example.getExample().getOperand1();
+            binary2 = example.getExample().getOperand2();
 
-    }
-    
+            stringLabel1.setText("binary number1: " + binary1);
+            stringLabel2.setText("binary number2: " + binary2);
+        }
+    }    
 }
