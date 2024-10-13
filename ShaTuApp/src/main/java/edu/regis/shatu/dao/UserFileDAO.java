@@ -111,7 +111,6 @@ public class UserFileDAO implements UserSvc {
             return gson.fromJson(jsonObj, User.class);
 
         } catch (IOException ex) { // If username is not found
-            //String errMsg = "find user: " + userId;
             throw new ObjNotFoundException(String.valueOf(userId));
         }
     }

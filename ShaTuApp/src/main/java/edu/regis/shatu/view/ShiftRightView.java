@@ -17,6 +17,7 @@ import edu.regis.shatu.model.Step;
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
+import edu.regis.shatu.view.act.HintAction;
 import edu.regis.shatu.view.act.NewExampleAction;
 import edu.regis.shatu.view.act.StepCompletionAction;
 import javax.swing.*;
@@ -281,7 +282,7 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
         checkButton = new JButton(StepCompletionAction.instance());
         checkButton.addActionListener(this);
 
-        hintButton = new JButton("Hint");
+        hintButton = new JButton(HintAction.instance());
         hintButton.addActionListener(this);
 
         newExampleButton = new JButton(NewExampleAction.instance());
@@ -341,16 +342,13 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
      * @return The result after performing the right shift operation.
      */
     public String shiftRightString(int x, int places) {
-
         // Perform the right shift operation
         int result = x >>> places;
-
         // Print the original and shifted binary numbers
         System.out.println("Original Binary: " + Integer.toBinaryString(x));
         System.out.println("Shifted Binary:  " + Integer.toBinaryString(result));
 
         return Integer.toBinaryString(result);
-
     }
 
     @Override
@@ -378,7 +376,6 @@ public class ShiftRightView extends UserRequestView implements ActionListener, K
     @Override
     public NewExampleRequest newRequest() {
         NewExampleRequest ex = new NewExampleRequest();
-
         //Set example type to the problem associated with the current view
         ex.setExampleType(ExampleType.SHIFT_BITS);
         

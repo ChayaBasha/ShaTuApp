@@ -12,6 +12,8 @@
  */
 package edu.regis.shatu.view;
 
+import edu.regis.shatu.model.Account;
+import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.User;
 import edu.regis.shatu.svc.SHA_256;
 import edu.regis.shatu.view.act.NewUserAction;
@@ -20,14 +22,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -141,6 +140,27 @@ public class SplashPanel extends GPanel {
         return signInBut;
     }
     
+    
+    /**
+     * Creates an account instance for the user upon successful sign-in.
+     * @param userId
+     * @param encryptedPass
+     * @return A TutoringSession instance set with the signed-in user's account instance.
+     * Null otherwise.
+     */
+    private TutoringSession authenticateUser(String userId, String encryptedPass) {
+    // Simulate server-side authentication and session creation
+    if (userId != null && encryptedPass.equals("validEncryptedPassword")) {
+        TutoringSession session = new TutoringSession();
+        Account account = new Account();
+        account.setUserId(userId);
+        account.setPassword(encryptedPass);
+        session.setAccount(account);
+        return session;
+    }
+    return null;
+}
+
     /**
      * Create the primary child components used in this view
      */
@@ -155,6 +175,21 @@ public class SplashPanel extends GPanel {
 
 	signInBut = new JButton(SignInAction.instance());
 	signInBut.setEnabled(false);
+        signInBut.addActionListener(e -> {
+        // Fetch the userId and encrypted password
+        String userIdInput = userId.getText();
+
+        if (!userIdInput.isEmpty()) {
+                // Encrypt the password for validation (if needed)
+                String encryptedPass = SHA_256.instance().sha256(new String(password.getPassword()));
+
+                // Pass the userId to SplashFrame and initialize the Dashboard
+                SplashFrame.instance().initializeDashboard(authenticateUser(userId.getText(), encryptedPass));
+            } else {
+                JOptionPane.showMessageDialog(this, "Please enter your User ID", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         
         createAcctBut = new JButton(NewUserAction.instance());
     }
@@ -164,19 +199,15 @@ public class SplashPanel extends GPanel {
      */
     private void layoutComponents() {
         setBackground(new Color(0, 43, 73));
-
 	addc(createHeader(), 0,0, 2,1, 1.0,0.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.HORIZONTAL,
 	     5,5,5,5);	
-
 	addc(createOverview(), 0,1, 1,1, 1.0,1.0,
 	     GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,
 	     5,5,5,5);	
-
 	addc(createLogin(), 1,1, 1,1, 0.0,0.0,
 	    GridBagConstraints.NORTHWEST,  GridBagConstraints.NONE,
 	    10,5,5,5);	
-
         addc(new JLabel(" "), 0,2, 2,1, 1.0,1.0,
             GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,
             5,5,5,5);
@@ -214,14 +245,12 @@ public class SplashPanel extends GPanel {
 	panel.addc(createAcctBut, 2,0, 1,1, 0.0,0.0,
 		   GridBagConstraints.EAST, GridBagConstraints.NONE,
 		   5,5,5,5);	
-
 	return panel;
     }
     
      private GPanel createLogin() {
 	GPanel panel = new GPanel();
 	panel.setBackground(new Color(241,196,0));
-
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 5));
 
         JLabel label = new JLabel("Sign in");
@@ -235,7 +264,6 @@ public class SplashPanel extends GPanel {
 	panel.addc(label, 0,1, 1,1, 1.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 		   5,5,5,5);
-
  	panel.addc(userId, 0,2, 2,1, 1.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
 		   0,5,5,5);
@@ -246,19 +274,15 @@ public class SplashPanel extends GPanel {
 	panel.addc(label, 0,3, 1,1, 0.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 		   15,5,5,5);
-
 	panel.addc(password, 0,4, 2,1, 1.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
 		   0,5,5,5);
-
 	panel.addc(signInBut, 0,5, 1,1, 0.0,0.0,
 		   GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 		   15,5,5,5);
-
 	return panel;
     }
 
-    
     private GPanel createOverview() {
 	GPanel panel = new GPanel();
 	panel.setBackground(new Color(241,196,0));
@@ -280,7 +304,6 @@ public class SplashPanel extends GPanel {
 		   GridBagConstraints.NORTHWEST,  GridBagConstraints.NONE,
 		   0,5,5,5);	
 
-	
 	JTextArea descr = new JTextArea();
 	descr.setEditable(false);
 	descr.setLineWrap(true);
@@ -306,11 +329,10 @@ public class SplashPanel extends GPanel {
 	panel.addc(new JLabel(" "), 0,4, 1,1, 1.0,1.0,
 		   GridBagConstraints.NORTHWEST,  GridBagConstraints.BOTH,
 		   5,5,5,5);
-        
         return panel;
     }
     
-       /**
+     /**
      * Listens to changes made to the LoginDialog's userId and password fields
      * in order to appropriate enable the buttons in the dialog.
      */
@@ -352,66 +374,9 @@ public class SplashPanel extends GPanel {
 	    if ((userId.getDocument().getLength() == 0) ||
 		(password.getDocument().getLength() == 0)) {
 		signInBut.setEnabled(false);
-
 	    } else {
 		signInBut.setEnabled(true);
 	    }
 	}
     }
-    
-     /**
-     * Encrypt the given password using SHA-256
-     * @param base
-     * @return 
-     */
-    /*
-    public static String encryptSHA256(String base) {
-        // ToDo: use the EncryptionMgr ???
-        try{
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            
-            StringBuilder hexString = new StringBuilder();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-            
-                if(hex.length() == 1) 
-                    hexString.append('0');
-            
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-            
-        } catch(UnsupportedEncodingException | NoSuchAlgorithmException ex){
-            throw new RuntimeException(ex);
-        }
-    }
-    */
-
-    /**
-     * Encrypt the given password using MD5
-     */
-    /*
-    private String encrypt(String password) {
-        // ToDo: use the EncryptionMgr ???
-	try {
-	    MessageDigest m = MessageDigest.getInstance("MD5");
-	    byte[] data = password.getBytes();
-
-	    m.update(data,0,data.length);
-
-	    BigInteger i = new BigInteger(1,m.digest());
-
-	    return String.format("%1$032X", i).toLowerCase();
-
-	} catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(e.getMessage());
-	}
-
-	return "";
-    }
-    */
-    
 }

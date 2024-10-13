@@ -39,16 +39,8 @@ public abstract class ShaTuGuiAction extends AbstractAction {
      * @return 
      */
     protected ImageIcon loadIcon(String imageFileName, String altText) {
-       // String imgLocation = "/img/" + imageName + "." + suffix;
-        
-        //URL imageURL = getClass().getResource(imgLocation);
-        
         // ToDo: Better error reporting
-       // if (imageURL == null)
-         //   System.out.println("Unknown resource: " + imgLocation);
-         
         Image img = ImgFactory.createImage(imageFileName);
-        
         return new ImageIcon(img, altText);
     }
 }

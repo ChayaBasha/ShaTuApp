@@ -23,7 +23,7 @@ public enum StepSelection {
      * Encode the input message as ASCII bytes step.
      */
     ENCODE(new HighlightLabel("Encode as ASCII")), 
-    
+
     ADD1(new HighlightLabel("Add '1' bit")), 
     
     PAD(new HighlightLabel("Pad with '0's")), 
@@ -54,8 +54,6 @@ public enum StepSelection {
     
     // Isn't displayed in StepSelectionView
     STEP_REPLY(new HighlightLabel("Step Reply"));
-
-
 
     private HighlightLabel label;
     
