@@ -97,6 +97,8 @@ public class NewExampleAction extends ShaTuGuiAction {
     public void actionPerformed(ActionEvent evt) {
         System.out.println("actionPerformed");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
+
         System.out.println("Here1");
         User user = SplashFrame.instance().getUser();
         System.out.println("Here2");
