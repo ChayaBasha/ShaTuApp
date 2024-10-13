@@ -54,9 +54,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-
 public class EncodeView extends UserRequestView implements ActionListener, KeyListener, EncodeAsciiStep.OutputListener {
-
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;

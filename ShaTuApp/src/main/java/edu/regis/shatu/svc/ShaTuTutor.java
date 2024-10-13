@@ -385,21 +385,22 @@ public class ShaTuTutor implements TutorSvc {
         return reply;
     }
  
+      /**
+       * Suppose to take the AddOneStep object, take the userResponse and the result
+       * and compare them to see if the userResponse is correct.  A GUI is 
+       * displayed indicating the answer status of being correct or not.
+       * 
+       * @param completion
+       * 
+       * @return 
+       */
     public TutorReply completeAddOneStep(StepCompletion completion) {
-        //TutorReply reply = new TutorReply(":StepCompletionReply");
         
-        AddOneStep completedAddOneStep = gson.fromJson(completion.getData(), AddOneStep.class);
+        AddOneStep completedAddOneStep = gson.fromJson(completion.getData(), AddOneStep.class); // AddOneStep that was created in the stepCompletion function in the AddOneView
         
-        String userAnswer = completedAddOneStep.getUserAnswer();
-        String correctAnswer = completedAddOneStep.getResult();
+        String userAnswer = completedAddOneStep.getUserAnswer(); // What the user submitted as the answer. 
         
-        
-        // As adding one bit doesn't require any additional information,
-        // the data is the string with one '1' bit added. 
-        String data = completion.getData();
-        
-        // TO_DO: look up the problem given to the student , then check if one bit
-        // added
+        String correctAnswer = completedAddOneStep.getResult();  // Binary representation of the question, the correct answer.
         
         StepCompletionReply stepReply = new StepCompletionReply();
         
@@ -418,6 +419,7 @@ public class ShaTuTutor implements TutorSvc {
             stepReply.setIsNextStep(false);
 
         } else {
+            
             stepReply.setIsCorrect(false);
             stepReply.setIsRepeatStep(true);
             stepReply.setIsNewStep(false);
@@ -967,65 +969,25 @@ public class ShaTuTutor implements TutorSvc {
      */
     private TutorReply newAddOneBitExample(TutoringSession session, String jsonData) {
         
-        System.out.println("Start tutor newaddonebitexample");
-        //Random rnd = new Random(); Blocked during Sprint One.
+        System.out.println("Start tutor newaddonebitexample"); // Console Error Checking
 
-        AddOneStep newAddOneBit = gson.fromJson(jsonData, AddOneStep.class);
+        AddOneStep newAddOneBit = gson.fromJson(jsonData, AddOneStep.class); // This is the AddOneStep created in the newExample function from the AddOneView.
         
-        int messageLength = newAddOneBit.getMessageLength();
+        int messageLength = newAddOneBit.getMessageLength(); // Set in the newExample function from the AddOneView, represents the String length that will be generated for the question.
         
-        String question = generateRandomString(messageLength);
+        String question = generateRandomString(messageLength); // Random String generated for the question.
         
         newAddOneBit.setQuestion(question);
         
-        newAddOneBit.setResult(addOneFunction(question));
+        newAddOneBit.setResult(addOneFunction(question)); // Takes the question and translates it into its binary translation in String format.
         
-        System.out.println(newAddOneBit.getResult());
+        System.out.println(newAddOneBit.getResult()); // Console Error checking, can be used to easily get the answer for testing.
         
-        
-        
-        
-        
-        /* Blocked during sprint 1
-        int size = example.getPreSize();
-
-        Account account = session.getAccount();
-
-        if (size == 0) {
-            // ToDo: The tutor should generate the string length and timeout
-            // based on the the current student model.
-
-            size = rnd.nextInt(MAX_ASCII_SIZE - 1) + 1;
-            example.setTimeOut(600);
-        }
-
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            builder.append(String.valueOf(rnd.nextBoolean() ? 0 : 1));
-        }
-
-        example.setPreSize(size);
-        example.setOperand1(builder.toString());
-        example.setOperand2("");
-
-        builder.append("1");
-
-        example.setResult(builder.toString());
-        example.setPostSize(size + 1);
-
-        BitOpStep subStep = new BitOpStep();
-        subStep.setExample(example);
-        subStep.setMultiStep(false);
-
-        Hint hint = new Hint();
-        hint.setSequenceId(0);
-        hint.setText("Add one bit with a value to the given bits.");
-        */
         Step step = new Step(1, 0, StepSubType.ADD_ONE_BIT);
         step.setCurrentHintIndex(0);
-        //step.addHint(hint);
         step.setNotifyTutor(true);
         step.setIsCompleted(false);
+        
         // ToDo: fix timeouts
         Timeout timeout = new Timeout("Complete Step", 0, ":No-Op", "Exceed time");
         step.setTimeout(timeout);
@@ -1451,14 +1413,23 @@ System.out.println("before reply return");
         return binaryResult;
     }
     
+    /**
+     * Suppose to translate a String into a binary representation and returns
+     * the binary translation back as a String.
+     * 
+     * @param question - String value representing the randomly generated question
+     * that needs to be translated into binary form.
+     * 
+     * @return - String binary representation of the question.
+     */
     private String addOneFunction(String question) {
-        String answer;
+        String answer; // Will contain the binary answer that is returned
         
-        char stringArray[] = question.toCharArray();
+        char stringArray[] = question.toCharArray(); // Splits the string into characters
         
-        StringBuilder binary = new StringBuilder();
+        StringBuilder binary = new StringBuilder(); // Ease of altering the string.
 
-        for (int i = 0; i < stringArray.length; i++) {
+        for (int i = 0; i < stringArray.length; i++) { // Visit each character, turn it into binary form, then add it to binary variable.
             String binaryChar = String.format("%8s", Integer.toBinaryString(stringArray[i])).replaceAll(" ", "0");
             
             binary.append(binaryChar).append(" ");
@@ -1582,10 +1553,17 @@ System.out.println("before reply return");
         return new TutorReply(":ERR", errMsg);
     }
     
+    /**
+     * Suppose to generate and return a random string of characters.
+     * 
+     * @param length - number of characters that should be included in the string
+     * 
+     * @return - String value representing the new random string.
+     */
     private String generateRandomString(int length) {
         
         Random random = new Random();
-        StringBuilder sb = new StringBuilder(length);
+        StringBuilder sb = new StringBuilder(length); // StringBuilder allows easier altering of a string.
 
         for (int i = 0; i < length; i++) {
             // Generates a random integer between 32 (inclusive) and 126 (inclusive)
