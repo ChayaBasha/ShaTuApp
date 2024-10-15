@@ -29,6 +29,7 @@ import edu.regis.shatu.svc.TutorReply;
 import edu.regis.shatu.view.GuiController;
 import edu.regis.shatu.view.MainFrame;
 import edu.regis.shatu.view.SplashFrame;
+import edu.regis.shatu.view.StepSelection;
 import edu.regis.shatu.view.UserRequestView;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -83,11 +84,8 @@ public class StepCompletionAction extends ShaTuGuiAction {
      */
     private StepCompletionAction() {
         super("Check");
-
         putValue(SHORT_DESCRIPTION, "Check Example");
-
         putValue(MNEMONIC_KEY, KeyEvent.VK_C);
-        //putValue(ACCELERATOR_KEY, getAcceleratorKeyStroke());
     }
 
     /**
@@ -101,20 +99,15 @@ public class StepCompletionAction extends ShaTuGuiAction {
     @Override
     public void actionPerformed(ActionEvent evt) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
         User user = SplashFrame.instance().getUser();
-     
         //Catches a possible IllegalArgumentException thrown by the 
         //getUserRequestView() method
         try{
-
             //Get the current view that initiated the StepCompletionRequest
             UserRequestView exView = GuiController.instance().getStepView().getUserRequestView();
-   
             //Call the overridden newRequest() method to generate an appropriate
             //request to the tutor based on the current view
             StepCompletion ex = exView.stepCompletion();
-            
             //Construct the request with the users data and NewExampleRequest
             //returned by the newRequest() method
             ClientRequest request = new ClientRequest(ServerRequestType.COMPLETED_STEP);
@@ -122,53 +115,100 @@ public class StepCompletionAction extends ShaTuGuiAction {
             request.setSessionId(MainFrame.instance().getModel().getSecurityToken());
             request.setData(gson.toJson(ex));
            
-           //Send the request to the tutor and save the reply
-           TutorReply reply = SvcFacade.instance().tutorRequest(request);
+            //Send the request to the tutor and save the reply
+            TutorReply reply = SvcFacade.instance().tutorRequest(request);
 
            
-        switch (reply.getStatus()) {
-            case "ERR":
-                // If we get here, there is a coding error in the tutor svc
-                //frame.displayError("Ooops, an unexpected error occurred: SI_1");
-                System.out.println("Coding error  status: " + reply.getStatus());
+            switch (reply.getStatus()) {
+                case "ERR":
+                    // If we get here, there is a coding error in the tutor svc
+                    //frame.displayError("Ooops, an unexpected error occurred: SI_1");
+                    System.out.println("Coding error  status: " + reply.getStatus());
 
-                break;
+                    break;
 
-            default:               
-                Task task = gson.fromJson(reply.getData(), Task.class);
-                
-                if (task.getType() == ExampleType.STEP_COMPLETION_REPLY) {
-                    String selection1 = "Move on to Next Task";
-                    String selection2 = "Try Same Problem Again";
-                    String selection3 = "Try a Similar Problem";
-                    String selection4 = "Show the correct Answer";
-                    
-                    Step step = task.getCurrentStep();
-                    if (step.getSubType() == StepSubType.STEP_COMPLETION_REPLY) {
-                        StepCompletionReply stepReply = gson.fromJson(step.getData(), StepCompletionReply.class);
-                        
-                        if (stepReply.isCorrect()) {
-                            if (stepReply.isNewStep()) {
-                                String prompt = "Congratulations, the anser you submitted is correct." +
-                                        "As I believe you've mastered this outcome, I suggest moving on to a different task." +
-                                        "However, if you'd like you can try this same or a similar problem again.";
-                                String[] options = {selection1, selection2, selection3};
+                default:               
+                    Task task = gson.fromJson(reply.getData(), Task.class);
+
+                    if (task.getType() == ExampleType.STEP_COMPLETION_REPLY) {
+                        String selection1 = "Move on to Next Task";
+                        String selection2 = "Try Same Problem Again";
+                        String selection3 = "Try a Similar Problem";
+                        String selection4 = "Show the correct Answer";
+
+                        Step step = task.getCurrentStep();
+                        if (step.getSubType() == StepSubType.STEP_COMPLETION_REPLY) {
+                            StepCompletionReply stepReply = gson.fromJson(step.getData(), StepCompletionReply.class);
+
+                            if (stepReply.isCorrect()) {
+                                if (stepReply.isNewStep()) {
+                                    String prompt = "Congratulations, the anser you submitted is correct. " +
+                                            "As I believe you've mastered this outcome, I suggest moving on to a different task. " +
+                                            "However, if you'd like you can try a similar problem again.";
+                                    String[] options = {selection1, selection3};
+                                    int choice = JOptionPane.showOptionDialog(MainFrame.instance(),
+                                            prompt, "Tutor Reply", 0, 3, null, options, options[0]);
+
+                                    switch (choice)
+                                    {
+                                        case 0 -> {
+                                            System.out.println("Next Task");
+                                            switch (GuiController.instance().getStepView().getSelectedPanel()) {
+                                                case ENCODE -> {
+                                                    task.setType(ExampleType.ADD_ONE_BIT);
+                                                    StepSelection.ADD1.getLabel().select();
+                                                }
+                                                case SHIFT_RIGHT -> {
+                                                    task.setType(ExampleType.XOR_BITS);
+                                                    StepSelection.XOR.getLabel().select();
+                                                }
+                                                case CHOICE_FUNCTION -> {
+                                                    task.setType(ExampleType.MAJORITY_FUNCTION);
+                                                    StepSelection.MAJ_FUNCTION.getLabel().select();
+                                                }
+                                            }
+                                        }
+                                        default -> {
+                                            System.out.println("try similar problem");
+                                            NewExampleAction.instance().actionPerformed(null);
+                                        }
+                                    }
+                                }
+                            } else if (stepReply.getResponse().isEmpty()) {
+                                String prompt = "Please enter an answer";
+                                JOptionPane.showMessageDialog(MainFrame.instance(),
+                                        prompt, "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                String prompt = "Unfortunately, your answer was incorrect. Please try agian.";
+                                String[] options = {selection2, selection3, selection4};
                                 int choice = JOptionPane.showOptionDialog(MainFrame.instance(),
-                                        "Tutor Reply", prompt, 0, 3, null, options, options[0]);
-                                
-                                if (choice == 0) {
-                                    System.out.println("Next Task");
-                                } else if (choice == 1) {
-                                    System.out.println("try again");
-                                } else {
-                                    System.out.println("try similar problem");
+                                        prompt, "Tutor Reply", 0, 3, null, options, options[0]);
+
+                                switch (choice)
+                                {
+                                    case 0 -> System.out.println("try again");
+                                    case 1 -> {
+                                        System.out.println("try similar problem");
+                                        NewExampleAction.instance().actionPerformed(null);
+                                    }
+                                    default -> {
+                                        System.out.println("show answer");
+                                        JOptionPane.showMessageDialog(MainFrame.instance(),
+                                        stepReply.getCorrectAnswer(), "Tutor Reply", JOptionPane.INFORMATION_MESSAGE);
+                                    }
+
+
+
                                 }
                             }
+
                         }
                     }
-                }
-                
-                exView.setCurrentTask(task);  
+
+                //exView.setCurrentTask(task);  
+
+
+
             }
         }catch(IllegalArgException e){
            System.out.println("Illegal arg exception " + e);

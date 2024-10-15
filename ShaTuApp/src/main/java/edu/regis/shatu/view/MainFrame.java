@@ -27,6 +27,7 @@ import javax.swing.JFrame;
  * @author rickb
  */
 public class MainFrame extends JFrame implements WindowListener {
+
     /**
      * The singleton instance of this frame.
      */
@@ -67,7 +68,6 @@ public class MainFrame extends JFrame implements WindowListener {
      */
     private MainFrame() {
         super("ShaTut");
-
         Dimension screenSize = Toolkit. getDefaultToolkit(). getScreenSize();
         screenSize.width = screenSize.width - SCREEN_SIZE_INSET ;
         screenSize.height = screenSize.height - SCREEN_SIZE_INSET - 10;
@@ -105,9 +105,7 @@ public class MainFrame extends JFrame implements WindowListener {
      */
     public void setModel(TutoringSession model) {
         // ToDo: Ask to save changes to existing model?
-        
         this.model = model;
-        
         view.setModel(model);
     }
 
@@ -146,6 +144,7 @@ public class MainFrame extends JFrame implements WindowListener {
      */
     private void initializeComponents() {
         view = new TutoringSessionView(); 
+
     }
     
     /**
@@ -153,6 +152,7 @@ public class MainFrame extends JFrame implements WindowListener {
      */
     private void layoutComponents() {
         setContentPane(view);
+        
     }
     
     /**
@@ -166,6 +166,5 @@ public class MainFrame extends JFrame implements WindowListener {
      * Display the current model in this frame's view.
      */
     private void updateView() {
-        
     }
 }

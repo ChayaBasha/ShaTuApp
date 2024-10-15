@@ -21,9 +21,11 @@ import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.Task;
 import edu.regis.shatu.svc.ClientRequest;
 import edu.regis.shatu.svc.ServerRequestType;
-import java.util.ArrayList;
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
+import edu.regis.shatu.view.act.NewExampleAction;
+import edu.regis.shatu.view.act.StepCompletionAction;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,7 +39,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.util.Random;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -50,31 +51,25 @@ import javax.swing.JTextField;
 public class Add1View extends UserRequestView implements ActionListener {
     /**
      * The part of the tutoring session model that is displayed in this view.
+     * Not currently used, but may be later in development, keep it in mind.
      */
     private AddOneStep stepDataModel;
     
     /**
-     * The source input string to which one bit is to be added.
-     */
-    private JLabel source;
-    
-    /**
      * The number of hint requests made by the student.
      */
-    private int hintsRequested;  
-    
+    private int hintsRequested;  // Will need to be added to hint method for tutor at some point.
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
     private JTextField messageLengthField;
     private JTextArea responseArea;
     private JTextArea feedbackArea;
-    private JButton submitButton, nextButton, hintButton;
+    private JButton checkButton, nextButton, hintButton;
     private JTable asciiTable;
     private JScrollPane responseScrollPane, asciiTableScrollPane, feedbackScrollPane;
     private String question;
+    private boolean wasHintRequested = false; // Used to display,undisplay the ASCII Table.
     
-    // For random character generation
-    private static final Random random = new Random();
     
     /**
      * Utility reference used to convert between Java and JSon. 
@@ -89,7 +84,6 @@ public class Add1View extends UserRequestView implements ActionListener {
         
         initializeComponents();
         initializeLayout();
-        prepareNextQuestion();
     }
     
     /**
@@ -100,7 +94,7 @@ public class Add1View extends UserRequestView implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == submitButton) {
+        if (event.getSource() == checkButton) {
             submitAnswer();           
         } else if (event.getSource() == nextButton) {
             prepareNextQuestion();
@@ -108,7 +102,6 @@ public class Add1View extends UserRequestView implements ActionListener {
             requestHint();
         }
     }
-    
 
     /**
      * Initializes all GUI components, setting up their properties and configurations.
@@ -155,120 +148,54 @@ public class Add1View extends UserRequestView implements ActionListener {
         addc(buttonPanel, 0, 6, 1, 1, 
                 1.0, 1.0, GridBagConstraints.CENTER, 
                 GridBagConstraints.NONE, 10, 0, 0, 0);
-        addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
-                7, 2.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
     }  
     
     /**
      * Submit the student's answer to the tutor.
      */
     public void submitAnswer() {
-        // SOME OF THE CODE TO USE ONCE MODEL IS SETUP PROPERLY AND PROPOGATED DOWN
-        //ClientRequest request = new ClientRequest(ServerRequestType.COMPLETED_STEP); 
-        //request.setUserId(model.getAccount().getUserId());
-        //request.setSessionId(model.getSecurityToken());    
-        //request.setData(gson.toJson(stepDataModel));        
-        //GuiController.instance().tutorRequest(request);
-  
-        // TEMPORARY UNTIL MODEL IS PROPOGATED DOWN 
-        // Trim user input and split it into an array based on spaces.
-        String userInput = responseArea.getText().trim();
-        String expectedAnswer = convertMessageToBinaryWithSpaces(question);        
         
-        // Check if the number of user entries matches the number of expected answers.
-        if (userInput.length() != expectedAnswer.length()) {
-            feedbackArea.setText("Incorrect number of entries. Please ensure your answer matches the expected format.");
-        } else {                                    
-            // If all user entries matched the expected answers, provide positive feedback.
-            if (userInput.equals(expectedAnswer)) {
-                feedbackArea.setText("Correct!");
-            } else {
-                // Otherwise, inform the user that their entries were incorrect, and display the expected answers.
-                feedbackArea.setText(String.format("Incorrect. Please check "
-                        + "your entries. Expected: \n%s", expectedAnswer));
-            }
+        if (this.responseArea.getText().equals("")) {
+            this.feedbackArea.setText("Please provide an answer");
         }
-        
-        // Disable the submit button to prevent re-submission, and enable the next question button.
-        submitButton.setEnabled(false);
-        hintButton.setEnabled(false);
-        nextButton.setEnabled(true);
+        else {
+            // do nothing right now, aiming to have the tutor handle hint related items
+            // The step completion function handles the answer.
+        }
     }
     
     /**
      * Prepares the view for the next question by clearing previous inputs
      * and feedback and generating a new question.
      * 
-     * THIS NEEDS UPDATED ONCE MODEL IS CONFIGURED AND EXAMPLE IS COMPLETED
+     * THIS NEEDS UPDATED ONCE MODEL IS CONFIGURED AND EXAMPLE IS COMPLETED.
+     * AT THIS POINT IN DEVELOPMENT, MAY BE DELETED IF NO OTHER USE IS FOUND
      */
     private void prepareNextQuestion() {
-        // Clear any existing feedback and response from the previous question.
-        feedbackArea.setText("");
-        responseArea.setText("");
-        
-        try {      
-            // Parse the desired message length from the input field.
-            int messageLength = Integer.parseInt(messageLengthField.getText().trim());
-            question = generateRandomString(messageLength);
-                        
-            // Update the question label with the new question.
-            questionLabel.setText(String.format("Convert the following "
-                    + "string to binary and append a 1 bit to it: %s", question));
-            
-            // Enable the buttons, ready for the user's response.
-            // DO WE WANT TO DISABLE NEXT BUTTON ONCE MODEL COMPLETED AND LEARNING
-            // AI GENERATES THE QUESTIONS?
-            submitButton.setEnabled(true);
-            hintButton.setEnabled(true);
-            nextButton.setEnabled(true);
-        } catch (NumberFormatException e) {
-            // If the message length input is not a valid number, inform the user.
-            feedbackArea.setText("Please enter a valid message length.");
-        }
+        // The tutor now handles the next question utilizing the newExample function.
+        // This may no longer be needed, but left incase it could be used later.
     }
     
     /**
-     * Process the students request for a hint.
+     * Process the students request for a hint. Suppose to load the ACII table,
+     * no need to get rid of it once loaded, suppose to be done in the updateView function.
      * 
      * ***NEED TO REVIEW THIS AND THINK ABOUT IT.
      */
     public void requestHint() {
-        String hintText ="";
+        this.feedbackArea.setText("Hint: Check the ASCII Table to the right for guidance.");
         
-        try {
-        Task task = model.currentTask();
-        Step step = task.currentStep();
-        
-        ArrayList<Hint> hints = step.getHints();
-        int maxHints = hints.size();
-        
-        if (hintsRequested < maxHints) {
-            hintText = hints.get(hintsRequested).getText();
-        } else {
-            hintText = "Sorry, there are no additional hints for this step.";
-        } 
-        
-        hintsRequested++;
-        
-        ClientRequest request = new ClientRequest(ServerRequestType.REQUEST_HINT); 
-        request.setUserId(model.getAccount().getUserId());
-        request.setSessionId(model.getSecurityToken());
-        request.setData(":HintGiven");
-        
-        GuiController.instance().tutorRequest(request);
-        
-        } catch (Exception e) {
-            // Handle any other unexpected exceptions
-            e.printStackTrace();
-            // Consider logging the error or taking corrective action
+        // Suppose to load the ASCII table into the view.
+        if (!this.isAncestorOf(asciiTableScrollPane)) {
+            addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
+                    7, 2.0, 1.0, GridBagConstraints.CENTER, 
+                    GridBagConstraints.BOTH, 5, 5, 5, 5);
+            
+            this.wasHintRequested = true; // Used in the updateView function
         }
         
-        // TEMPORARY UNTIL WE LOAD THE HINT FROM THE MODEL
-        if (hintText.isEmpty()) {
-        feedbackArea.setText("Hint: Check the ASCII table to the right for "
-            + "the appropriate representation.");
-        }
+        this.revalidate(); // Ensures the view is updated
+        this.repaint(); // Ensures the view is updated
     }
     
     /**
@@ -292,10 +219,15 @@ public class Add1View extends UserRequestView implements ActionListener {
                             + " immediately after the last character of the message,"
                             + " before any zero padding. This ensures that the "
                             + " padded message remains unique and distinguishable"
-                            + " from the original.</p>" +
+                            + " from the original. Please use the format: "
+                            + "######## # or if message length is two: "
+                            + "######## ######## # and keep going depending on "
+                            + "the message length. The single # would be "
+                            + "the 1 you are suppose to add.</p>" +
                     "</body>" +
                     "</html>"
             );
+        
         descriptionTextPane.setEditable(false);
         descriptionTextPane.setBackground(null);
         descriptionTextPane.setBorder(null);
@@ -338,13 +270,14 @@ public class Add1View extends UserRequestView implements ActionListener {
      * 
      */
     private void setupButtons() {
-        submitButton = new JButton("Submit");
-        nextButton = new JButton("Next");
+        checkButton = new JButton(StepCompletionAction.instance());
+        checkButton.addActionListener(this);
+
         hintButton = new JButton("Hint");
-        submitButton.addActionListener(this);
-        nextButton.addActionListener(this);
         hintButton.addActionListener(this);
-        nextButton.setEnabled(true);
+
+        nextButton = new JButton(NewExampleAction.instance());
+        nextButton.addActionListener(this);
     }
     
     /**
@@ -353,7 +286,7 @@ public class Add1View extends UserRequestView implements ActionListener {
      */
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        buttonPanel.add(submitButton);
+        buttonPanel.add(checkButton);
         buttonPanel.add(nextButton);
         buttonPanel.add(hintButton);
         return buttonPanel;
@@ -388,46 +321,6 @@ public class Add1View extends UserRequestView implements ActionListener {
         instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
     }
     
-    /**
-    * Converts a string message into its binary representation with spaces and
-    * adds a 1 bit.
-    * Each character in the message is represented by its corresponding 8-bit 
-    * binary ASCII value separated by spaces with the addition of a 1 bit.
-    *
-    * @param message The text message to be converted.
-    * @return The binary representation of the message with spaces.
-    */
-    public String convertMessageToBinaryWithSpaces(String message) {
-        StringBuilder binaryStringBuilder = new StringBuilder();
-
-        for (char character : message.toCharArray()) {
-            String binaryString = String.format("%8s", Integer.toBinaryString(character))
-                                    .replaceAll(" ", "0");
-            if (binaryStringBuilder.length() > 0) {
-                binaryStringBuilder.append(" ");
-            }
-            binaryStringBuilder.append(binaryString);
-        }
-        binaryStringBuilder.append(" 1");
-        return binaryStringBuilder.toString();
-    }
-
-    /**
-     * Generates and returns a random character from ASCII table values 
-     * 
-     * @return int the random integer to be returned
-     */
-    private String generateRandomString(int length) {
-        StringBuilder sb = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            // Generates a random integer between 32 (inclusive) and 126 (inclusive)
-            int randomChar = 32 + random.nextInt(95); // 126 - 32 + 1 = 95
-            sb.append((char) randomChar);
-        }
-
-        return sb.toString();
-    }
     
     /**
      * Initializes the ASCII table and its scroll pane
@@ -468,40 +361,95 @@ public class Add1View extends UserRequestView implements ActionListener {
         }
     }
     
-    /**
-     * Sets the TutoringSession model for this view and updates the view based 
-     * on the model's data.
-     * 
-     * @param model the TutoringSession model to set
-     */
-    public void setModel(TutoringSession model) {
-        this.model = model;
-        
-        updateDisplay();
-    }
     
     /**
-     * Display the current tutoring session model in this view.
+     * Display the current tutoring session model in this view.  Also removes 
+     * the ASCII table if present.  Is called when a newExample function is called.
      * 
      */
-    private void updateDisplay() {
-        Task task = model.currentTask();
-        Step step = task.currentStep();
+    @Override
+    protected void updateView() {
         
-        String data = step.getData();
+        System.out.println("Add One Bit update display called"); // Console Error Checking.
         
-        stepDataModel = gson.fromJson(data, AddOneStep.class);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         
-        source.setText(stepDataModel.getSource());
+        Step step = model.currentTask().currentStep();
+        
+        AddOneStep newAddOneBit = gson.fromJson(step.getData(), AddOneStep.class);
+        
+        // Clear any existing feedback and response from the previous question.
+        feedbackArea.setText("");
+        responseArea.setText("");
+        
+        this.question = newAddOneBit.getQuestion();
+        
+        if (this.question == null) { // When Add One is first selected, will be null until a new example is generated.
+            questionLabel.setText("Please click new example button to get started");
+        }
+        
+        else {
+            questionLabel.setText(String.format("Convert the following "
+                        + "string to binary and append a 1 bit to it: %s", question));
+        }
+        
+        if (this.wasHintRequested) {
+            this.remove(this.asciiTableScrollPane); // Removes the ASCII table
+            this.revalidate(); // Ensures the view is updated
+            this.repaint(); // Ensures the view is updated
+        }
     }
 
+    /**
+     * When the new example button is clicked, this function is called,
+     * will create a AddOneStep object, set the message length, and send it
+     * to the shaTuTutor file to finish creating the new example.
+     * 
+     * @return
+     */
     @Override
     public NewExampleRequest newRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        NewExampleRequest ex = new NewExampleRequest();
+        
+        ex.setExampleType(ExampleType.ADD_ONE_BIT);
+        
+        AddOneStep newStep = new AddOneStep();
+        
+        newStep.setMessageLength(Integer.parseInt(messageLengthField.getText().trim()));
+        
+        System.out.println("Before newstep"); // Console Error Checking
+        System.out.println(newStep); // Console Error Checking
+        System.out.println("After newstep"); // Console Error Checking
+        
+        ex.setData(gson.toJson(newStep));
+        
+        return ex;
     }
 
+    /**
+     * When the check button is clicked, this function is called.  Will take the 
+     * AddOneStep object that was created in the newRequest function, and set the
+     * users answer in the response area to the object, and then will go to
+     * the ShaTuTutor file to finish comparing the answer.
+     * 
+     * @return 
+     */
     @Override
     public StepCompletion stepCompletion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        Step currentStep = model.currentTask().currentStep();
+        
+        AddOneStep completedAddOneStep = gson.fromJson(currentStep.getData(), AddOneStep.class); // AddOneStep created in the newRequest function
+        
+        String userResponse = this.responseArea.getText().replaceAll("\\s", "");
+        
+        completedAddOneStep.setUserAnswer(userResponse); // User answer in the response area
+        
+        StepCompletion step = new StepCompletion(currentStep, gson.toJson(completedAddOneStep));
+        
+        step.setStep(currentStep);
+        
+        return step;
     }
 }

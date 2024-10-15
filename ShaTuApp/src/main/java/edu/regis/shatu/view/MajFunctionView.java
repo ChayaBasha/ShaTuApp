@@ -615,24 +615,6 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         }
     }
     
-    /**
-     * Create and return the server request this view makes when a user selects
-     * that they want to practice a new choice function example.
-     *
-     * @return
-     */
-    
-    
-    /*@Override
-    public NewExampleRequest newRequest() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public StepCompletion stepCompletion() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }*/
-    
     @Override
     protected void updateView() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

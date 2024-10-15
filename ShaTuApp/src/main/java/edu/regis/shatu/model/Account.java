@@ -26,20 +26,8 @@ public class Account {
      * The user's login id (e.g. "name@university.edu").
      */
     protected String userId;
-
-    /**
-     * SHA-256 encrypted password.
-     */
     protected String password;
-    
-      /**
-     * The first name of this user.
-     */
     protected String firstName;
-    
-    /**
-     * The last name of this student user.
-     */
     protected String lastName;
 
     public String getUserId() {
@@ -75,8 +63,5 @@ public class Account {
     }
     
     public Account() {
-
     }
-    
-  
 }

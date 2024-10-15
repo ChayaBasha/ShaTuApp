@@ -53,6 +53,9 @@ public class StepCompletionReply {
      * If true, data contains a Json encoded Step object.
      */
     private boolean isNextStep;
+    
+    private String correctAnswer;
+    private String response;
 
     /**
      * A JSon encoded Task or Step object (see above flags for the type).
@@ -121,6 +124,22 @@ public class StepCompletionReply {
 
     public void setIsNextStep(boolean isNextStep) {
         this.isNextStep = isNextStep;
+    }
+    
+    public String getCorrectAnswer() {
+        return correctAnswer;
+    }
+    
+    public void setCorrectAnswer(String correctAnswer) {
+        this.correctAnswer = correctAnswer;
+    }
+    
+    public String getResponse() {
+        return response;
+    }
+    
+    public void setResponse(String response) {
+        this.response = response;
     }
 
     public String getData() {

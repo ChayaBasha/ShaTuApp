@@ -67,12 +67,14 @@ public abstract class UserRequestView extends GPanel {
      */
     public abstract StepCompletion stepCompletion();
 
+    public TutoringSession getModel() {
+        return this.model;
+    }
+    
     public void setModel(TutoringSession model) {
         gson = new GsonBuilder().setPrettyPrinting().create();
         random = new Random();
-        
         this.model = model;
-
         updateView();
     }
     
@@ -84,7 +86,6 @@ public abstract class UserRequestView extends GPanel {
      */
     public void setCurrentTask(Task task) {
        model.addCurrentTask(task);
-       
        updateView();
     }
     

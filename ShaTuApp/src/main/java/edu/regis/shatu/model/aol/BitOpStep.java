@@ -43,21 +43,11 @@ public class BitOpStep {
         this.example = example;
     }
 
-    /**
-     * 
-     * @return 
-     */
     public boolean isMultiStep() {
         return isMultiStep;
     }
 
-    /**
-     * 
-     * @param isMmultiStep 
-     */
     public void setMultiStep(boolean isMultiStep) {
         this.isMultiStep = isMultiStep;
     }
-    
-    
 }

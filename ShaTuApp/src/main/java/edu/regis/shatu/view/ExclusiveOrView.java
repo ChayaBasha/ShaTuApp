@@ -404,34 +404,11 @@ public class ExclusiveOrView extends UserRequestView implements ActionListener, 
      * @return The result of XOR operation as a binary string.
      */
     private String performXOR(String x, String y) {
-        /**
-        // Ensure that both input strings have the same length
-        int maxLength = Math.max(binary1.length(), binary2.length());
-        binary1 = padWithZeroes(binary1, maxLength);
-        binary2 = padWithZeroes(binary2, maxLength);
-
-        StringBuilder result = new StringBuilder();
-
-        for (int i = 0; i < maxLength; i++) {
-            char char1 = binary1.charAt(i);
-            char char2 = binary2.charAt(i);
-
-            if (char1 != char2) {
-                result.append('1');
-            } else {
-                result.append('0');
-            }
-        }
-        */
-        
         String tempX = x.replaceAll("\\s", "");
         String tempY = y.replaceAll("\\s", "");
 
-        
-        
         long intX = Long.parseLong(tempX, 2);
         long intY = Long.parseLong(tempY, 2);
-
 
         long result = intX ^ intY;
 
@@ -511,15 +488,6 @@ public class ExclusiveOrView extends UserRequestView implements ActionListener, 
      * Verifies the user's answer against the correct answer.
      */
     private void verifyAnswer() {
-        /**
-        String correctAnswer = performXOR(BINARY_NUMBER_ONE, BINARY_NUMBER_TWO);
-        if (correctAnswer.equals(answerField.getText())) {
-            JOptionPane.showMessageDialog(this, "Correct!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Incorrect, correct answer: " + correctAnswer);
-        }
-        */
-        
         String correctAnswer = performXOR(stringX, stringY);
         String userResponse = responseTextArea.getText();
         
@@ -564,6 +532,21 @@ public class ExclusiveOrView extends UserRequestView implements ActionListener, 
             feedbackTextArea.setText("Please provide an answer");
         } else {
             verifyAnswer();
+        }
+    }
+    
+    @Override
+    /**
+     * Updates the description, question, and hints from the model
+     * 
+     * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
+     */
+    protected void updateView() {
+        if (model != null) {
+            // ****TO-DO*****
+            // Update the view's information from the model
+            // Debugging dynamic updates to the model can be done here.
+            System.out.println("ExclusiveOrView");
         }
     }
 

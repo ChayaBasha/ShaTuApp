@@ -14,6 +14,10 @@ package edu.regis.shatu.view;
 
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.model.aol.EncodeAsciiExample;
+import edu.regis.shatu.model.aol.EncodeAsciiStep;
+import edu.regis.shatu.model.aol.EncodeAsciiStep.OutputListener;
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -29,6 +33,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -39,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+
 /**
  * This class represents a view for encoding messages into ASCII bytes.
  * It provides a user interface for inputting text, submitting it for encoding,
@@ -47,7 +54,7 @@ import javax.swing.JTextField;
  * 
  * @author rickb
  */
-public class EncodeView extends UserRequestView implements ActionListener {
+public class EncodeView extends UserRequestView implements ActionListener, KeyListener, EncodeAsciiStep.OutputListener {
     private TutoringSession model;    
     private JTextPane descriptionTextPane;
     private JLabel questionLabel, instructionsLabel, messageLengthLabel;
@@ -62,6 +69,12 @@ public class EncodeView extends UserRequestView implements ActionListener {
     private JRadioButton toDecimalRadioButton, toBinaryRadioButton, toHexRadioButton, toSymbolRadioButton;
     private ButtonGroup fromFormatButtonGroup, toFormatButtonGroup;
     private List<Integer> questionData;
+    private JTextField exampleInputField;
+    private JButton stepThroughButton;
+    private JButton completeOutputButton;
+    private EncodeAsciiStep asciiStep;
+    private String lastInput = "";
+
     
     // For random character generation
     private static final Random random = new Random();
@@ -69,7 +82,6 @@ public class EncodeView extends UserRequestView implements ActionListener {
     // Conversion From and To types initialized
     private ConversionType conversionFrom = ConversionType.SYMBOL;
     private ConversionType conversionTo = ConversionType.BINARY; 
-
     
     /**
      * Constructor initializes the view by setting up components and layout.
@@ -82,12 +94,10 @@ public class EncodeView extends UserRequestView implements ActionListener {
         prepareNextQuestion();
     }
 
-    @Override
     public NewExampleRequest newRequest() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
     public StepCompletion stepCompletion() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -113,8 +123,55 @@ public class EncodeView extends UserRequestView implements ActionListener {
             prepareNextQuestion();
         } else if (event.getSource() == hintButton) {
             showHint();
+        } else if  (event.getSource() == stepThroughButton) {
+            handleStepThroughAscii();
+        } else if (event.getSource() == completeOutputButton){
+            handleCompleteAsciiConversion();
         }
     }
+    
+     @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    /**
+     * Handles the keyPressed event for the view.
+     *
+     * @param e The KeyEvent that occurred.
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER && responseArea.getText().equals("")) {
+            feedbackArea.setText("Please provide an answer");
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            verifyAnswer();
+        }
+    }
+
+    /**
+     * Handles the keyReleased event for the view.
+     *
+     * @param e The KeyEvent that occurred.
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+    
+    private void verifyAnswer() {
+      
+    }
+
+    private void processExampleSelection(String selectedExample) {
+    // Create a new EncodeAsciiExample instance with the selected string
+    EncodeAsciiExample example = new EncodeAsciiExample(selectedExample);
+
+    // Create an instance of EncodeAsciiStep and set the example
+    EncodeAsciiStep asciiStep = new EncodeAsciiStep();
+    asciiStep.setExample(example);  // Set the example in the step
+
+    // Call the encode method to perform ASCII conversion
+    asciiStep.encode();  // This will print out the ASCII conversion or perform further actions
+}
       
     /**
      * Initializes all GUI components, setting up their properties and configurations.
@@ -129,6 +186,11 @@ public class EncodeView extends UserRequestView implements ActionListener {
         setupFeedbackArea();
         setupButtons();
         setupAsciiTable();
+        setupExampleInputField();
+        stepThroughButton = new JButton("Step Through ASCII Conversion");
+        completeOutputButton = new JButton("Complete ASCII Conversion");
+        stepThroughButton.addActionListener(this);
+        completeOutputButton.addActionListener(this);
     }
 
     /**
@@ -136,44 +198,94 @@ public class EncodeView extends UserRequestView implements ActionListener {
      * constraints.
      */
     private void initializeLayout() {
-        
-        JPanel buttonPanel = createButtonPanel();  
-        JPanel messageLengthPanel = createMessageLengthPanel();
-        JPanel convertFromPanel = createConvertFromRadioPanel();
-        JPanel convertToPanel = createConvertToRadioPanel();
 
-        // Add components to the layout
-        addc(descriptionTextPane, 0, 0, 3, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-        addc(messageLengthPanel, 0, 1, 1, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(convertFromPanel, 1, 1, 1, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 5, 5, 5, 5);
-        addc(convertToPanel, 2, 1, 1, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 5, 5, 5, 5); 
-        addc(questionLabel, 0, 2, 3, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-         addc(instructionsLabel, 0, 3, 3, 1, 
-                1.0, 0.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
-        addc(responseScrollPane, 0, 4, 3, 1, 
-                1.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
-        addc(feedbackScrollPane, 0, 5, 3, 1, 
-                1.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
-        addc(buttonPanel, 0, 6, 3, 1, 
-                1.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.NONE, 10, 0, 0, 0);
-        addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
-                7, 3.0, 1.0, GridBagConstraints.CENTER, 
-                GridBagConstraints.BOTH, 5, 5, 5, 5);
+    JPanel buttonPanel = createButtonPanel();  
+    JPanel messageLengthPanel = createMessageLengthPanel();
+    JPanel convertFromPanel = createConvertFromRadioPanel();
+    JPanel convertToPanel = createConvertToRadioPanel();
+
+    // Add components to the layout
+    addc(descriptionTextPane, 0, 0, 3, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+
+    // Create and configure examplePanel
+    JPanel examplePanel = new JPanel();
+    examplePanel.add(new JLabel("Select Simple text to ASCII Example: "));
+    examplePanel.add(exampleInputField);  // Use the exampleDropdown component
+
+    // example panel and buttons
+    addc(examplePanel, 0, 1, 3, 1,  
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 20);
+    addc(stepThroughButton, 0, 8, 1, 1, 
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    addc(completeOutputButton, 1, 8, 1, 1, 
+         1.0, 0.0, GridBagConstraints.CENTER, 
+         GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    
+    addc(messageLengthPanel, 0, 2, 1, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 5, 5, 5, 5);
+    addc(convertFromPanel, 1, 2, 1, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 5, 5, 5, 5);
+    addc(convertToPanel, 2, 2, 1, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 5, 5, 5, 5); 
+
+    addc(questionLabel, 0, 3, 3, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    addc(instructionsLabel, 0, 4, 3, 1, 
+            1.0, 0.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.HORIZONTAL, 5, 5, 5, 5);
+    addc(responseScrollPane, 0, 5, 3, 1, 
+            1.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.BOTH, 5, 5, 5, 5);
+    addc(feedbackScrollPane, 0, 6, 3, 1, 
+            1.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.BOTH, 5, 5, 5, 5);
+    addc(buttonPanel, 0, 7, 3, 1, 
+            1.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.NONE, 10, 0, 0, 0);
+    addc(asciiTableScrollPane, 3, 0, GridBagConstraints.REMAINDER,
+            8, 3.0, 1.0, GridBagConstraints.CENTER, 
+            GridBagConstraints.BOTH, 5, 5, 5, 5);
+}
+
+
+    
+    private void setupExampleInputField() {
+    exampleInputField = new JTextField(20);  // Creates a text field with a preferred width
+}
+    
+    @Override
+    public void appendText(String text) {
+        responseArea.append(text + "\n");  // Append new text with a newline for readability
     }
+    private void handleStepThroughAscii() {
+        String userInput = exampleInputField.getText();
+    if (asciiStep == null || !userInput.equals(lastInput)) {
+        lastInput = userInput;
+        EncodeAsciiExample example = new EncodeAsciiExample(userInput);
+        asciiStep = new EncodeAsciiStep();
+        asciiStep.setExample(example);
+        asciiStep.setMultiStep(true);
+    }
+    String result = asciiStep.encode();
+    responseArea.setText(result);  // Set the returned output to the response area
+}
+    private void handleCompleteAsciiConversion() {
+    String userInput = exampleInputField.getText();  // Get user input from text field
+    EncodeAsciiExample example = new EncodeAsciiExample(userInput);
+    EncodeAsciiStep asciiStep = new EncodeAsciiStep();
+    asciiStep.setExample(example);
+    asciiStep.setMultiStep(false);  // Set to complete mode
+    String result = asciiStep.encode();  // This will complete the ASCII conversion process at once
+    responseArea.setText(result);
+}
 
     /**
      * Handles the submission of the user's input, comparing it to the expected 
@@ -362,7 +474,6 @@ public class EncodeView extends UserRequestView implements ActionListener {
         }
     }
 
-    
     /**
      * Displays a hint in the feedback area to assist the user.
      */

@@ -60,13 +60,11 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
     private JButton correctAnswerBut;
     
     public StepCompletionReplyView() {
-        
         initializeComponents();
         layoutComponents();
         
         selectPanel("ButtonPanel_3");
-        
-                System.out.println("Size: " + correctAnswerBut.getSize());
+        System.out.println("Size: " + correctAnswerBut.getSize());
     }
     
     @Override
@@ -74,15 +72,13 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
-    
-        /**
+    /**
      * Display the child view with the given name.
      * 
      * @param name a StepSelection
      */
     private void selectPanel(String name) {
         CardLayout cl = (CardLayout) buttonPanel.getLayout();
-       
         cl.show(buttonPanel, name);
     }
     
@@ -91,13 +87,9 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
      */
     private void initializeComponents() {
         msg = new JTextArea(5,80);
-        
         nextTaskBut = new JButton("Move on to Next Task");
-    
         sameProblemBut = new JButton("Try Same problem Again");
-    
         similarProblemBut = new JButton("Try a Similar Problem");
-    
         correctAnswerBut = new JButton("Show the Correct Answer");
         
         buttonPanel = new JPanel();
@@ -106,7 +98,6 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
         buttonPanel.add(initButtonPanel1(), "ButtonPanel_1");
         buttonPanel.add(initButtonPanel2(), "ButtonPanel_2");
         buttonPanel.add(initButtonPanel3(), "ButtonPanel_3");
-  
     }
     
     /**
@@ -120,15 +111,12 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
         panel.addc(nextTaskBut, 0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         panel.addc(sameProblemBut, 1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         panel.addc(similarProblemBut, 2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         return panel;
     }
     
@@ -143,11 +131,9 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
         panel.addc(sameProblemBut, 0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         panel.addc(similarProblemBut, 1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         return panel;
     }
     
@@ -162,15 +148,12 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
         panel.addc(correctAnswerBut, 0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         panel.addc(sameProblemBut, 1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         panel.addc(similarProblemBut, 2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                     5, 5, 5, 5);
-        
         return panel;
     }
     
@@ -181,11 +164,25 @@ public class StepCompletionReplyView extends UserRequestView implements ActionLi
         addc(msg, 0, 0, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 20, 5);
-        
         addc(buttonPanel, 0, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
                 5, 5, 5, 5);
-    } 
+    }
+    
+    @Override
+    /**
+     * Updates the description, question, and hints from the model
+     * 
+     * TODO: THIS IS A PLACEHOLDER UNTIl WE HAVE HAVE THE MODEL CODE COMPLETED
+     */
+    protected void updateView() {
+        if (model != null) {
+            // ****TO-DO*****
+            // Update the view's information from the model
+            // Debugging dynamic updates to the model can be done here.
+            System.out.println("StepCompletionReplyView");
+        }
+    }
 
     @Override
     public NewExampleRequest newRequest() {
