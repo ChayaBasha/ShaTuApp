@@ -74,6 +74,8 @@ public class CompressionCanvasView extends UserRequestView {
     private BitOpLabel majLabel;
     private VariableLabel wLabel;
     private VariableLabel kLabel;
+    private VariableLabel temp1Label;
+    private VariableLabel temp2Label;
 
     public CompressionCanvasView() {
         setLayout(null);
@@ -256,6 +258,15 @@ public class CompressionCanvasView extends UserRequestView {
         y = p.y + AddMod256Label.HALF_SIZE;
         drawArrowLine(g, x, y, x - 40, y, 6, 6);
         
+        
+        // Arrow from Temporary Variable 1 to modAdditions[0]
+        p = modAdditions[3].getLocation();
+        x = p.x + AddMod256Label.HALF_SIZE;
+        p = modAdditions[0].getLocation();
+        x2 = p.x + AddMod256Label.SIZE;
+        y = p.y + AddMod256Label.HALF_SIZE;
+        drawArrowLine(g, x, y, x2, y, 6, 6);
+        
     }
 
     /**
@@ -284,6 +295,9 @@ public class CompressionCanvasView extends UserRequestView {
         
         wLabel = new VariableLabel("Wt");
         kLabel = new VariableLabel("Kt");
+        
+        temp1Label = new VariableLabel("T1");
+        temp2Label = new VariableLabel("T2");
 
     }
 
@@ -356,11 +370,18 @@ public class CompressionCanvasView extends UserRequestView {
         kLabel.setLocation(x, y);
         add(kLabel);
         
-        // Has Sigma1 inputs and centered on it
+        // Third mod addition has Sigma1 inputs and centered on it
         x = sigma1Label.getLocation().x + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE + 150;
         y = sigma1Label.getLocation().y + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE;
         modAdditions[3].setLocation(new Point(x, y));
         add(modAdditions[3]);
+        
+        // Temporary Variable 1 location under third mod addition
+        x = modAdditions[3].getLocation().x;
+        y = modAdditions[0].getLocation().y;
+        y -= AddMod256Label.SIZE;
+        temp1Label.setLocation(x, y);
+        add(temp1Label);
         
         // Has input from sigma0 Centered on Sigma0
         x = sigma0Label.getLocation().x + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE + 75;

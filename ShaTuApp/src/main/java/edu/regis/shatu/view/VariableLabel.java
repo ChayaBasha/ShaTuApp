@@ -87,7 +87,7 @@ public class VariableLabel extends JLabel implements MouseListener {
 
         Dimension d = new Dimension(SIZE, SIZE); // Determined empirically
 
-        setOpaque(true);
+        setOpaque(false);
         //setBackground(NORMAL_BACKGROUND);
         //setBorder(NORMAL_BORDER);
         setMinimumSize(d);
