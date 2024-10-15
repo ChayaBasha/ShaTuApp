@@ -123,6 +123,16 @@ public class CompressionCanvasView extends UserRequestView {
             drawArrowLine(g, x, y -60, x, p.y, 6, 6);
         }
         
+        // Lines going out of working variables at the bottom
+        for (int i = 0; i < inWorkingVars.length; i++) {
+            p = outWorkingVars[i].getLocation();
+
+            x = p.x + WorkingVarLabel.HALF_SIZE;
+            y = p.y + WorkingVarLabel.SIZE * 2;
+
+            drawArrowLine(g, x, y - 60, x, y, 6, 6);
+        }
+        
         // hide the 'd' to 'e' connection behind the modulo addition
         modAdditions[0].repaint();
         
