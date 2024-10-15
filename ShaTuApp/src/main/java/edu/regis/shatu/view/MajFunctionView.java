@@ -19,6 +19,7 @@ import edu.regis.shatu.view.act.StepCompletionAction;
 import edu.regis.shatu.model.ChoiceFunctionStep;
 import edu.regis.shatu.model.aol.ExampleType;
 import edu.regis.shatu.model.aol.NewExampleRequest;
+import edu.regis.shatu.model.aol.StepSubType;
 import edu.regis.shatu.view.act.NewExampleAction;
 import javax.swing.*;
 import java.awt.*;
@@ -620,14 +621,13 @@ public class MajFunctionView extends UserRequestView implements ActionListener, 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Step step = model.currentTask().getCurrentStep();
+        if (step.getSubType() == StepSubType.MAJORITY_FUNCTION) {
+            //Get the data from the model as a RotateStep object
+            MajorityStep example = gson.fromJson(step.getData(), MajorityStep.class);
 
-        //Get the data from the model as a RotateStep object
-        MajorityStep example = gson.fromJson(step.getData(), MajorityStep.class);
-
-        stringXLabel.setText("x: " + example.getOperand1());
-        stringYLabel.setText("y: " + example.getOperand2());
-        stringZLabel.setText("z: " + example.getOperand3());
-       
-
+            stringXLabel.setText("x: " + example.getOperand1());
+            stringYLabel.setText("y: " + example.getOperand2());
+            stringZLabel.setText("z: " + example.getOperand3());
+        }
     }
 }
