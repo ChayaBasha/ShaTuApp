@@ -172,6 +172,27 @@ public class CompressionCanvasView extends UserRequestView {
         y = p2.y + BitOpLabel.HALF_SIZE;
         drawArrowLine(g, x, y, p2.x, y, 6, 6);
         
+        // The arrow from 'a' line to Maj
+        p = inWorkingVars[0].getLocation();
+        p2 = majLabel.getLocation();
+        x = p.x + WorkingVarLabel.HALF_SIZE;
+        y = p2.y + 5;
+        drawArrowLine(g, x, y, p2.x, y, 6, 6);
+        
+        // The arrow from 'b' line to Maj
+        p = inWorkingVars[1].getLocation();
+        p2 = majLabel.getLocation();
+        x = p.x + WorkingVarLabel.HALF_SIZE;
+        y = p2.y + BitOpLabel.HALF_SIZE;
+        drawArrowLine(g, x, y, p2.x, y, 6, 6);
+        
+        // The arrow from 'c' line to Maj
+        p = inWorkingVars[2].getLocation();
+        p2 = majLabel.getLocation();
+        x = p.x + WorkingVarLabel.HALF_SIZE;
+        y = p2.y + BitOpLabel.SIZE - 5;
+        drawArrowLine(g, x, y, p2.x, y, 6, 6);
+        
         // Arrow from Ch to modAdditions[1]
         p = chLabel.getLocation();
         x = p.x + BitOpLabel.SIZE;
