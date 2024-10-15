@@ -31,7 +31,7 @@ public class BitOpLabel extends JLabel implements MouseListener {
     /**
      * The pixel width and height of this component.
      */
-    public static final int SIZE = 46;
+    public static final int SIZE = 48;
     
     public static final int HALF_SIZE = SIZE / 2;
     
@@ -55,7 +55,7 @@ public class BitOpLabel extends JLabel implements MouseListener {
     /**
      * The background of this label is pinkish when not highlighted.
      */
-    private static final Color NORMAL_BACKGROUND = new Color(150, 229, 247);
+    private static final Color NORMAL_BACKGROUND = new Color(230,230,250);
     
     /**
      * The background of this label is a light yellow when highlighted.

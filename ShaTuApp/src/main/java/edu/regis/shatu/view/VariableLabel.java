@@ -84,9 +84,9 @@ public class VariableLabel extends JLabel implements MouseListener {
         super(text, SwingConstants.CENTER);
         
         isSelected = false;
-
+        
         Dimension d = new Dimension(SIZE, SIZE); // Determined empirically
-
+        
         setOpaque(false);
         //setBackground(NORMAL_BACKGROUND);
         //setBorder(NORMAL_BORDER);

@@ -15,9 +15,9 @@ package edu.regis.shatu.view;
 import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
-import javax.swing.JLabel;
 
 /**
  * Displays a single round of the SHA-256 compression algorithm.
@@ -312,21 +312,32 @@ public class CompressionCanvasView extends UserRequestView {
         for (int i = 0; i < modAdditions.length; i++) {
             modAdditions[i] = new AddMod256Label();
         }
-
-        sigma1Label = new BitOpLabel("s1");
-        sigma0Label = new BitOpLabel("s0");
+        int sigma = 931;
+        sigma1Label = new BitOpLabel((char)sigma + "\u2081");
+        sigma0Label = new BitOpLabel((char) sigma + "\u2080");
         chLabel = new BitOpLabel("Ch");
         majLabel = new BitOpLabel("Maj");
         
-        wLabel = new VariableLabel("Wt");
-        kLabel = new VariableLabel("Kt");
+        sigma1Label.setFont(new Font("", Font.PLAIN, 16));
+        sigma0Label.setFont(new Font("", Font.PLAIN, 16));
         
-        temp1Label = new VariableLabel("T1");
-        temp2Label = new VariableLabel("T2");
-
+        wLabel = new VariableLabel("W\u209C");
+        kLabel = new VariableLabel("K\u209C");
+        
+        
+        wLabel.setFont(new Font("", Font.PLAIN, 16));
+        kLabel.setFont(new Font("", Font.PLAIN, 16));
+        
+        temp1Label = new VariableLabel("T\u2081");
+        temp2Label = new VariableLabel("T\u2082");
+        
+        temp1Label.setFont(new Font("", Font.PLAIN, 16));
+        temp2Label.setFont(new Font("", Font.PLAIN, 16));
     }
 
     private void layoutComponents() {
+        Color white = new Color(255,255,255);
+        setBackground(white);
         Point p;
         int x, y;
         
@@ -383,15 +394,15 @@ public class CompressionCanvasView extends UserRequestView {
         x = modAdditions[2].getLocation().x;
         y = modAdditions[2].getLocation().y;
         x -= VariableLabel.HALF_SIZE - 10;
-        y -= VariableLabel.SIZE + 40;
+        y -= VariableLabel.SIZE + 20;
         wLabel.setLocation(x, y);
         add(wLabel);
         
         // K input location
         x = modAdditions[2].getLocation().x;
         y = modAdditions[2].getLocation().y;
-        x += VariableLabel.SIZE + 10;
-        y -= VariableLabel.HALF_SIZE - 10;
+        x += VariableLabel.SIZE;
+        y -= VariableLabel.HALF_SIZE;
         kLabel.setLocation(x, y);
         add(kLabel);
         
