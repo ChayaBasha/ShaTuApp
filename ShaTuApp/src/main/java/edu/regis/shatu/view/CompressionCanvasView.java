@@ -93,6 +93,7 @@ public class CompressionCanvasView extends UserRequestView {
         super.paintComponent(g);
         
         Point p;
+        Point p2;
         int x, y, x2, y2;
 
         this.setForeground(Color.BLACK);
@@ -142,6 +143,27 @@ public class CompressionCanvasView extends UserRequestView {
         y = p.y + WorkingVarLabel.SIZE;
         p = modAdditions[1].getLocation();
         drawArrowLine(g, x, y, p.x, p.y, 6, 6);
+        
+        // The arrow from 'e' line to Ch
+        p = inWorkingVars[4].getLocation();
+        p2 = chLabel.getLocation();
+        x = p.x + WorkingVarLabel.HALF_SIZE;
+        y = p2.y + 5;
+        drawArrowLine(g, x, y, p2.x, y, 6, 6);
+        
+        // The arrow from 'f' line to Ch
+        p = inWorkingVars[5].getLocation();
+        p2 = chLabel.getLocation();
+        x = p.x + WorkingVarLabel.HALF_SIZE;
+        y = p2.y + BitOpLabel.HALF_SIZE;
+        drawArrowLine(g, x, y, p2.x, y, 6, 6);
+        
+        // The arrow from 'g' line to Ch
+        p = inWorkingVars[6].getLocation();
+        p2 = chLabel.getLocation();
+        x = p.x + WorkingVarLabel.HALF_SIZE;
+        y = p2.y + BitOpLabel.SIZE - 5;
+        drawArrowLine(g, x, y, p2.x, y, 6, 6);
         
         // Arrow from Ch to modAdditions[1]
         p = chLabel.getLocation();
