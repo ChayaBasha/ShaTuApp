@@ -267,6 +267,21 @@ public class CompressionCanvasView extends UserRequestView {
         y = p.y + AddMod256Label.HALF_SIZE;
         drawArrowLine(g, x, y, x2, y, 6, 6);
         
+        // Arrow from Sigma0 to modAdditions[4]
+        p = sigma0Label.getLocation();
+        x = p.x + BitOpLabel.SIZE;
+        y = p.y + BitOpLabel.HALF_SIZE;
+        p = modAdditions[4].getLocation();
+        x2 = p.x;
+        drawArrowLine(g, x, y, x2, y, 6, 6);
+        
+        // Arrow from modAdditions[4] to modAdditions[5]
+        p = modAdditions[4].getLocation();
+        x = p.x + AddMod256Label.SIZE;
+        y = p.y + AddMod256Label.HALF_SIZE;
+        p = modAdditions[5].getLocation();
+        x2 = p.x;
+        drawArrowLine(g, x, y, x2, y, 6, 6);
     }
 
     /**
@@ -392,6 +407,14 @@ public class CompressionCanvasView extends UserRequestView {
         x = sigma0Label.getLocation().x + BitOpLabel.HALF_SIZE - AddMod256Label.HALF_SIZE + 150;
         modAdditions[5].setLocation(new Point(x, y));
         add(modAdditions[5]);
+        
+        // Temporary Variable 2 location between fourth and fifth mod addition
+        x = modAdditions[4].getLocation().x;
+        y = modAdditions[4].getLocation().y;
+        x += AddMod256Label.SIZE;
+        y += AddMod256Label.HALF_SIZE - 10;
+        temp2Label.setLocation(x, y);
+        add(temp2Label);
     }
 
     /**
