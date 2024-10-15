@@ -97,12 +97,14 @@ public class SignInAction extends ShaTuGuiAction {
         switch (reply.getStatus()) {
             case "Authenticated":
                 TutoringSession session = gson.fromJson(reply.getData(), TutoringSession.class);
-
-                // Combining both changes:
+                
+                // Initialize main frame instance.
+                // This is used after selecting a mode from the dashboard.
                 MainFrame frame = MainFrame.instance();
                 //frame.setVisible(true);
-                frame.setModel(session);  // Set session in MainFrame
-
+                frame.setModel(session);
+                
+                // Transition to dashboard
                 SplashFrame.instance().selectDashboard(session);
                 SplashFrame.instance().setVisible(true); // Hide the SplashFrame
                 

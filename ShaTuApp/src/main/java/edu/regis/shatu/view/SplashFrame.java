@@ -260,7 +260,12 @@ public class SplashFrame extends JFrame {
 
         // Set the model (session) for the TutoringSessionView
         this.tutoringSessionView.setModel(session);
-
+        
+        // Sets size of practice screen window.
+        // Without this, the window opens too small.
+        this.setPreferredSize(new Dimension(1000, 800));
+        this.pack();
+        
         // Switch to the tutoring session view
         selectPanel(TUTOR);
     }
