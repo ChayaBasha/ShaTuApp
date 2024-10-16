@@ -404,6 +404,8 @@ public class ShaTuTutor implements TutorSvc {
         String correctAnswer = completedAddOneStep.getResult();  // Binary representation of the question, the correct answer.
         
         StepCompletionReply stepReply = new StepCompletionReply();
+        stepReply.setCorrectAnswer(correctAnswer);
+        stepReply.setResponse(userAnswer);
         
         if (userAnswer.equals(correctAnswer)) {
             
@@ -559,7 +561,7 @@ public class ShaTuTutor implements TutorSvc {
         return reply;
     }
     public TutorReply completeAddBitsStep(StepCompletion completion) {
-         Random rnd = new Random();
+        Random rnd = new Random();
         System.out.println("Tutor completeAddBitsStep");
         
         BitOpStep example = gson.fromJson(completion.getData(), BitOpStep.class);
@@ -573,6 +575,8 @@ public class ShaTuTutor implements TutorSvc {
         String expectedResult = addBitsFunction(operand1, operand2, m);
         
         StepCompletionReply stepReply = new StepCompletionReply();
+        stepReply.setCorrectAnswer(expectedResult);
+        stepReply.setResponse(result);
 
         if (expectedResult.equals(result)) {
             stepReply.setIsCorrect(true);
