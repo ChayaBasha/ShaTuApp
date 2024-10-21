@@ -77,6 +77,7 @@ public enum StepSubType {
     
     STEP_COMPLETION_REPLY("Step Completion Reply"),
     
+    REQUEST_HINT("Request Hint"),    
     /**
      * The initial default value in a NewExampleRequest
      */

@@ -1,4 +1,3 @@
-
 /*
  * SHATU: SHA-256 Tutor
  * 
@@ -57,6 +56,7 @@ public class Add1View extends UserRequestView implements ActionListener {
     private JScrollPane responseScrollPane, asciiTableScrollPane, feedbackScrollPane;
     private String question;
     private boolean wasHintRequested = false;
+
     
     /**
      * Initialize this view including creating and laying out its child components.
@@ -83,7 +83,6 @@ public class Add1View extends UserRequestView implements ActionListener {
             requestHint();
         }
     }
-    
 
     /**
      * Initializes all GUI components, setting up their properties and configurations.
@@ -145,6 +144,7 @@ public class Add1View extends UserRequestView implements ActionListener {
         }
         else {
             // Nothing, maybe needed later in development, tutor should be handling things though.
+
         }
     }
     
@@ -173,7 +173,7 @@ public class Add1View extends UserRequestView implements ActionListener {
                     7, 2.0, 1.0, GridBagConstraints.CENTER, 
                     GridBagConstraints.BOTH, 5, 5, 5, 5);
             
-            this.wasHintRequested = true;
+            this.wasHintRequested = true; // Used in the updateView function
         }
         
         this.revalidate(); // Refreshes the view
@@ -209,6 +209,7 @@ public class Add1View extends UserRequestView implements ActionListener {
                     "</body>" +
                     "</html>"
             );
+        
         descriptionTextPane.setEditable(false);
         descriptionTextPane.setBackground(null);
         descriptionTextPane.setBorder(null);
@@ -260,6 +261,7 @@ public class Add1View extends UserRequestView implements ActionListener {
         nextButton = new JButton(NewExampleAction.instance());
         nextButton.addActionListener(this);
 
+
     }
     
     /**
@@ -306,6 +308,7 @@ public class Add1View extends UserRequestView implements ActionListener {
         instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
     }
     
+
     /**
      * Initializes the ASCII table and its scroll pane
      */
@@ -453,7 +456,7 @@ public class Add1View extends UserRequestView implements ActionListener {
         
         String userResponse = this.responseArea.getText(); // Get the user's answer.
         
-        completedAddOneStep.setUserAnswer(userResponse);
+        completedAddOneStep.setUserAnswer(userResponse); // User answer in the response area
         
         StepCompletion step = new StepCompletion(currentStep, gson.toJson(completedAddOneStep));
         

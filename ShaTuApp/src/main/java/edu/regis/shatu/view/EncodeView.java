@@ -16,7 +16,8 @@ import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.TutoringSession;
 import edu.regis.shatu.model.aol.EncodeAsciiExample;
 import edu.regis.shatu.model.aol.EncodeAsciiStep;
-
+import edu.regis.shatu.model.aol.EncodeAsciiStep.OutputListener;
+import edu.regis.shatu.model.StepCompletion;
 import edu.regis.shatu.model.aol.NewExampleRequest;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -93,12 +94,10 @@ public class EncodeView extends UserRequestView implements ActionListener, KeyLi
         prepareNextQuestion();
     }
 
-    @Override
     public NewExampleRequest newRequest() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    @Override
     public StepCompletion stepCompletion() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
