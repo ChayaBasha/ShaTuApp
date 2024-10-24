@@ -20,7 +20,7 @@ import java.awt.RenderingHints;
 import javax.swing.JProgressBar;
 
 public class CustomProgressBar extends JProgressBar {
-    private Font originalFont;
+    private final Font originalFont;
 
     public CustomProgressBar() {
         super();
@@ -43,9 +43,6 @@ public class CustomProgressBar extends JProgressBar {
         int width = getWidth();
         int height = getHeight();
 
-        // Calculate the height based on the progress
-        int progressHeight = (int) (getPercentComplete() * height);  // Progress from bottom to top
-
         // Set the font with the desired size
         g2d.setFont(originalFont.deriveFont(18f));
 
@@ -54,17 +51,10 @@ public class CustomProgressBar extends JProgressBar {
         int textX = width / 2 - textWidth / 2;
         int textY = height / 2 + g2d.getFontMetrics().getAscent() / 2 - 2;
 
-        // 1. Draw the dark grey text (background color)
-        g2d.setColor(Color.DARK_GRAY);
-        g2d.drawString(progressText, textX, textY);
+        // Set the fixed text color to (0, 43, 73)
+        g2d.setColor(new Color(0, 43, 73));  // Regis Blue
 
-        // 2. Draw the white text where the progress overlaps from bottom to top
-        g2d.setClip(0, height - progressHeight, width, progressHeight);  // Clip vertically from the bottom
-        g2d.setColor(Color.WHITE);  // Set text color to white for the progress-covered area
+        // Draw the text in the center of the progress bar
         g2d.drawString(progressText, textX, textY);
-
-        // Reset the clip to avoid affecting other components
-        g2d.setClip(null);
     }
 }
-
