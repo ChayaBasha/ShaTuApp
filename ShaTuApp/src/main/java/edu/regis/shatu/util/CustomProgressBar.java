@@ -19,6 +19,12 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JProgressBar;
 
+/**
+ * This custom progress bar is a subclass of JProgressBar.
+ * This progress bar fills vertically, rather than horizontally.
+ * The font and its color can be adjusted.
+ * @author Ryley Maclagan
+ */
 public class CustomProgressBar extends JProgressBar {
     private final Font originalFont;
 
