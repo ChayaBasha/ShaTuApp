@@ -23,7 +23,7 @@ import javax.swing.JProgressBar;
  * This custom progress bar is a subclass of JProgressBar.
  * This progress bar fills vertically, rather than horizontally.
  * The font and its color can be adjusted.
- * @author Ryley Maclagan
+ * @author Ryley MacLagan
  */
 public class CustomProgressBar extends JProgressBar {
     private final Font originalFont;
@@ -34,7 +34,7 @@ public class CustomProgressBar extends JProgressBar {
         setStringPainted(false);  // Disable default string painting
 
         // Capture the font set in NetBeans Design panel
-        originalFont = getFont();  // Store the original font from the designer
+        originalFont = getFont();
     }
 
     @Override
@@ -57,8 +57,8 @@ public class CustomProgressBar extends JProgressBar {
         int textX = width / 2 - textWidth / 2;
         int textY = height / 2 + g2d.getFontMetrics().getAscent() / 2 - 2;
 
-        // Set the fixed text color to (0, 43, 73)
-        g2d.setColor(new Color(0, 43, 73));  // Regis Blue
+        // Set the fixed text color
+        g2d.setColor(Color.WHITE);
 
         // Draw the text in the center of the progress bar
         g2d.drawString(progressText, textX, textY);

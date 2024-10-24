@@ -48,9 +48,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         headerPanel = new javax.swing.JPanel();
-        welcomeLabel = new javax.swing.JLabel();
         logOutButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JButton();
+        welcomeLabel = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
         teachMeButton1 = new javax.swing.JButton();
         practiceButton1 = new javax.swing.JButton();
@@ -63,18 +63,6 @@ public class DashboardPanel extends javax.swing.JPanel {
         setLayout(new java.awt.BorderLayout());
 
         headerPanel.setLayout(new java.awt.BorderLayout());
-
-        welcomeLabel.setBackground(new java.awt.Color(0, 43, 73));
-        welcomeLabel.setOpaque(true);
-        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        welcomeLabel.setForeground(new java.awt.Color(241, 196, 0));
-        welcomeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        welcomeLabel.setLabelFor(this);
-        welcomeLabel.setText("Welcome!");
-        welcomeLabel.setToolTipText("");
-        welcomeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        welcomeLabel.setText("Welcome, " + tutoringSession.getAccount().getFirstName() + "!");
-        headerPanel.add(welcomeLabel, java.awt.BorderLayout.CENTER);
 
         logOutButton.setText("Log Out");
         logOutButton.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -94,9 +82,22 @@ public class DashboardPanel extends javax.swing.JPanel {
         settingsButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         headerPanel.add(settingsButton, java.awt.BorderLayout.LINE_START);
 
+        welcomeLabel.setBackground(new java.awt.Color(0, 43, 73));
+        welcomeLabel.setOpaque(true);
+        welcomeLabel.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        welcomeLabel.setForeground(new java.awt.Color(241, 196, 0));
+        welcomeLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        welcomeLabel.setLabelFor(this);
+        welcomeLabel.setText("Welcome!");
+        welcomeLabel.setToolTipText("");
+        welcomeLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        welcomeLabel.setText("Welcome, " + tutoringSession.getAccount().getFirstName() + "!");
+        headerPanel.add(welcomeLabel, java.awt.BorderLayout.CENTER);
+
         add(headerPanel, java.awt.BorderLayout.NORTH);
 
         contentPanel.setBackground(new java.awt.Color(0, 43, 73));
+        contentPanel.setAlignmentX(1.0F);
         contentPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         contentPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -137,14 +138,13 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(18, 17, 6, 6);
         contentPanel.add(quizeMeButton1, gridBagConstraints);
 
+        practiceProgressBar1.setBackground(new java.awt.Color(0, 43, 73));
         practiceProgressBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        practiceProgressBar1.setForeground(new java.awt.Color(241, 196, 0));
-        practiceProgressBar1.setValue(50);
+        practiceProgressBar1.setForeground(new java.awt.Color(241, 196, 0, 235));
         practiceProgressBar1.setOrientation(1);
         practiceProgressBar1.setValue(50);
         practiceProgressBar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white));
         practiceProgressBar1.setString("");
-        practiceProgressBar1.setStringPainted(true);
         practiceProgressBar1.setStringPainted(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -160,10 +160,10 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(20, 18, 0, 0);
         contentPanel.add(practiceProgressBar1, gridBagConstraints);
 
+        teachMeProgressBar1.setBackground(new java.awt.Color(0, 43, 73));
         teachMeProgressBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        teachMeProgressBar1.setForeground(new java.awt.Color(241, 196, 0));
+        teachMeProgressBar1.setForeground(new java.awt.Color(241, 196, 0, 235));
         teachMeProgressBar1.setOrientation(1);
-        teachMeProgressBar1.setToolTipText(null);
         teachMeProgressBar1.setValue(100);
         teachMeProgressBar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -180,8 +180,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(20, 6, 0, 0);
         contentPanel.add(teachMeProgressBar1, gridBagConstraints);
 
+        quizMeProgressBar1.setBackground(new java.awt.Color(0, 43, 73));
         quizMeProgressBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        quizMeProgressBar1.setForeground(new java.awt.Color(241, 196, 0));
+        quizMeProgressBar1.setForeground(new java.awt.Color(241, 196, 0, 235));
         quizMeProgressBar1.setOrientation(1);
         quizMeProgressBar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white));
         quizMeProgressBar1.setString("");
