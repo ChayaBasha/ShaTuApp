@@ -13,6 +13,7 @@
 package edu.regis.shatu.view;
 
 import edu.regis.shatu.model.TutoringSession;
+import edu.regis.shatu.util.CustomProgressBar;
 /**
  * The dashboard screen to be displayed upon user sign in.
  * Enables user to select a mode from the tutor (teach me, practice, quiz me)
@@ -54,9 +55,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         teachMeButton1 = new javax.swing.JButton();
         practiceButton1 = new javax.swing.JButton();
         quizeMeButton1 = new javax.swing.JButton();
-        practiceProgressBar1 = new javax.swing.JProgressBar();
-        teachMeProgressBar1 = new javax.swing.JProgressBar();
-        quizMeProgressBar1 = new javax.swing.JProgressBar();
+        practiceProgressBar1 = new CustomProgressBar();
+        teachMeProgressBar1 = new CustomProgressBar();
+        quizMeProgressBar1 = new CustomProgressBar();
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setLayout(new java.awt.BorderLayout());
@@ -80,6 +81,11 @@ public class DashboardPanel extends javax.swing.JPanel {
         logOutButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 logOutButtonMouseClicked(evt);
+            }
+        });
+        logOutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logOutButtonActionPerformed(evt);
             }
         });
         headerPanel.add(logOutButton, java.awt.BorderLayout.LINE_END);
@@ -136,7 +142,8 @@ public class DashboardPanel extends javax.swing.JPanel {
         practiceProgressBar1.setValue(50);
         practiceProgressBar1.setOrientation(1);
         practiceProgressBar1.setValue(50);
-        practiceProgressBar1.setString("50%");
+        practiceProgressBar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white));
+        practiceProgressBar1.setString("");
         practiceProgressBar1.setStringPainted(true);
         practiceProgressBar1.setStringPainted(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -155,12 +162,10 @@ public class DashboardPanel extends javax.swing.JPanel {
 
         teachMeProgressBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         teachMeProgressBar1.setForeground(new java.awt.Color(241, 196, 0));
-        teachMeProgressBar1.setValue(100);
         teachMeProgressBar1.setOrientation(1);
-        teachMeProgressBar1.setToolTipText("");
+        teachMeProgressBar1.setToolTipText(null);
         teachMeProgressBar1.setValue(100);
-        teachMeProgressBar1.setString("100%");
-        teachMeProgressBar1.setStringPainted(true);
+        teachMeProgressBar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -178,6 +183,8 @@ public class DashboardPanel extends javax.swing.JPanel {
         quizMeProgressBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         quizMeProgressBar1.setForeground(new java.awt.Color(241, 196, 0));
         quizMeProgressBar1.setOrientation(1);
+        quizMeProgressBar1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white, java.awt.Color.white));
+        quizMeProgressBar1.setString("");
         quizMeProgressBar1.setStringPainted(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
@@ -204,6 +211,9 @@ public class DashboardPanel extends javax.swing.JPanel {
         SplashFrame.instance().logout();
     }//GEN-LAST:event_logOutButtonMouseClicked
 
+    private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logOutButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
