@@ -14,7 +14,7 @@ package edu.regis.shatu.view;
 
 import edu.regis.shatu.err.IllegalArgException;
 import edu.regis.shatu.model.TutoringSession;
-
+import edu.regis.shatu.model.aol.StepSubType;
 import edu.regis.shatu.view.act.NewExampleAction;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -115,6 +115,65 @@ public class StepView extends JPanel {
         cl.show(this, name.toString());
         
         selectedPanel = name;
+
+        if (model != null) {
+            switch (selectedPanel) {
+                case ENCODE:
+                    model.currentTask().currentStep().setSubType(StepSubType.ENCODE_ASCII);                
+                    break;
+
+                case ADD1:
+                    model.currentTask().currentStep().setSubType(StepSubType.ADD_ONE_BIT);
+                    break;
+
+                case PAD:
+                    model.currentTask().currentStep().setSubType(StepSubType.PAD_ZEROS);
+                    break;
+
+                case LENGTH:
+                    model.currentTask().currentStep().setSubType(StepSubType.ADD_MSG_LENGTH);
+                    break;
+
+                case PREPARE:
+                    model.currentTask().currentStep().setSubType(StepSubType.PREPARE_SCHEDULE);
+                    break;
+
+                case INIT_VARS:
+                    model.currentTask().currentStep().setSubType(StepSubType.INITIALIZE_VARS);
+                    break;
+
+                case COMPRESS:
+                    model.currentTask().currentStep().setSubType(StepSubType.COMPRESS_ROUND);
+                    break;
+
+                case ROTATE_BITS:
+                    model.currentTask().currentStep().setSubType(StepSubType.ROTATE_BITS);
+                    break;
+
+                case SHIFT_RIGHT:
+                    model.currentTask().currentStep().setSubType(StepSubType.SHIFT_BITS);
+                    break;
+
+                case XOR:
+                    model.currentTask().currentStep().setSubType(StepSubType.XOR_BITS);
+                    break;
+
+                case ADD_TWO_BIT:
+                    model.currentTask().currentStep().setSubType(StepSubType.ADD_BITS);
+                    break;
+
+                case CHOICE_FUNCTION:
+                    model.currentTask().currentStep().setSubType(StepSubType.CHOICE_FUNCTION);
+                    break;
+                
+                case MAJ_FUNCTION:
+                    model.currentTask().currentStep().setSubType(StepSubType.MAJORITY_FUNCTION);
+                    break;
+            
+                default:
+                    break;
+            }
+        }
         
         try {
             getUserRequestView().setModel(model);

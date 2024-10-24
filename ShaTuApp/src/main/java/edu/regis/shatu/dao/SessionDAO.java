@@ -43,7 +43,7 @@ public class SessionDAO implements SessionSvc {
     /**
      * Data directory containing student session files.
      */
-    private static final String DATA_DIRECTORY = "src/main/java/resources/Data/";
+    private static final String DATA_DIRECTORY = "ShaTuApp/src/main/java/resources/Data/";
     
     /**
      * {@inheritDoc}
