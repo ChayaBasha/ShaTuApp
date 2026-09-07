@@ -90,6 +90,9 @@ public class SvcFacade {
     
     /**
      * Socket port supporting the ShaTu tutoring service protocol
+     *
+     * I noticed ShaTuServer declares this same port number on its own, so if you
+     * change it here you have to change it there too or the client won't connect.
      */
     private static final int PORT = 53636;
     
